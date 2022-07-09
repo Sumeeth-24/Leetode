@@ -1,0 +1,228 @@
+MAXIMUM SCORE OF SPLICED ARRAY
+
+for(int i =0;i<nums1.length;i++){
+            diff1[i]=nums1[i]-nums2[i];
+            diff2[i]=nums2[i]-nums1[i];  
+            sum1+=nums1[i];
+            sum2+=nums2[i];
+        }
+        int max1 = kadane(diff1);
+        int max2 = kadane(diff2);
+        return Math.max(max1+sum2,max2+sum1);
+THEN KADANE CODE
+
+MAXIMUM ERASURE VALUE
+
+class Solution {
+    public int maximumUniqueSubarray(int[] nums) {
+        Set<Integer> set= new HashSet<>();
+       int running_sum=0, ans=Integer.MIN_VALUE;
+       int i=0, j=0;
+        
+       while(i < nums.length && j<nums.length)
+      {
+           if(!set.contains(nums[j]))
+        {
+           set.add(nums[j]);
+           running_sum += nums[j];
+           ans=Math.max(ans,running_sum);
+           j++;
+        }
+        else
+        {
+            running_sum -= nums[i];
+            set.remove(nums[i]);
+            i++;
+        }
+      }
+    
+    return ans;
+    }
+}
+
+MAXIMUM SUMSUBARRAY WITH ATMOST ONE DELETION
+
+Input: arr = [1,-2,-2,3]
+Output: 3
+Explanation: We just choose [3] and it's the maximum sum.
+
+class Solution {
+    public int maximumSum(int[] arr) {
+        int n = arr.length;
+        
+        if(n == 1) return arr[0];
+        
+        int possibleLargest = -1;
+        
+        int[] prefixSum = new int[n];
+        int[] suffixSum = new int[n];
+        
+        prefixSum[0] = arr[0];
+        suffixSum[n-1] = arr[n-1];
+        
+        for (int i = 1; i < n; i++) {
+            prefixSum[i] = Math.max(prefixSum[i-1] + arr[i], arr[i]);
+            possibleLargest = Math.max(possibleLargest, prefixSum[i]);
+        }
+        for (int i = n-2; i >=0; i--) {
+            suffixSum[i] = Math.max(suffixSum[i+1] + arr[i], arr[i]);
+            possibleLargest = Math.max(possibleLargest, suffixSum[i]);
+        }
+        
+        for(int i=1; i <= n - 2; i++)
+        {
+            possibleLargest = Math.max(prefixSum[i-1] + suffixSum[i+1], possibleLargest);
+        }
+        
+        return possibleLargest;
+    }
+}
+
+STEPS TO MAKE ARRAY NON-DECREASING
+
+// [7, 14, 4, 14, 13, 2, 6, 13, 7, 5, 3, 5]
+class Solution {
+    public int totalSteps(int[] nums) {
+        Stack<int[]> st = new Stack<>();
+        int n = nums.length;
+        int cnt = 0;
+        int mx = 0;
+        for (int i=n-1;i>=0;i--) {
+            if (st.empty()) {
+                st.push(new int[] {nums[i],0});
+            } else {
+                cnt = 0;
+                while (!st.empty() && st.peek()[0]<nums[i]) {
+                    int[] z = st.pop();
+                    cnt = Math.max(cnt+1, z[1]);
+                }
+                st.push(new int[] {nums[i], cnt});
+                mx = Math.max(mx, cnt);
+            }
+        }
+        return mx;
+    }
+}
+
+APPLY DISCOUNT TO PRICES
+
+Input: sentence = "there are $1 $2 and 5$ candies in the shop", discount = 50
+Output: "there are $0.50 $1.00 and 5$ candies in the shop"
+
+class Solution {
+    public String discountPrices(String sentence, int discount) {
+        String[] strList = sentence.split(" ");
+        StringBuilder sb = new StringBuilder();
+        
+        for(String s : strList){
+            if(valid(s)){
+                long val = Long.parseLong(s.substring(1));
+                
+                sb.append("$" + String.format("%.2f", val*(1-discount/100.0d)));
+            }
+            else {
+                sb.append(s);
+            }
+            sb.append(" ");
+        }
+        
+        
+        String res = sb.toString();
+        return res.substring(0, res.length()-1);
+    }
+    
+    public boolean valid(String s){
+        if(s.length() <= 1){
+            return false;
+        }
+        
+        if(s.charAt(0) != '$'){
+            return false;
+        }
+        
+        for(int i=1; i<s.length(); i++){
+            if(!Character.isDigit(s.charAt(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+1. Check If a String Contains All Binary Codes of Size K
+// TC - O(n-k)* O(k)
+// SC - O(2^k)
+
+// Input: s = "00110110", k = 2
+// Output: true
+
+class Solution {
+    public boolean hasAllCodes(String s, int k) {
+        if(s.length() < k) return false;
+        
+        HashSet<String> set = new HashSet<>();
+        
+        for(int i=0; i <= s.length() - k; i++){
+            set.add(s.substring(i, i+k));
+        }
+        
+        return set.size() == (Math.pow(2, k));
+    }
+}
+
+2. TEXT EDITOR
+
+textEditor.addText("leetcode"); // The current text is "leetcode|".
+textEditor.deleteText(4); // return 4
+                          // The current text is "leet|". 
+                          // 4 characters were deleted.
+textEditor.addText("practice"); // The current text is "leetpractice|". 
+textEditor.cursorRight(3); // return "etpractice"
+                           // The current text is "leetpractice|". 
+                           // The cursor cannot be moved beyond the actual text and thus did not move.
+                           // "etpractice" is the last 10 characters to the left of the cursor.
+textEditor.cursorLeft(8); // return "leet"
+                          // The current text is "leet|practice".
+
+class TextEditor
+{
+    StringBuilder sb; // Stores text
+    int cur; // Current pointer location
+    public TextEditor()
+    {
+        sb = new StringBuilder();
+        cur = 0;
+    }
+    
+    public void addText(String text)
+    {
+        sb.insert(cur,text);
+        cur+= text.length(); // Shift pointer to the right of added text
+    }
+    
+    public int deleteText(int k)
+    {
+        int l = Math.max(0,cur-k);
+        int r = cur;
+        sb.delete(l,r);
+        cur = l; // Shift pointer to the left of deleted text
+        return r-l;
+    }
+    
+    public String cursorLeft(int k)
+    {
+        int start = Math.max(0,cur-k); // Maximum text present on the left
+        cur = start; // Updates pointer
+        int l = Math.max(0,cur-10);
+        return sb.substring(l,cur);
+    }
+    
+    public String cursorRight(int k)
+    {
+        int start = Math.min(sb.length(),cur+k); // Maximum text present on the right
+        cur = start; // Updates pointer
+        int r = Math.max(0,cur-10);
+        return sb.substring(r,cur);
+    }
+}

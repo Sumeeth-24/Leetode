@@ -1,0 +1,4391 @@
+MINIMUM OPERATIONS TO MAKE ARRAY K INCREASING
+
+k-seperated subsequences of arr:
+subsequence      length     LIS      Operations(Length - LIS)
+[4,2,8,15]          4        3           1
+[1,6,9]             3        3           0
+[5,2,11]            3        2           1
+-------------------------------------------------
+Total Operations =                       2
+
+class Solution {
+    public int kIncreasing(int[] arr, int k) {
+        int ans = 0;
+        
+        for(int i=0; i< k; i++){
+            List<Integer> list = new ArrayList<>();
+            for(int j=i; j < arr.length; j= j+k){
+                list.add(arr[j]);
+            }
+            
+            ans += list.size() - lengthOfLIS(list);
+        }
+        return ans;
+    }
+    
+    public int lengthOfLIS(List<Integer> nums) {
+        int omax = 0;
+     int[] dp = new int[nums.size()];
+     for(int i = 0; i < nums.size(); i++){
+        int max = 0;
+
+        for(int j = 0; j < i; j++){
+           if(nums.get(j) < nums.get(i)){
+              if( dp[j] > max){
+                 max = dp[j];
+              }
+           }
+        }
+
+       dp[i] = max + 1;
+        
+        if(dp[i] > omax){
+           omax = dp[i];
+        }
+     }
+
+     return (omax);
+    }
+}
+
+
+LONGEST PALINDROMIC SUBSTRING
+
+class Solution {
+    public String longestPalindrome(String s) {
+       if(s == null || s.length() < 1) return "";
+        
+        int start = 0;
+        int end = 0;
+        
+        for(int i=0; i< s.length(); i++){
+            int len1 = expandFromMiddle(s, i, i);   // racecar
+            int len2 = expandFromMiddle(s, i, i+1); // aabbaa
+            
+            int len = Math.max(len1, len2);
+            
+            if(len > end - start){
+                start = i - ((len - 1)/2);  // abaccabe
+                end =  i  + (len/2);
+            }
+        }
+        
+        return s.substring(start, end+1);
+    }
+    
+    public int expandFromMiddle(String s, int left, int right){
+      if(s == null || left > right) return 0;
+        
+        while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        
+        return right - left - 1;
+    }
+}
+
+
+MISSING NUMBER
+
+// Input: nums = [9,6,4,2,3,5,7,0,1]
+// Output: 8
+
+class Solution {
+    public int missingNumber(int[] nums) {
+          int sum = 0;
+        for(int num: nums)
+            sum += num;
+            
+        return (nums.length * (nums.length + 1) )/ 2 - sum;
+    }
+}
+
+
+
+1. LONGEST INCREASING SUBSEQUENCE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args) throws Exception {
+	 Scanner t = new Scanner(System.in);
+	 System.out.println("Enter the value");
+     int n = t.nextInt();
+     int[] arr = new int[n];
+     for (int i = 0; i < n; i++) {
+        arr[i] = t.nextInt();
+     }
+
+     int omax = 0;
+     int[] dp = new int[arr.length];
+     for(int i = 0; i < arr.length; i++){
+        int max = 0;
+
+        for(int j = 0; j < i; j++){
+           if(arr[j] < arr[i]){
+              if( dp[j] > max){
+                 max = dp[j];
+              }
+           }
+        }
+
+       dp[i] = max + 1;
+        
+        if(dp[i] > omax){
+           omax = dp[i];
+        }
+     }
+
+     System.out.println(omax);
+  }
+
+}
+
+
+
+2. MAXIMUM SUM INCREASING SUBSEQUENCE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args) throws Exception {
+	 Scanner t = new Scanner(System.in);
+	 System.out.println("Enter the value");
+     int n = t.nextInt();
+     int[] arr = new int[n];
+     for (int i = 0; i < n; i++) {
+        arr[i] = t.nextInt();
+     }
+
+     int omax = Integer.MIN_VALUE;
+     int[] dp = new int[n];
+     
+     for(int i = 0; i < arr.length; i++){
+        Integer max = null;
+
+        for(int j = 0; j < i; j++){
+           if(arr[j] <= arr[i]){
+              if(max == null){
+                 max = dp[j];
+              } else if(dp[j] > max) {
+            	  max = dp[j];
+              }
+           }
+        }
+
+        if(max != null){
+           dp[i] = max + arr[i];
+        } else {
+           dp[i] = arr[i];
+        }
+        
+        if(dp[i] > omax){
+           omax = dp[i];
+        }
+     }
+
+     System.out.println(omax);
+  }
+
+}
+           
+
+3. LONGEST BITONIC SUBSEQUENCE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args) throws Exception {
+	 Scanner t = new Scanner(System.in);
+	 System.out.println("Enter the value");
+     int n = t.nextInt();
+     int[] arr = new int[n];
+     for (int i = 0; i < n; i++) {
+        arr[i] = t.nextInt();
+     }
+
+     int[] lis = new int[arr.length];
+     for(int i = 0; i < arr.length; i++){
+        int max = 0;
+
+        for(int j = 0; j < i; j++){
+           if(arr[j] <= arr[i]){
+              if( lis[j] > max){
+                 max = lis[j];
+              }
+           }
+        }
+
+           lis[i] = max + 1;
+     }
+     
+
+     int[] lds = new int[arr.length];
+     for(int i = arr.length - 1; i >= 0; i--){
+    	 int max = 0;
+
+        for(int j = arr.length - 1; j > i; j--){
+           if(arr[j] <= arr[i]){
+              if( lds[j] > max){
+                 max = lds[j];
+              }
+           }
+        }
+
+           lds[i] = max + 1;
+       
+     }
+
+     int omax = 0;
+     for(int i = 0; i < arr.length; i++){
+        if(lis[i] + lds[i] - 1 > omax){
+           omax = lis[i] + lds[i] - 1;
+        }
+     }
+     System.out.println(omax);
+  }
+
+}
+
+
+
+4. MAXIMUM NON-OVERLAPPING BRIDGES
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static class Bridge implements Comparable<Bridge> {
+	      int n;
+	      int s;
+	      
+	      Bridge(int n, int s){
+	    	  this.n = n;
+	    	  this.s = s;
+	      }
+
+	      public int compareTo(Bridge o){
+	         if(this.n != o.n){
+	            return this.n - o.n;
+	         } else {
+	            return this.s - o.s;
+	         }
+	      }
+	   }
+	   public static void main(String[] args) throws Exception {
+		   Scanner t = new Scanner(System.in);
+			 System.out.println("Enter the value");
+		     int n =  Integer.parseInt(t.nextLine());
+		     
+	      Bridge[] brdgs = new Bridge[n];
+	      for (int i = 0; i < n; i++) {
+	         String line = t.nextLine();
+	         String[] parts = line.split(" ");
+	        
+	         int nr = Integer.parseInt(parts[0]);
+	         int so = Integer.parseInt(parts[1]);
+	         
+	         brdgs[i] = new Bridge(nr, so);
+	      }
+
+	      Arrays.sort(brdgs);
+	      
+	      int[] lis = new int[n];
+	      for(int i = 0; i < n; i++){
+	         int max = 0;
+
+	         for(int j = 0; j < i; j++){
+	            if(brdgs[j].s <= brdgs[i].s){
+	               if( lis[j] > max){
+	                  max = lis[j];
+	               }
+	            }
+	         }
+
+	            lis[i] = max + 1;
+	      }
+	      
+
+	      int omax = 0;
+	      for(int i = 0; i < brdgs.length; i++){
+	         if(lis[i] > omax){
+	            omax = lis[i];
+	         }
+	      }
+	      System.out.println(omax);
+	   }
+
+	}
+
+
+	                        
+5. RUSSIAN DOLL ENVELOPE
+class Solution {
+     public static class Envelope implements Comparable<Envelope> {
+	      int w;
+	      int h;
+	      
+	      Envelope(int w, int h){
+	    	  this.w = w;
+	    	  this.h = h;
+	      }
+
+	      public int compareTo(Envelope o){
+	         return this.w - o.w;
+	      }
+	   }
+    
+    public int maxEnvelopes(int[][] envelopes) {
+        int n = envelopes.length;
+        
+        int k=0;
+          Envelope[] envlps = new Envelope[n];
+		      for (int[] env : envelopes) {    
+		        int width = (env[0]);
+		        int height =(env[1]);
+		        
+		        envlps[k] = new Envelope(width, height);
+                  k++;
+		      }
+        
+         Arrays.sort(envlps);
+		      int[] lis = new int[envlps.length];
+		      for(int i = 0; i < envlps.length; i++){
+		    	  int max = 0;
+
+
+		         for(int j = 0; j < i; j++){
+		            if(envlps[j].h < envlps[i].h && envlps[j].w < envlps[i].w){
+		               if( lis[j] > max){
+		                  max = lis[j];
+		               }
+		            }
+		         }
+
+		            lis[i] = max + 1;
+		        
+		      }
+
+		      int omax = 0;
+		      for(int i = 0; i < envlps.length; i++){
+		         if(lis[i] > omax){
+		            omax = lis[i];
+		         }
+		      }
+		      return (omax);
+        
+    }
+}
+
+
+	                        
+
+6. COUNT PALINDROMIC SUBSTRINGS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        String str = t.nextLine();
+	        
+	        boolean[][] dp = new boolean[str.length()][str.length()];
+	        int count = 0;
+	        for(int g = 0; g < dp.length; g++){
+	            for(int i = 0, j = g; j < dp[0].length; i++, j++){
+	                if(g == 0){
+	                    dp[i][j] = true;
+	                } else if(g == 1){
+	                    if(str.charAt(i) == str.charAt(j)) {
+	                    	dp[i][j] = true;
+	                    } else {
+	                    	dp[i][j] = false;
+	                    }
+	                } else {
+	                    if(str.charAt(i) == str.charAt(j) && dp[i + 1][j - 1] == true){
+	                        dp[i][j] = true;
+	                    } else {
+	                        dp[i][j] =false;
+	                    }
+	                }
+	                if(dp[i][j]) {
+	                	count++;
+	                }
+	            }
+	        }
+
+	        System.out.println(count);
+	    }
+	}
+
+
+7. LONGEST PALINDROMIC SUBSTRING
+class Solution {
+    public String longestPalindrome(String str) {
+         boolean[][] dp = new boolean[str.length()][str.length()];
+         int lowerIndex = 0;
+	     int len = 0;
+        
+	        for(int g = 0; g < dp.length; g++){
+	            for(int i = 0, j = g; j < dp[0].length; i++, j++){
+	                if(g == 0){
+	                    dp[i][j] = true;
+	                } else if(g == 1){
+	                    if(str.charAt(i) == str.charAt(j)) {
+	                    	dp[i][j] = true;
+	                    } else {
+	                    	dp[i][j] = false;
+	                    }
+	                } else {
+	                    if(str.charAt(i) == str.charAt(j) && dp[i + 1][j - 1] == true){
+	                        dp[i][j] = true;
+	                    } else {
+	                        dp[i][j] =false;
+	                    }
+	                }
+	                if(dp[i][j]) {
+	                	len = g + 1;
+                        lowerIndex = i;
+	                }
+	            }
+	        }
+
+	        return str.substring(lowerIndex, len+1);
+    }
+}
+
+
+
+36. LONGEST COMMON SUBSTRING
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String s1 = scn.next();
+		String s2 = scn.next();
+		System.out.println(solution(s1,s2));
+	}
+
+	public static int solution(String s1, String s2){
+		int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+		
+		int ans = 0 ;
+		for(int i = 1 ; i < dp.length; i++) {
+			for(int j = 1 ; j < dp[0].length ;j++) {
+				char c1 = s1.charAt(i - 1);
+				char c2 = s2.charAt(j - 1);
+				
+				if(c1 != c2) {
+					dp[i][j] = 0;
+				} else {
+					dp[i][j] = dp[ i - 1][j - 1] + 1;
+				}
+				
+				if(dp[i][j] > ans) {
+					ans =  dp[i][j];
+				}
+				
+			}
+		}
+		return ans;
+	}
+
+}
+
+
+16. LONGEST PALINDROMIC SUBSEQUENCE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	 public static void main(String[] args) throws Exception {
+	 Scanner t = new Scanner(System.in);
+	 System.out.println("Enter the value");
+     String str = t.nextLine();
+     
+     int[][] dp = new int[str.length()][str.length()];
+     
+     for(int g = 0; g < dp.length; g++){
+         for(int i = 0, j = g; j < dp[0].length; i++, j++){
+             if(g == 0){
+                 dp[i][j] = 1;
+             } else if(g == 1){
+                 dp[i][j] = str.charAt(i) == str.charAt(j)? 2: 1;
+             } else {
+                 if(str.charAt(i) == str.charAt(j)){
+                     dp[i][j] = 2 + dp[i + 1][j - 1];
+                 } else {
+                     dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                 }
+             }
+         }
+     }
+
+     System.out.println(dp[0][dp[0].length - 1]);
+ }
+}
+
+
+12. COUNT PALINDROMIC SUBSEQUENCES
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	  public static void main(String[] args) throws Exception {
+	        Scanner t = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        String str = t.nextLine();
+	        
+	        int[][] dp = new int[str.length()][str.length()];
+	        
+	        for(int g = 0; g < dp.length; g++){
+	            for(int i = 0, j = g; j < dp[0].length; i++, j++){
+	                if(g == 0){
+	                    dp[i][j] = 1;
+	                } else if(g == 1){
+	                    dp[i][j] = str.charAt(i) == str.charAt(j)? 3: 2;
+	                } else {
+	                    if(str.charAt(i) == str.charAt(j)){
+	                        dp[i][j] = dp[i][j - 1] + dp[i + 1][j] + 1;
+	                    } else {
+	                        dp[i][j] = dp[i][j - 1] + dp[i + 1][j] - dp[i + 1][j - 1];
+	                    }
+	                }
+	            }
+	        }
+
+	        System.out.println(dp[0][dp[0].length - 1]);
+	    }
+	}
+
+
+17. LONGEST COMMON SUBSEQUENCE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	 public static void main(String[] args) throws Exception {
+	 Scanner t = new Scanner(System.in);
+	 System.out.println("Enter the value");
+     String str1 = t.nextLine();
+     String str2 = t.nextLine();
+     
+     int[][] dp = new int[str1.length() + 1][str2.length() + 1];
+     for(int i = dp.length - 2; i >= 0; i--){
+         for(int j = dp[0].length - 2; j >= 0; j--){
+             if(str1.charAt(i) == str2.charAt(j)){
+                 dp[i][j] = 1 + dp[i + 1][j + 1];
+             } else {
+                 dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+             }
+         }
+     }
+
+     System.out.println(dp[0][0]);
+ }
+}
+
+
+
+
+44. LONGEST REPEATING SUBSEQUENCE
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String str = scn.next();
+		System.out.println(solution(str));
+	}
+
+	public static int solution(String str){
+		int[][] dp = new int[str.length() + 1][str.length() + 1];
+		
+		for(int i = dp.length - 1; i >= 0; i--) {
+			for(int j = dp[0].length - 1; j >= 0; j--) {
+				if(i == dp.length - 1 && j == dp[0].length - 1) {
+					dp[i][j] = 0;
+				} else if(i == dp.length - 1) {
+					dp[i][j] = 0;
+				} else if(j == dp[0].length - 1) {
+					dp[i][j] = 0;
+				} else {
+					if(str.charAt(i) == str.charAt(j) && i != j) {
+						dp[i][j] = dp[i + 1][j + 1] + 1;
+					} else {
+						dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+					}
+				}
+			}
+		}
+		return dp[0][0];
+	}
+
+}
+
+
+
+
+	                        
+
+8. PRINT ALL MINIMUM COST PATHS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static class Pair {
+	      String psf;
+	      int i;
+	      int j;
+
+	      public Pair(String psf, int i, int j) {
+	         this.psf = psf;
+	         this.i = i;
+	         this.j = j;
+	      }
+	   }
+
+	   public static void main(String[] args) throws Exception {
+		   Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	      int n = t.nextInt();
+	      int m = t.nextInt();
+	      int[][] arr = new int[n][m];
+
+	      for (int i = 0; i < n; i++) {
+	         for (int j = 0; j < m; j++) {
+	            arr[i][j] = t.nextInt();
+	         }
+	      }
+
+	      //write your code here
+	      int[][] dp = new int[arr.length][arr[0].length];
+	      
+	      for(int i = dp.length - 1; i >= 0; i--){
+	          for(int j = dp[0].length - 1; j >= 0; j--){
+	              if(i == dp.length - 1 && j == dp[0].length - 1){
+	                  dp[i][j] = arr[i][j];
+	              } else if(i == dp.length - 1){
+	                  dp[i][j] = arr[i][j] + dp[i][j + 1];
+	              } else if(j == dp[0].length - 1){
+	                  dp[i][j] = arr[i][j] + dp[i + 1][j];
+	              } else {
+	                  dp[i][j] = arr[i][j] + Math.min(dp[i][j + 1], dp[i + 1][j]);
+	              }
+	          }
+	      }
+	      
+	      System.out.println(dp[0][0]);
+	      
+	      ArrayDeque<Pair> queue = new ArrayDeque<>();
+	      queue.add(new Pair("", 0, 0));
+	      while(queue.size() > 0){
+	          Pair rem = queue.removeFirst();
+	          
+	          if(rem.i == dp.length - 1 && rem.j == dp[0].length - 1){
+	              System.out.println(rem.psf);
+	          } else if(rem.i == dp.length - 1){
+	                  queue.add(new Pair(rem.psf + "H", rem.i, rem.j + 1));              
+	          } else if(rem.j == dp[0].length - 1){
+	                  queue.add(new Pair(rem.psf + "V", rem.i + 1, rem.j));              
+	          } else {
+	              if(dp[rem.i][rem.j + 1] < dp[rem.i + 1][rem.j]){
+	                  queue.add(new Pair(rem.psf + "H", rem.i, rem.j + 1));
+	              } else if(dp[rem.i][rem.j + 1] > dp[rem.i + 1][rem.j]){
+	                  queue.add(new Pair(rem.psf + "V", rem.i + 1, rem.j));
+	              } else {
+	                  queue.add(new Pair(rem.psf + "V", rem.i + 1, rem.j));
+	                  queue.add(new Pair(rem.psf + "H", rem.i, rem.j + 1));
+	              }
+	          }
+	      }
+	      
+	   }
+
+	}
+
+
+
+9. PRINT ALL PATHS WITH MINIMUM JUMPS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static class Pair{
+	        int i;
+	        int s;
+	        int j;
+	        String psf;
+	      
+	        
+	        Pair(int i,int s, int j, String psf){
+	            this.i = i;
+	            this.s = s;
+	            this.j = j;
+	            this.psf = psf;
+	 
+	        }
+	    }
+	    
+	   
+	       
+	    
+	    public static void Solution(int []arr){
+	        Integer dp[] = new Integer[arr.length];
+            dp[arr.length - 1] = 0;
+            
+	        for(int i = arr.length-2 ; i >= 0 ; i--){
+	            int steps = arr[i];
+	        
+	            int min = Integer.MAX_VALUE;
+	           
+	                for(int j = 1 ; j <= steps && i + j < arr.length ;j++){
+	                    if(dp[i + j] != null && dp[i + j] < min){
+	                    	  min = dp[i + j];
+	                    }
+	            }
+	                
+	                if(min != Integer.MAX_VALUE) {
+	                	  dp[i] = min + 1;
+	                }
+	        }
+	          
+	             System.out.println(dp[0]);
+	             
+	             ArrayDeque<Pair> queue = new ArrayDeque<>();
+	 	        queue.add(new Pair(0 , arr[0], dp[0], 0 + ""));
+
+	 	        while(queue.size() > 0){
+	 	            Pair rem = queue.removeFirst();
+	 	            
+	 	            if(rem.j == 0) {
+	 	            	System.out.println(rem.psf +  " .");
+	 	            }
+
+	 	            for(int j = 1; j <= rem.s && rem.i + j < arr.length; j++) {
+	 	            	int ci = rem.i + j;
+	 	            	
+	 	            	if(dp[ci] != null && dp[ci] == rem.j - 1) {
+	 	            		  queue.add(new Pair(ci , arr[ci], dp[ci], rem.psf + "->" + ci));
+	 	            	}
+	 	        }
+	        }
+	      
+	        
+	    }
+
+	   
+	    public static void main(String []args){
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        int n = scn.nextInt();
+
+	        int arr[] = new int[n];
+	        for(int i = 0 ; i < n ; i++)
+	            arr[i] = scn.nextInt();
+
+	        Solution(arr);
+	        
+	      
+	    }
+	}
+
+
+	                        
+10. COUNT DISTINCT SUBSEQUENCES
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        String str = scn.next();
+	    
+	        long[] dp = new long[str.length() + 1];
+	        dp[0] = 1;
+
+	        HashMap<Character, Integer> lo = new HashMap<>();
+	        
+	        for(int i = 1; i < dp.length; i++){
+	                dp[i] = 2 * dp[i - 1];
+	                
+	                char ch = str.charAt(i - 1); // str ka index
+	            if(lo.containsKey(ch)) {
+	            	int j = lo.get(ch);
+	            	dp[i] = dp[i] - dp[j - 1];
+	            }
+	            
+	       lo.put(ch, i); // dp ka ith index
+	        }
+	        System.out.println((dp[str.length()] - 1));
+	    }
+	}
+
+	               
+11. PRINT ALL LIS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	public static class Pair {
+        int l;
+        int i;
+        int v;
+        String psf;
+        
+        Pair(int l, int i, int v, String psf){
+            this.l = l;
+            this.i = i;
+            this.v = v;
+            this.psf = psf;
+        }
+    }
+        
+    public static void solution(int []arr){
+        int[] dp = new int[arr.length];
+        int omax = 0;
+        
+        for(int i = 0; i < dp.length; i++){
+            int max = 0;
+            
+            for(int j = 0; j < i; j++){
+                if(arr[j] <= arr[i]){
+                    if(dp[j] > max){
+                        max = dp[j];
+                    }
+                }
+            }
+            
+            dp[i] = max + 1;
+            if(dp[i] > omax){
+                omax = dp[i];
+            }
+        }
+        
+        System.out.println(omax);
+        
+        ArrayDeque<Pair> queue = new ArrayDeque<>();
+        
+        for(int i = 0; i < dp.length; i++){
+            if(omax == dp[i]){
+                queue.add(new Pair(omax, i, arr[i], arr[i] + ""));
+            }
+        }
+        
+        while(queue.size() > 0){
+            Pair rem = queue.removeFirst();
+            
+            if(rem.l == 1){
+                System.out.println(rem.psf);
+            }
+            
+            for(int j = rem.i - 1; j >= 0; j--){
+                if(dp[j] == rem.l - 1 && arr[j] <= rem.v){
+                    queue.add(new Pair(dp[j], j, arr[j], arr[j] + " -> " + rem.psf));
+                }
+            }
+        }
+    }
+    
+    
+    
+    public static void main(String []args){
+        Scanner scn = new Scanner(System.in);
+        System.out.println("Enter the value");
+        int n = scn.nextInt();
+
+        int arr[] = new int[n];
+        for(int i = 0 ; i < n ; i++){
+            arr[i] = scn.nextInt();
+        }
+
+        solution(arr);
+
+        
+    }
+}
+	               
+	               
+
+
+
+13. PRINT ALL PATHS WITH MAXIMUM GOLD
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static class Pair {
+	      String psf;
+	      int i;
+	      int j;
+
+	      public Pair(String psf, int i, int j) {
+	         this.psf = psf;
+	         this.i = i;
+	         this.j = j;
+	      }
+	   }
+	   public static void main(String[] args) throws Exception {
+	    Scanner t = new Scanner(System.in);
+	    System.out.println("Enter the value");
+	      int n = t.nextInt();
+	      int m = t.nextInt();
+	      int[][] arr = new int[n][m];
+
+	      for (int i = 0; i < n; i++) {
+	        
+	         for (int j = 0; j < m; j++) {
+	            arr[i][j] =t.nextInt();
+	         }
+	      }
+
+	      int[][] dp = new int[arr.length][arr[0].length];
+	      
+	      for(int j = arr[0].length - 1; j >= 0; j--){
+	          for(int i = 0; i < arr.length; i++){
+	              if(j == arr[0].length - 1){
+	                  dp[i][j] = arr[i][j];
+	              } else if(i == 0){
+	                  dp[i][j] = arr[i][j] + Math.max(dp[i][j + 1], dp[i + 1][j + 1]);
+	              } else if(i == arr.length - 1){
+	                  dp[i][j] = arr[i][j] + Math.max(dp[i][j + 1], dp[i - 1][j + 1]);
+	              } else {
+	                  dp[i][j] = arr[i][j] + Math.max(dp[i][j + 1], Math.max(dp[i - 1][j + 1], dp[i + 1][j + 1]));
+	              }
+	          }
+	      }
+	      
+	      int max = Integer.MIN_VALUE;
+	      for(int i = 0; i < dp.length; i++){
+	          if(dp[i][0] > max){
+	              max = dp[i][0];
+	          }
+	      }
+	      
+	      System.out.println(max);
+	      
+	      ArrayDeque<Pair> que = new ArrayDeque<>();
+	      
+	      for(int i = 0; i < dp.length; i++){
+	          if(dp[i][0] == max){
+	              que.add(new Pair(i + " ", i, 0));
+	          }
+	      }
+	      
+	      while(que.size() > 0){
+	          Pair rem = que.removeFirst();
+	          
+	          if(rem.j == arr[0].length - 1){
+	              System.out.println(rem.psf);
+	          } else if(rem.i == 0){
+	              int g = Math.max(dp[rem.i][rem.j + 1], dp[rem.i + 1][rem.j + 1]);
+	              
+	              
+	              if(g == dp[rem.i][rem.j + 1]){
+	                  que.add(new Pair(rem.psf + "d2 ", rem.i, rem.j + 1));
+	              }
+	              
+	              if(g == dp[rem.i + 1][rem.j + 1]){
+	                  que.add(new Pair(rem.psf + "d3 ", rem.i + 1, rem.j + 1));
+	              }
+	          } else if(rem.i == arr.length - 1){
+	              int g = Math.max(dp[rem.i][rem.j + 1], dp[rem.i - 1][rem.j + 1]);
+	              
+	              
+	              if(g == dp[rem.i - 1][rem.j + 1]){
+	                  que.add(new Pair(rem.psf + "d1 ", rem.i - 1, rem.j + 1));
+	              }
+	              
+	              if(g == dp[rem.i][rem.j + 1]){
+	                  que.add(new Pair(rem.psf + "d2 ", rem.i, rem.j + 1));
+	              }
+	          } else {
+	              int g = Math.max(dp[rem.i][rem.j + 1], Math.max(dp[rem.i - 1][rem.j + 1], dp[rem.i + 1][rem.j + 1]));
+	              
+	              if(g == dp[rem.i - 1][rem.j + 1]){
+	                  que.add(new Pair(rem.psf + "d1 ", rem.i - 1, rem.j + 1));
+	              }
+	              
+	              if(g == dp[rem.i][rem.j + 1]){
+	                  que.add(new Pair(rem.psf + "d2 ", rem.i, rem.j + 1));
+	              }
+	              
+	              if(g == dp[rem.i + 1][rem.j + 1]){
+	                  que.add(new Pair(rem.psf + "d3 ", rem.i + 1, rem.j + 1));
+	              }
+	          }
+	          
+	          
+	      }
+	   }
+
+
+	}
+
+
+
+14. PRINT SUBSET WITH TARGET SUM
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	public static class Pair{
+        int i;
+        int j;
+        String psf;
+
+        public Pair(int i, int j, String psf){
+            this.i = i;
+            this.j = j;
+            this.psf = psf;
+        }
+    }
+    public static void main(String[] args) throws Exception {
+    	    Scanner t = new Scanner(System.in);
+    	    System.out.println("Enter the value");
+    	      int n = t.nextInt();
+        int[] arr = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = t.nextInt();
+        }
+
+        int tar = t.nextInt();
+
+        boolean[][] dp = new boolean[arr.length + 1][tar + 1];
+        for (int i = 0; i < dp.length; i++) {
+            for (int j = 0; j < dp[0].length; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                } else if (i == 0) {
+                    dp[i][j] = false;
+                } else if (j == 0) {
+                    dp[i][j] = true;
+                } else {
+                    if(dp[i - 1][j] == true){       // doesn't bat
+                        dp[i][j] = true;
+                    } else {
+                        int val = arr[i - 1];
+                        if (j >= val && dp[i - 1][j - val] == true) {
+                            dp[i][j] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println(dp[dp.length - 1][tar]);
+        ArrayDeque<Pair> q = new ArrayDeque<>();
+        q.add(new Pair(n,tar,""));
+      
+
+        while (q.size() > 0) {
+			Pair rp = q.removeFirst();
+			if (rp.i == 0 || rp.j == 0) {
+				System.out.println(rp.psf);
+			} else {
+				boolean exc = dp[rp.i - 1][rp.j];
+				boolean inc = rp.j - arr[rp.i - 1] >= 0 ? dp[rp.i - 1][rp.j - arr[rp.i - 1]] : false;
+				
+				if (inc == true) {
+					q.add(new Pair(rp.i - 1, rp.j - arr[rp.i - 1], (rp.i - 1) + " " + rp.psf));
+				}
+				if (exc == true) {
+					q.add(new Pair(rp.i - 1, rp.j, rp.psf));
+				}
+			}
+		}
+    }
+}
+
+
+              
+15. PRINT ALL PATHS OF 0-1 KNAPSACK
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static class Pair{
+	      int i;
+	      int j;
+	      String psf;
+
+	      public Pair(int i, int j, String psf){
+	         this.i = i;
+	         this.j = j;
+	         this.psf = psf;
+	      }
+	   }
+	    public static void main(String[] args) throws Exception {
+	    	 Scanner t = new Scanner(System.in);
+	    	    System.out.println("Enter the value");
+	    	      int n = t.nextInt();
+	        int[] vals = new int[n];
+	      
+	        for (int i = 0; i < n; i++) {
+	            vals[i] = t.nextInt();
+	        }
+
+	        int[] wts = new int[n];
+	     
+	        for (int i = 0; i < n; i++) {
+	            wts[i] = t.nextInt();
+	        }
+
+	        int cap = t.nextInt();
+
+	        int[][] dp = new int[n + 1][cap + 1];
+	        
+	        for (int i = 1; i < dp.length; i++) {
+	            for(int j = 1; j < dp[0].length; j++){
+	            	dp[i][j] = dp[i - 1][j];
+	            	
+	            	if(j >= wts[i-1]) {
+	            		if(dp[i-1][j - wts[i - 1]] + vals[i - 1] > dp[i - 1][j]) {
+	            			dp[i][j] = dp[i-1][j - wts[i - 1]] + vals[i - 1];
+	            		}
+	            	}
+	            }
+	         }
+
+	        System.out.println(dp[n][cap]);
+	        
+	        ArrayDeque<Pair> q = new ArrayDeque<>();
+	        q.add(new Pair(n,cap,""));
+	      
+
+	        while (q.size() > 0) {
+				Pair rp = q.removeFirst();
+				if (rp.i == 0 || rp.j == 0) {
+					System.out.println(rp.psf);
+				} else {
+					int exc = dp[rp.i - 1][rp.j];
+					int inc = rp.j - wts[rp.i - 1] >= 0 ? (dp[rp.i - 1][rp.j - wts[rp.i - 1]] + vals[rp.i - 1]) : Integer.MIN_VALUE;
+					
+					if (dp[rp.i][rp.j] == inc) {
+						q.add(new Pair(rp.i - 1, rp.j - wts[rp.i - 1], (rp.i - 1) + " " + rp.psf));
+					}
+					if (dp[rp.i][rp.j] == exc) {
+						q.add(new Pair(rp.i - 1, rp.j, rp.psf));
+					}
+				}
+			}
+	    }
+	}
+
+              
+
+
+
+
+18. WILD CARD MATCHING
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	 public static void main(String[] args) throws Exception {
+	 Scanner scn = new Scanner(System.in);
+	 System.out.println("Enter the value");
+		String s1 = scn.next();
+		String s2 = scn.next();
+		System.out.println(solution(s1,s2));
+	}
+
+	public static boolean solution(String str, String pattern) {
+		boolean[][] dp = new boolean[pattern.length() + 1][str.length() + 1];
+		for(int i = dp.length - 1; i >= 0 ;i--) {
+			for(int j = dp[0].length - 1; j >= 0; j--) {
+				if(i == dp.length - 1 && j == dp[0].length - 1) {
+					dp[i][j] = true;
+				}else if(i == dp.length - 1) {
+					dp[i][j] = false;
+				}else if(j == dp[0].length - 1) {
+					if(pattern.charAt(i) == '*') {
+						dp[i][j] = dp[i + 1][j];
+					}
+				}else {
+					if(pattern.charAt(i) == '?') {
+						dp[i][j] = dp[i + 1][j + 1];
+					}else if(pattern.charAt(i) == '*') {
+						dp[i][j] = dp[i][j + 1] || dp[i + 1][j];
+					}else if(pattern.charAt(i) == str.charAt(j)) {
+						dp[i][j] = dp[i + 1][j + 1];
+					}else {
+						dp[i][j] = false;
+					}
+				}
+			}
+		}
+		
+		return (dp[0][0]);
+	}
+
+}
+
+
+
+19. CATALAN NUMBER
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	 public static void main(String[] args) throws Exception {
+	 Scanner scn = new Scanner(System.in);
+	 System.out.println("Enter the value");
+	 int n = scn.nextInt();
+	 long[] dp = new long[n + 1];
+     dp[0] = 1;
+     dp[1] = 1;
+
+     for(int i = 2; i < dp.length; i++){
+        for(int j = 0; j < i; j++){
+           dp[i] += dp[j] * dp[i - j - 1];
+        }
+     }
+
+     System.out.println(dp[n]);
+  }
+}
+
+
+20. REGULAR EXPRESSION MATCHING
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+      		String s1 = scn.nextLine();
+      		String s2 = scn.nextLine();
+    		System.out.println(solution(s1,s2));
+     	}
+	
+	public static boolean solution(String s, String p) {
+		boolean[][] dp = new boolean[p.length() + 1][s.length() + 1];
+       
+        for(int i = 0 ; i < dp.length; i++){
+            for(int j = 0 ; j < dp[0].length; j++){
+              if(i == 0 && j == 0) {
+            	  dp[i][j] = true;
+              } else if(i == 0) {
+            	  dp[i][j] = false;
+              } else if(j == 0) {
+            	  char pc = p.charAt(i - 1);
+            	  if(pc == '*') {
+            		  dp[i][j] = dp[i - 2][j];
+            	  } else {
+            		  dp[i][j] = false;
+            	  }
+              } else {
+            	  char pc = p.charAt(i - 1);
+            	  char sc = s.charAt(j - 1);
+            	  
+            	  if(pc == '*') {
+            		  dp[i][j] = dp[i - 2][j];
+            		  
+            		  char pslc = p.charAt(i - 2);
+            		  if(pslc == '.' || pslc == sc) {
+            			  dp[i][j] = dp[i][j] || dp[i][j - 1];
+            		  }
+            	  } else if(pc == '.') {
+            		  dp[i][j] = dp[i - 1][j - 1];
+            	  } else if(pc == sc) {
+            		  dp[i][j] = dp[i - 1][j - 1];
+            	  } else {
+            		  dp[i][j] = false;
+            	  }
+             }
+          
+          }
+     }
+        return dp[p.length()][s.length()];
+}
+	
+	
+        
+	}
+
+
+
+21. COUNT DISTINCT PALINDROMIC SUBSEQUENCE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+    		String str = scn.next();
+    		System.out.println(solution(str));
+    	}
+
+    	public static int solution(String str) {
+    		int[][] dp = new int[str.length()][str.length()];
+    		
+    		
+    		int[] prev = new int[str.length()];
+    		HashMap<Character, Integer> map = new HashMap<>();
+    		for (int i = 0; i < str.length(); i++) {
+    			char ch = str.charAt(i);
+    			
+    			if (map.containsKey(ch) == false) {
+    				prev[i] = -1;
+    				map.put(ch, i);
+    			} else {
+    				prev[i] = map.get(ch);
+    			}
+    			map.put(ch, i);
+    		}
+    		
+    		
+    		int[] next = new int[str.length()];
+    		map.clear();
+    		for (int i = str.length() - 1; i >= 0; i--) {
+    			char ch = str.charAt(i);
+    			
+    			if (map.containsKey(ch) == false) {
+    				next[i] = 8;
+    				map.put(ch, i);
+    			} else {
+    				next[i] = map.get(ch);
+    			}
+    			map.put(ch, i);
+    		}
+    		
+    		
+    		for (int g = 0; g < str.length(); g++) {
+    			for(int i = 0, j = g; j < str.length(); i++, j++) {
+    				if (g == 0) {
+    					dp[i][j] = 1;
+    				} else if(g == 1) {
+    					dp[i][j] = 2;
+    			} else {
+    				char sc = str.charAt(i);
+    				char ec = str.charAt(j);
+    				
+    				if(sc != ec) {
+    					dp[i][j] = dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1];
+    				} else {
+    					int nis = next[i];          // next index of start
+    					int pie = prev[j];          // prev index of end
+    					
+    					if(nis > pie) {
+    						dp[i][j] = 2 * dp[i + 1][j - 1] + 2;
+    					} else if(nis == pie) {
+    						dp[i][j] = 2 * dp[i + 1][j - 1] + 1;
+    					} else {
+    						dp[i][j] = 2 * dp[i + 1][j - 1] - dp[nis + 1][pie - 1];
+    					}
+    				}
+    				
+    	      	} 
+        	}
+
+     }
+    		return dp[0][str.length() - 1];
+  }  
+}
+
+              
+
+
+22. COUNT NO.OF BINARY SEARCH TREE(BST) FOR N NODES
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+    		int n = scn.nextInt();
+    	      long[] dp = new long[n + 1];
+    	      dp[0] = 1;
+    	      dp[1] = 1;
+
+    	      for(int i = 2; i < dp.length; i++){
+    	         for(int j = 0; j < i; j++){
+    	            dp[i] += dp[j] * dp[i - 1 - j];
+    	         }
+    	      }
+
+    	      System.out.println(dp[n]);
+    	   }
+
+}
+
+
+
+23. COUNTING VALLEYS AND MOUNTAINS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+    		int n = scn.nextInt();
+    	      long[] dp = new long[n + 1];
+    	      dp[0] = 1;
+    	      dp[1] = 1;
+
+    	      for(int i = 2; i < dp.length; i++){
+    	         int inside = i - 1;
+    	         int outside = 0;
+    	         
+    	         while(inside >= 0) {
+    	        	 dp[i] += dp[inside]*dp[outside];
+    	        	 
+    	        	 inside--;
+    	        	 outside++;
+    	         }
+    	      }
+
+    	      System.out.println(dp[n]);
+    	   }
+
+}
+
+
+
+24. COUNTING BRACKETS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+    		int n = scn.nextInt();
+    	      long[] dp = new long[n + 1];
+    	      dp[0] = 1;
+    	      dp[1] = 1;
+
+    	      for(int i = 2; i < dp.length; i++){
+    	         int inside = i - 1;
+    	         int outside = 0;
+    	         
+    	         while(inside >= 0) {
+    	        	 dp[i] += dp[inside]*dp[outside];
+    	        	 
+    	        	 inside--;
+    	        	 outside++;
+    	         }
+    	      }
+
+    	      System.out.println(dp[n]);
+    	   }
+
+}
+
+
+25. NON-INTERSECTING CHORDS
+
+// N represents 2*N points on circle i.e if i/p is 4 then points is 8 on a circle
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+    		int n = scn.nextInt();
+    		
+    	      long[] dp = new long[n + 1];
+    	      dp[0] = 1;
+    	      dp[1] = 1;
+
+    	      for(int i = 2; i <= n; i++){
+    	         int left = 0;
+    	         int right = i - 1;
+    	         
+    	         while(left <=  i - 1) {
+    	        	 dp[i] += dp[left]*dp[right];
+    	        	 
+    	        	 left++;
+    	        	 right--;
+    	         }
+    	      }
+
+    	      System.out.println(dp[n]);
+    	   }
+
+}
+                       OR
+
+
+// N represents  points on circle i.e if i/p is 6 then points is 6 on a circle
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+    		int n = scn.nextInt();
+    		
+    		int catalan = n / 2;
+    	      long[] dp = new long[catalan + 1];
+    	      dp[0] = 1;
+    	      dp[1] = 1;
+
+    	      for(int i = 2; i <= catalan; i++){
+    	         int left = 0;
+    	         int right = i - 1;
+    	         
+    	         while(left <=  i - 1) {
+    	        	 dp[i] += dp[left]*dp[right];
+    	        	 
+    	        	 left++;
+    	        	 right--;
+    	         }
+    	      }
+
+    	      System.out.println(dp[catalan]);
+    	   }
+
+}
+
+
+
+
+
+26. NO.OF WAYS OF POLYGON TRIANGULATION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) throws Exception {
+      	 Scanner scn = new Scanner(System.in);
+      	 System.out.println("Enter the value");
+    		int n = scn.nextInt();
+    		
+    		n = n - 2;
+    	      long[] dp = new long[n + 1];
+    	      dp[0] = 1;
+    	      dp[1] = 1;
+
+    	      for(int i = 2; i <= n; i++){
+    	         int left = i - 1;
+    	         int right = 0;
+    	         
+    	         while(left >=  0) {
+    	        	 dp[i] += dp[left]*dp[right];
+    	        	 
+    	        	 left--;
+    	        	 right++;
+    	         }
+    	      }
+
+    	      System.out.println(dp[n]);
+    	   }
+
+}
+
+
+27. ROD CUTTING PROBLEM
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	 public static int solution(int[] prices){
+	        int[] np = new int[prices.length + 1];
+	        for(int i = 0; i < prices.length; i++){
+	        	np[i + 1] = prices[i];
+	        }
+	        int[] dp = new int[np.length];
+	        dp[0] = 0;
+	        dp[1] = np[1];
+	        
+	        
+	            for(int i = 2; i < dp.length; i++){
+	            dp[i] = np[i];
+	            
+	            int li = 1;
+	            int ri = i - 1;
+	            while(li <= ri) {
+	            	if(dp[li] + dp[ri] > dp[i]) {
+	            		dp[i] = dp[li] + dp[ri];
+	            	}
+	            	li++;
+	            	ri--;
+	            }
+	        
+	        }
+	        return dp[dp.length - 1];
+	    }
+
+	    public static void main(String[] args) {
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        int n = scn.nextInt();
+	        int[] prices = new int[n];
+	        for(int i = 0 ; i < n ; i++){
+	            prices[i] = scn.nextInt();
+	        }
+	        System.out.println(solution(prices));
+	    }
+
+	}
+
+
+
+28. PALINDROME PARTITIONING WITH MINIMUM CUTS
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static int minPalindromicCut(String s) {
+		
+		boolean[][] dp = new boolean[s.length()][s.length()];
+		
+		for (int g = 0; g < s.length(); g++) {
+			for(int i = 0, j = g; j < dp.length; i++, j++) {
+				if (g == 0) {
+					dp[i][j] = true;
+				} else if (g == 1) {
+					dp[i][j] = s.charAt(i) == s.charAt(j);
+					dp[i][j] = true;
+				} else {
+					if (s.charAt(i) == s.charAt(j) && dp[i + 1][j - 1] == true) {
+						dp[i][j] = true;
+					} else {
+						dp[i][j] = false;
+					}
+				}
+				
+			}
+		}
+		
+	
+
+		int[] strg = new int[s.length()];
+		strg[0] = 0;
+		
+		for(int j = 1; j < strg.length; j++) {
+			if(dp[0][j]) {
+				strg[j] = 0;
+			}
+			int min = Integer.MAX_VALUE;
+			
+			for(int i = j; i >=1; i--) {
+				if(dp[i][j] == true) {
+					if(strg[i - 1]< min) {
+						min = strg[i - 1];
+					}
+				}
+			}
+			strg[j] = min + 1;
+		}
+		return strg[strg.length - 1];
+	}
+
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		   System.out.println("Enter the value");
+		String str = scn.nextLine();
+		System.out.println(minPalindromicCut(str));
+	}
+}
+
+
+
+29. MINIMUM SCORE OF TRIANGULATION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static int minScoreTriangulation(int[] arr) {
+        int n = arr.length;
+        int[][] dp = new int[n][n];
+        
+        for(int g = 0; g < dp.length; g++) {
+        	 for (int i = 0, j = g;  j < dp[0].length; i++, j++) {
+                 if(g == 0) {
+                 	dp[i][j] = 0;
+                 } else if(g == 1) {
+                	 dp[i][j] = 0;
+                 } else if(g == 2) {
+                	 dp[i][j] = arr[i]*arr[i + 1]*arr[i + 2];
+                 } else {
+                	 int min = Integer.MAX_VALUE;
+                	 
+                	 for(int k = i + 1; k <= j - 1; k++) {
+                		 int tri = arr[i]*arr[j]*arr[k];
+                		 int left = dp[i][k];
+                		 int right = dp[k][j];
+                		 
+                		 int total = tri + left + right;
+                		 if(total < min) {
+                			 min = total;
+                		 }
+                	 }
+                	 dp[i][j] = min;
+                 }
+             }
+
+        }
+               return dp[0][dp[0].length - 1];
+    }
+  public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+        int n = scn.nextInt();
+        int[] arr = new int[n];
+		for(int i = 0 ; i  < n; i++){
+            arr[i] = scn.nextInt();
+        }
+        System.out.println(minScoreTriangulation(arr));
+	}
+}
+
+
+
+	   
+30. MATRIX CHAIN MULTIPLICATION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static int mcm(int[] arr) {
+        int n = arr.length - 1;
+        int[][] dp = new int[n][n];
+        
+        for(int g = 0; g < dp.length; g++) {
+        	 for (int i = 0, j = g;  j < dp[0].length; i++, j++) {
+                 if(g == 0) {
+                 	dp[i][j] = 0;
+                 } else if(g == 1) {
+                	 dp[i][j] = arr[i] * arr[j] * arr[j + 1];
+                 }  else {
+                	 int min = Integer.MAX_VALUE;
+                	 
+                	 for(int k = i; k < j ; k++) {
+                		 //dp -> i, k left half and k + 1, j right half
+                		 // arr -> i * k + 1 left half, k + 1 * j + 1 right half
+                		
+                		 int left = dp[i][k];
+                		 int right = dp[k + 1][j];
+                		 int mc = arr[i] * arr[k + 1] * arr[j + 1];
+                		 
+                		 int total = mc + left + right;
+                		 if(total < min) {
+                			 min = total;
+                		 }
+                	 }
+                	 dp[i][j] = min;
+                 }
+             }
+
+        }
+               return dp[0][dp[0].length - 1];
+    }
+  public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+        int n = scn.nextInt();
+        int[] arr = new int[n];
+		for(int i = 0 ; i  < n; i++){
+            arr[i] = scn.nextInt();
+        }
+        System.out.println(mcm(arr));
+	}
+}  
+
+
+
+31. BOOLEAN PARENTHESIZATION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static int solution(String str1, String str2) {
+        int n = str1.length();
+        
+        int[][] dpt = new int[n][n];
+        int[][] dpf = new int[n][n];
+        
+        for(int g = 0; g < n; g++) {
+        	 for (int i = 0, j = g;  j < n; i++, j++) {
+                 if(g == 0) {
+                	 char ch = str1.charAt(i);
+                	 
+                	 if(ch == 'T') {
+                			dpt[i][j] = 1;
+                			dpf[i][j] = 0;
+                	 } else {
+                			dpt[i][j] = 0;
+                			dpf[i][j] = 1;
+                	 }
+                 
+                 }  else {
+                	 for(int k = i; k < j ; k++) {
+                		char oprtr = str2.charAt(k);
+                		int ltc = dpt[i][k];
+                		int rtc = dpt[k + 1][j];
+                		int lfc = dpf[i][k];
+                		int rfc = dpf[k + 1][j];
+                		
+                		
+                		
+                		if(oprtr == '&') {
+                			dpt[i][j] += ltc * rtc;
+                			dpf[i][j] += lfc * rtc + ltc * rfc + lfc * rfc;
+                		} else if(oprtr == '|') {
+                			dpt[i][j] += ltc * rtc + lfc * rtc + ltc * rfc;
+                			dpf[i][j] +=  lfc * rfc;
+                		} else {
+                			dpt[i][j] += ltc * rfc + lfc * rtc;
+                			dpf[i][j] += lfc * rfc + ltc * rtc;
+                		}
+                	 }
+                
+                 }
+                
+             }
+        }
+        return dpt[0][n - 1];      
+    }
+  public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String s1 = scn.next();
+		String s2 = scn.next();
+		System.out.println(solution(s1, s2));
+	}
+}  
+
+
+
+32. OPTIMAL BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		int[] keys = new int[n];
+		for (int i = 0; i < n; i++) {
+			keys[i] = scn.nextInt();
+		}
+		int[] frequency = new int[n];
+		for (int i = 0; i < n; i++) {
+			frequency[i] = scn.nextInt();
+		}
+
+		optimalbst(keys, frequency, n);
+	}
+
+	private static void optimalbst(int[] keys, int[] frequency, int n) {
+		// make prefix sum of frequencies
+		int[] psa = new int[n];
+		psa[0] = frequency[0];
+		
+		for (int i = 1; i < frequency.length; i++) {
+			psa[i] = psa[i - 1] + frequency[i];
+		}
+
+		int[][] dp = new int[n][n];
+		
+		for(int g = 0; g < dp.length; g++) {
+			for(int i = 0, j = g; j < n; i++, j++) {
+				if(g == 0) {
+					dp[i][j] = frequency[i];
+				} else if (g == 1) {
+					int f1 = frequency[i];
+					int f2 = frequency[j];
+					dp[i][j] = Math.min(f1 + 2*f2, f2 + 2*f1);
+				} else {
+					int min = Integer.MAX_VALUE;
+					int fs = psa[j] - (i == 0 ? 0 : psa[i - 1]);
+					
+					for(int k = i; k <= j; k++) {
+						int left = k == i ? 0 : dp[i][k - 1];
+						int right = k == j ? 0 :  dp[k + 1][j];
+						
+						if(left + right + fs < min) {
+							min = left + right + fs;
+						}
+					}
+					dp[i][j] = min;
+				}
+			}
+		}
+		System.out.println(dp[0][n - 1]);
+	}
+}
+
+
+33. PERFECT SQUARES
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	
+	public static int solution(int n) {
+		int[] dp = new int[n + 1];
+		dp[0] = 0;
+		dp[1] = 1;
+		
+		for(int i = 2; i <= n; i++) {
+			int min = Integer.MAX_VALUE;
+			for(int j = 1; j*j <= i; j++) {
+				int rem = i - j*j;
+				if(dp[rem] < min) {
+					min = dp[rem];
+				}
+			}
+			dp[i] = min + 1;
+		}
+		return dp[n];
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		System.out.println(solution(n));
+	}	
+}
+
+
+
+34. KADANE'S ALGORITHM FOR (MAXIMUM SUM SUBARRAY)
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+    public static void main(String[] args) {
+        Scanner scn = new Scanner(System.in);
+        System.out.println("Enter the value");
+        int n = scn.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = scn.nextInt();
+        }
+        System.out.println(solution(arr));
+    }
+
+    public static int solution(int[] arr) {
+        int csum = arr[0];
+        int osum = arr[0];
+        
+        for(int i = 1 ; i < arr.length; i++){
+        	
+           if(csum >= 0) {
+        	   csum += arr[i];
+           } else {
+        	   csum = arr[i];
+           }
+           
+           if(csum > osum) {
+        	   osum = csum;
+           }
+    }
+        return osum;
+  }
+}
+
+
+
+
+
+35. LETTER COMBINATIONS OF A PHONE NUMBER
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static int solution(int n) {
+		int[][] dp = new int[n + 1][10];
+		
+		int[][] data = {
+				{0 , 8},
+				{1, 2, 4},
+				{1,2,3,5},
+				{2, 3, 6 },
+				{1, 4, 5, 7 },
+				{2, 4, 5, 6, 8},
+				{3, 5, 6, 9 },
+				{4, 7, 8},
+				{5, 7, 8, 9, 0 },
+				{6, 8, 9 }
+		};
+		
+		
+		for(int i = 1; i <= n; i++){
+		    for(int j = 0; j <= 9; j++){
+		        if(i == 1) {
+		        	dp[i][j] = 1;
+		        } else {
+		        	//ith press for jth key -> i - 1th press should of keys in data[j]
+		        	for(int prev : data[j]) {
+		        		dp[i][j] += dp[i - 1][prev];
+		        	}
+		        }
+		    }
+		}
+		
+		int ans = 0;
+		for(int j = 0 ; j < 10; j++){
+		    ans += dp[n][j];
+		}
+		return ans;
+	}
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		System.out.println(solution(n));
+	}
+
+}	   
+
+
+
+
+
+
+37. K CONCATENATION MAXIMUM SUM
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	 public static void main(String[] args) {
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        int n = scn.nextInt();
+	        int[] arr = new int[n];
+	        long sum = 0;
+	        for (int i = 0; i < arr.length; i++) {
+	            arr[i] = scn.nextInt();
+	            sum += arr[i];
+	        }
+	        int k = scn.nextInt();
+	        System.out.println(solution(arr, k, sum));
+	    }
+
+	    public static long solution(int[] arr, int k, long sum){
+	        if(k == 1){
+	            return kadanes(arr);
+	        }
+	        else if(sum < 0){
+	            return  kadanesForTwo(arr);
+	        }else{
+	            return kadanesForTwo(arr) + (k - 2) * sum;
+	        }
+	    }
+	    
+
+	    public static long kadanes(int[] arr) {
+	    	int csum = arr[0];
+	        int osum = arr[0];
+	        
+	        for(int i = 1 ; i < arr.length; i++){
+	        	
+	           if(csum >= 0) {
+	        	   csum += arr[i];
+	           } else {
+	        	   csum = arr[i];
+	           }
+	           
+	           if(csum > osum) {
+	        	   osum = csum;
+	           }
+	    }
+	        return osum;
+	  }
+
+	    public static long kadanesForTwo(int[] arr) {
+	       int[] narr = new int[arr.length * 2];
+	       for(int i = 0; i < arr.length; i++) {
+	    	   narr[i] = arr[i];
+	       }
+	       
+	       for(int i = 0; i < arr.length; i++) {
+	    	   narr[i + arr.length] = arr[i];
+	       }
+	       return kadanes(narr);
+	    }
+	}
+
+
+38. BURST BALLOON
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	 public static void main(String[] args) {
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        int n = scn.nextInt();
+	        int[] arr = new int[n];
+	        for (int i = 0; i < arr.length; i++) {
+	            arr[i] = scn.nextInt();
+	        }
+	        System.out.println(solution1(arr));
+	    }
+
+	    public static int solution1(int[] arr) {
+	       
+	        int[][] dp = new int[arr.length][arr.length];
+	        
+	        for (int gap = 0; gap < dp.length; gap++) {
+	           for(int i = 0, j = gap; j < dp.length; i++, j++) {
+	        	   int max = Integer.MIN_VALUE;
+	        	   
+	        	   for(int k = i; k <= j; k++) {
+	        		   int left = k == i ? 0 : dp[i][k - 1];
+	        		   int right = k == j ? 0 : dp[k + 1][j];
+	        		   int val = (i == 0 ? 1 : arr[i - 1]) * arr[k] * (j == arr.length - 1 ? 1 : arr[j + 1]);
+	        		   
+	        		   int total = left + right + val;
+	        		   if(total > max) {
+	        			   max = total;
+	        		   }
+	        	   }
+	        	   dp[i][j] = max;
+	           }
+	        }
+	        return dp[0][dp.length - 1];
+	    }
+	}
+
+39. KNIGHT'S PROBABILITY IN CHESSBOARD
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		int k = scn.nextInt();
+		int r = scn.nextInt();
+		int c = scn.nextInt();
+		solution(r, c, n, k);
+	}
+
+	public static boolean isValid(int ni, int nj, int n) {
+		if(ni >= 0 && nj >= 0 && ni < n && nj < n) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public static void solution(int r, int c, int n, int k) {
+		double[][] curr = new double[n][n];
+		double[][] next = new double[n][n];
+		
+		curr[r][c] = 1;
+		
+		for(int m = 1; m <= k; m++) {
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					if(curr[i][j] != 0) {
+						int ni = 0;
+						int nj = 0;
+						
+						ni = i - 2;
+						nj = j + 1;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+						
+						ni = i - 1;
+						nj = j + 2;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+						
+						ni = i + 1;
+						nj = j + 2;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+						
+						ni = i + 2;
+						nj = j + 1;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+						
+						ni = i + 2;
+						nj = j - 1;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+						
+						ni = i + 1;
+						nj = j - 2;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+						
+						ni = i - 1;
+						nj = j - 2;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+						
+						ni = i - 2;
+						nj = j - 1;
+						if(isValid(ni, nj, n)) {
+							next[ni][nj] += curr[i][j] / 8.0;
+						}
+					}
+				}
+			}
+			curr = next;
+			next = new double[n][n];
+		}
+		
+		double sum = 0;
+		for(int i = 0; i < n; i++) {
+			for(int j = 0; j < n; j++) {
+				sum += curr[i][j];
+			}
+		}
+		
+		System.out.println(sum);
+	}
+
+}
+
+                  
+
+40. MAXIMUM DIFFERENCE OF ZEROS AND ONES IN BINARY STRING
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String str = scn.next();
+		System.out.println(solution(str));
+	}
+
+	public static int solution(String str) {
+		int ans = 0;
+		int currSum = 0;
+		
+		for (int i = 0; i < str.length(); i++) {
+			int val = 0;
+			
+			if(str.charAt(i) == '0') {
+				val = +1;
+			} else if(str.charAt(i) == '1') {
+				val = -1;
+			}
+			
+			if(currSum > 0) {
+				currSum += val;
+			} else {
+				currSum = val;
+			}
+			
+			if(currSum > ans) {
+				ans = currSum;
+			}
+		}
+		
+		if(ans == 0) {
+			ans = -1;
+		}
+		return ans;
+	}
+
+}
+
+
+41. MAXIMUM SUM SUBARRAY WITH ATLEAST K ELEMENTS
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = scn.nextInt();
+        }
+        int k = scn.nextInt();
+        System.out.println(solution(arr, k));
+	}
+
+	public static int solution(int[] arr, int k) {
+		int ans = Integer.MIN_VALUE;
+		int[] maxsumarrendingati = new int[arr.length];
+		
+		int csum = arr[0];
+		maxsumarrendingati[0] = csum;
+		for(int i = 1; i < arr.length; i++) {
+			if(csum > 0) {
+				csum += arr[i];
+			} else {
+				csum = arr[i];
+			}
+			
+			maxsumarrendingati[i] = csum;
+		}
+		
+		int exactK = 0;
+		for(int i = 0; i < k; i++) {
+			exactK += arr[i];
+		}
+		if(exactK > ans) {
+			ans = exactK;
+		}
+		
+		for(int i = k; i < arr.length; i++) {
+			exactK = exactK + arr[i] - arr[i - k];
+			
+			if(exactK > ans) {
+				ans = exactK;
+			}
+			
+			int morethanK = maxsumarrendingati[i - k] + exactK;
+			if(morethanK > ans) {
+				ans = morethanK;
+			}
+		}
+		
+		
+		
+		return ans;
+	}
+
+}
+
+
+42. OPTIMAL STRATEGY FOR A GAME
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		int a[] = new int[n];
+		for (int i = 0; i < a.length; i++) {
+			a[i] = scn.nextInt();
+		}
+		optimalStrategy(a);
+	}
+
+	public static void optimalStrategy(int[] arr) {
+		int[][] dp = new int[arr.length][arr.length];
+		
+		for (int gap = 0; gap < arr.length; gap++) {
+			for(int i = 0, j = gap; j < dp.length; i++, j++) {
+				if(gap == 0) {
+					dp[i][j] = arr[i];
+				} else if(gap == 1) {
+					dp[i][j] = Math.max(arr[i], arr[j]);
+				} else {
+					int val1 = arr[i] + Math.min(dp[i + 2][j], dp[i + 1][j - 1]);
+					int val2 = arr[j] + Math.min(dp[i + 1][j - 1], dp[i][j - 2]);
+					
+					int val = Math.max(val1, val2);
+					dp[i][j] = val;
+				}
+			}
+		}
+		System.out.println(dp[0][dp[0].length - 1]) > max value ? true : false;  // stone game leetcode
+if(2 * dp[0][dp.length - 1] >= total)
+            return true;
+        else
+            return false;   // predict the winner where total is sum of arr
+	}
+
+}
+
+STONE GAME III
+
+class Solution {
+    public String stoneGameIII(int[] stone) {
+        int[] dp = new int[stone.length + 1];
+        Arrays.fill(dp, Integer.MIN_VALUE);
+        int alice = find(stone, 0, dp);
+        if(alice > 0)
+            return "Alice";
+        else if(alice < 0)
+            return "Bob";
+        else
+            return "Tie";
+    }
+    
+    public int find(int[] stones, int ptr, int[] dp){
+        if(ptr == stones.length)
+            return 0;
+        if(dp[ptr] != Integer.MIN_VALUE)
+            return dp[ptr];           
+        int ans = stones[ptr] - find(stones, ptr + 1, dp);
+        if(ptr + 1 < stones.length)
+            ans = Math.max(ans, stones[ptr] + stones[ptr + 1] - find(stones, ptr + 2, dp));
+        if(ptr + 2 < stones.length)
+            ans = Math.max(ans, stones[ptr] + stones[ptr + 1] + stones[ptr + 2] - find(stones, ptr + 3, dp));
+        return dp[ptr] = ans;
+	}
+    
+}
+
+              
+
+
+43. EGG DROP
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		//n -> number of eggs and k -> number of floors
+		int n = scn.nextInt();
+		int k = scn.nextInt();
+		System.out.println(eggDrop(n,k));
+	}
+
+	public static int eggDrop(int n, int k){
+		int[][] dp = new int[n + 1][k + 1];
+		
+		for(int i = 1; i <= n; i++) {
+			for(int j = 1; j <= k; j++) {
+				if(i == 1) {
+					dp[i][j] = j;
+				} else if(j == 1) {
+					dp[i][j] = 1;
+				} else {
+					int min = Integer.MAX_VALUE;
+					
+					for(int mj = j - 1, pj = 0; mj >= 0; mj--, pj++) {
+						int v1 = dp[i][mj];  // egg survives
+						int v2 = dp[i - 1][pj]; // egg breaks
+						int val = Math.max(v1, v2);
+						min = Math.min(val, min);
+					}
+					
+					dp[i][j] = min + 1;
+				}
+			}
+		}
+		return dp[n][k];
+	}
+}
+
+
+
+
+              
+
+
+45. MINIMUM ASCII DELETE SUM FOR 2 STRINGS
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String s1 = scn.next();
+		String s2 = scn.next();
+		System.out.println(solution(s1, s2));
+	}
+
+	public static int solution(String s1, String s2) {
+		int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+
+		for(int i = dp.length - 1; i >= 0; i--) {
+			for(int j = dp[0].length - 1; j >= 0; j--) {
+				if(i == dp.length - 1 && j == dp[0].length - 1) {
+					dp[i][j] = 0;
+				} else if(i == dp.length - 1) {
+					dp[i][j] = (int)s2.charAt(j) + dp[i][j + 1];
+				} else if(j == dp[0].length - 1) {
+					dp[i][j] = (int)s1.charAt(i) + dp[i + 1][j];
+				} else {
+					if(s1.charAt(i) == s2.charAt(j)) {
+						dp[i][j] = dp[i + 1][j + 1];
+					} else {
+						dp[i][j] = Math.min(s1.charAt(i) + dp[i + 1][j], s2.charAt(j) + dp[i][j + 1]);
+					}
+				}
+			}
+		}
+		return dp[0][0];
+	}
+
+}
+
+
+46. MINIMUM COST TO MAKE STRING IDENTICAL
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String s1 = scn.next();
+		String s2 = scn.next();
+		int x = scn.nextInt();
+		int y = scn.nextInt();
+		System.out.println(solution(s1, s2,x, y));
+	}
+
+	public static int solution(String s1, String s2, int c1, int c2) {
+		int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+
+		for(int i = dp.length - 1; i >= 0; i--) {
+			for(int j = dp[0].length - 1; j >= 0; j--) {
+				if(i == dp.length - 1 && j == dp[0].length - 1) {
+					dp[i][j] = 0;
+				} else if(i == dp.length - 1) {
+					dp[i][j] = 0;
+				} else if(j == dp[0].length - 1) {
+					dp[i][j] = 0;
+				} else {
+					if(s1.charAt(i) == s2.charAt(j)) {
+						dp[i][j] = 1 + dp[i + 1][j + 1];
+					} else {
+						dp[i][j] = Math.max( dp[i + 1][j], dp[i][j + 1]);
+					}
+				}
+			}
+		}
+		int lcs = dp[0][0];
+		int s1r = s1.length() - lcs;
+		int s2r = s2.length() - lcs;
+		int cost = s1r * c1 + s2r * c2;
+		return cost;
+	}
+
+}
+
+  
+
+46 B)  MINIMUM DELETION COST TO AVOID REPEATING LETTER
+
+class Solution {
+    public int minCost(String s, int[] cost) {
+        int n = s.length(), gsum = 0, gmax = 0, ans = 0;
+        
+        for(int i = 0; i < n; i++){
+            if(i > 0 && s.charAt(i) != s.charAt(i - 1)){
+                ans += gsum - gmax;
+                gsum = 0;
+                gmax = 0;
+            }
+            
+            gsum += cost[i];
+            gmax = Math.max(gmax, cost[i]);
+        }
+        ans += gsum - gmax;
+        return ans;
+    }
+}
+            
+
+
+47. ARITHMETIC SLICES FOR AP >= 3
+
+class Solution {
+    public int numberOfArithmeticSlices(int[] nums) {
+        int ans = 0;
+        
+        HashMap<Integer, Integer>[] maps = new HashMap[nums.length];
+        for(int i = 0; i < nums.length; i++){
+            maps[i] = new HashMap<>();
+        }
+        
+        for(int i = 1; i < maps.length; i++){
+            for(int j = 0; j < i; j++){
+                long cd = (long)nums[i] - (long)nums[j];
+                if(cd <= Integer.MIN_VALUE || cd >= Integer.MAX_VALUE){
+                    continue;
+                }
+                
+                int apsendingonJ = maps[j].getOrDefault((int)cd, 0);
+                 int apsendingonI = maps[i].getOrDefault((int)cd, 0);
+                
+                ans += apsendingonJ;
+                maps[i].put((int)cd, apsendingonI + apsendingonJ + 1);
+            }
+        }
+        return ans;
+    }
+}
+
+LONGEST ARITHMEIC SUBSEQYENCE
+
+class Solution {
+    public int longestArithSeqLength(int[] A) {
+       int n = A.length;
+        HashMap<Integer,Integer>[] dp = new HashMap[n];
+        
+        int len = 0;
+        for(int i = 0;i<n;i++) dp[i] = new HashMap<Integer,Integer>();
+        
+        for(int i = 1; i < n; i++){    
+            for(int j = 0; j < i; j++){
+                int diff = A[i] - A[j];
+                
+                int currLen = dp[i].getOrDefault(diff,0);
+                int newLen = dp[j].getOrDefault(diff,0) ;
+                
+                dp[i].put(diff,Math.max(currLen,newLen+1));
+                
+                len = Math.max(len,dp[i].get(diff));
+            }
+        }
+        
+        return len + 1;
+    }
+}
+
+
+
+  
+class Solution {
+    public int numberOfArithmeticSlices(int[] nums) {
+        int[] dp = new int[nums.length];
+        int ans = 0;
+        
+        for(int i=2; i< nums.length; i++){
+            if(nums[i] - nums[i-1] == nums[i-1] - nums[i-2]){
+                dp[i] = dp[i-1] + 1;
+                ans += dp[i];
+            }
+        }
+        return ans;
+    }
+}            
+
+
+48. LARGEST SQUARE SUBMATRIX OF ALL 1'S
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		int m =scn.nextInt();
+		int[][] arr = new int[n][m];
+		for(int i = 0 ; i < n; i++){
+			for(int j = 0 ; j < m; j++){
+				arr[i][j] = scn.nextInt();
+			}
+		}
+		System.out.println(solution(arr));
+	}
+
+	public static int solution(int[][] arr) {
+		int[][] dp = new int[arr.length][arr[0].length];
+		
+		int ans = 0;
+		
+		for(int i = dp.length - 1; i >= 0; i--){
+			for(int j = dp[0].length - 1; j >= 0; j--){
+				if(i == dp.length - 1 && j == dp[0].length - 1) {
+					dp[i][j] = arr[i][j];
+				} else if(i == dp.length - 1) {
+					dp[i][j] = arr[i][j];
+				} else if(j == dp[0].length - 1) {
+					dp[i][j] = arr[i][j];
+				} else {
+					if(arr[i][j] == 0) {
+						dp[i][j] = 0;
+					} else {
+						int min = Math.min(dp[i + 1][j + 1], Math.min(dp[i + 1][j], dp[i][j + 1]));
+						dp[i][j] = min + 1;
+						
+						if(dp[i][j] > ans) {
+							ans = dp[i][j];
+						}
+					}
+				}
+			}
+		}
+		return ans;
+	}
+
+}
+
+
+COUNT SUBMATRICES WITH ALL ONES
+
+class Solution {
+    public int countSquares(int[][] mat) {
+       int n = mat.length;
+        int m = mat[0].length;
+        
+        int ans = 0;
+        
+        for(int i=0; i< n; i++){
+            for(int j=0; j<m; j++){
+                if(mat[i][j] == 0) continue;
+                
+                if(i ==0){
+                    //
+                } else if(j ==0){
+                    //
+                } else {
+                    int min = Math.min(mat[i-1][j], Math.min(mat[i][j-1], mat[i-1][j-1]));
+                    
+                    mat[i][j] = min + 1;
+                }
+                
+                ans += mat[i][j];
+            }
+        }
+		return ans  ;
+    }
+
+
+
+ 
+49. WORD BREAK 2
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		HashSet<String> dictionary = new HashSet<String>();
+		for (int i = 0; i < n; i++) {
+			dictionary.add(scn.next());
+		}
+		String sentence = scn.next();
+		System.out.println(solution(sentence, dictionary));
+	}
+
+	public static boolean solution(String sentence, HashSet<String> dictionary) {
+		int[] dp = new int[sentence.length()];
+		
+		for (int i = 0; i < dp.length; i++) {
+			for (int j = 0; j <= i; j++) {
+					String strtobechecked = sentence.substring(j, i + 1);
+					if (dictionary.contains(strtobechecked)) {
+						if(j > 0) {
+							dp[i] += dp[j - 1];
+					}  else {
+						dp[i] += 1;
+					}
+				}
+			}
+		}
+		
+		
+		
+		return dp[sentence.length() - 1] > 0;
+	}
+
+}             
+
+
+
+50. DISTINCT TRANSFORMATIONS / DISTINCT SUBSEQUENCES 
+                                      USING RECURSIVE APPROACH
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String s1 = scn.next();
+		String s2 = scn.next();
+		System.out.println(solution(s1, s2, 0, 0));
+	}
+
+	public static int solution(String s, String t, int si, int ti) {
+		if(si == s.length()) {
+			if(ti < t.length()) {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else if(ti == t.length()) {
+			return 1;
+		}
+		
+		char c1 = s.charAt(si);
+		char c2 = t.charAt(ti);
+		
+		int tw = 0;
+		if(c1 != c2) {
+			tw = solution(s, t, si + 1, ti);
+		} else {
+			int tw1 = solution(s, t, si + 1, ti);
+			int tw2 = solution(s, t, si + 1, ti + 1);
+			tw = tw1 + tw2;
+		}
+		return tw;
+	}
+
+}
+                                      USING DP
+
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		String s1 = scn.next();
+		String s2 = scn.next();
+		System.out.println(solution(s1, s2));
+	}
+
+	public static int solution(String s, String t) {
+		int m = t.length();
+		int n = s.length();
+		int[][] dp = new int[m + 1][n + 1];
+		
+		for(int i = dp.length - 1; i >= 0; i--) {
+			for(int j = dp[0].length - 1; j >= 0; j--) {
+				if(i == dp.length - 1) {
+					dp[i][j] = 1;
+				} else if(j == dp[0].length - 1) {
+					dp[i][j] = 0;
+				} else {
+					char c1 = t.charAt(i);
+					char c2 = s.charAt(j);
+					
+					if(c1 != c2) {
+						dp[i][j] = dp[i][j + 1];
+					} else {
+						dp[i][j] = dp[i][j + 1] + dp[i + 1][ j + 1];
+					}
+				}
+			}
+		}
+		return (dp[0][0]);
+	}
+
+}
+
+
+
+
+50. EDIT DISTANCE
+
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+        
+        for(int i = 0; i < dp.length; i++){
+            for(int j = 0; j < dp[0].length; j++){
+                if(i == 0){
+                    dp[i][j] = j;
+                } else if(j == 0){
+                    dp[i][j] = i;
+                } else {
+                    if(word1.charAt(i - 1) == word2.charAt(j - 1)){
+                        dp[i][j] = dp[i - 1][j - 1];
+                    } else {
+                        int f1 = 1 + dp[i - 1][j - 1];  // replace
+                        int f2 = 1 + dp[i - 1][j];  // delete
+                        int f3 = 1 + dp[i][j - 1];  //insert
+                        dp[i][j] = Math.min(f3, Math.min(f1, f2));
+                    }
+                }
+            }
+        }
+        
+        return dp[dp.length - 1][dp[0].length - 1];
+    }
+}
+
+
+51. MAXIMUM LENGTH OF REPEATED SUBARRAY
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    int n = scn.nextInt();
+    int[] arr1 = new int[n];
+    for (int i = 0 ; i < n; i++) {
+      arr1[i] = scn.nextInt();
+    }
+
+    int m = scn.nextInt();
+    int[] arr2 = new int[m];
+    for (int i = 0 ; i < m; i++) {
+      arr2[i] = scn.nextInt();
+    }
+    System.out.println(solution(arr1, arr2));
+  }
+
+  public static int solution(int[] nums1, int[] nums2) {
+    int[][] dp = new int[nums1.length + 1][nums2.length + 1];
+    int ans = 0;
+    for (int i = 1; i < dp.length; i++) {
+      for (int j = 1; j < dp[0].length; j++) {
+        if (nums1[i - 1] == nums2[j - 1]) {
+          dp[i][j] = dp[i - 1][j - 1] + 1;
+        }
+        ans = Math.max(ans, dp[i][j]);
+      }
+    }
+
+    return ans;
+  }
+
+}
+
+
+	                        
+103. FROG JUMP
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    int n = scn.nextInt();
+    int[] arr = new int[n];
+    for (int i = 0 ; i < n; i++) {
+      arr[i] = scn.nextInt();
+    }
+
+    System.out.println(solution(arr));
+  }
+
+  public static boolean solution(int[] stones) {
+    HashMap<Integer, HashSet<Integer>> map = new HashMap<Integer, HashSet<Integer>>();
+    map.put(0, new HashSet<Integer>());
+    HashSet<Integer> s = map.get(0);
+    s.add(1);
+    map.put(0, s);
+    for (int i = 1; i < stones.length ; i++) {
+      map.put(stones[i], new HashSet<Integer>());
+    }
+
+    for (int i = 0 ;  i < stones.length - 1; i++) {
+      int currstone = stones[i];
+      for (int step : map.get(currstone)) {
+        int reachedStone = currstone + step;
+        if (reachedStone == stones[stones.length - 1]) {
+          return true;
+        }
+        HashSet<Integer> set = new HashSet<Integer>();
+        if (map.containsKey(reachedStone)) {
+          set = map.get(reachedStone);
+          if (step > 1) {
+            set.add(step - 1);
+          }
+          set.add(step);
+          set.add(step + 1);
+        }
+        map.put(reachedStone, set);
+      }
+    }
+    return false;
+  }
+
+}
+
+
+
+class Solution {
+    public boolean isUgly(int n) {
+         if (n == 0) return false;
+        if (n == 1) return true;
+
+        while (n != 1) {
+            if (n % 2 == 0) n /= 2;
+            else if (n % 3 == 0) n /= 3;
+            else if (n % 5 == 0) n /= 5;
+            else return false;
+        }
+        return true;
+    }
+}
+
+
+104. UGLY NUMBER
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    int n = scn.nextInt();
+    System.out.println(solution(n));
+  }
+
+  public static int solution(int n) {
+    int[] dp = new int[n + 1];
+    int p2 = 1, p3 = 1, p5 = 1;
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++) {
+      int min = Math.min(2 * dp[p2], Math.min(3 * dp[p3], 5 * dp[p5]));
+      dp[i] = min;
+      if (min == 2 * dp[p2]) {
+        p2++;
+      }
+      if (min == 3 * dp[p3]) {
+        p3++;
+      }
+      if (min ==  5 * dp[p5]) {
+        p5++;
+      }
+    }
+    return dp[n];
+  }
+
+}
+
+
+
+105. SUPER UGLY NUMBER
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    
+    public static class Pair implements Comparable<Pair>{
+        int prime;
+        int pointer;
+        int value;
+        
+        public Pair(int prime, int pointer, int value){
+            this.prime = prime;
+            this.pointer = pointer;
+            this.value = value;
+        }
+        
+        public int compareTo(Pair o){
+            return this.value - o.value;
+        }
+    }
+
+  public static int solution(int[] primes, int n) {
+    // write your code here
+     int[] dp = new int[n + 1];
+     PriorityQueue<Pair> pq = new PriorityQueue<>();
+     
+     for(int i = 0; i < primes.length; i++){
+         pq.add(new Pair(primes[i], 1, primes[i]));
+     }
+     dp[1] = 1;
+    
+    for(int i = 2; i <= n;){
+        Pair rp = pq.remove();
+        if(dp[i-1] != rp.value){
+            dp[i] = rp.value;
+            i++;
+        }
+        pq.add(new Pair(rp.prime, rp.pointer + 1, rp.prime*dp[rp.pointer + 1]));
+    }
+    return dp[n];
+    
+
+  }
+
+  public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    int k = scn.nextInt();
+    int[] primes = new int[k];
+    for (int i = 0 ; i < k; i++) {
+      primes[i] = scn.nextInt();
+    }
+    int n = scn.nextInt();
+    System.out.println(solution(primes, n));
+  }
+
+}
+
+
+106. FIND WATER IN GLASS
+
+class Solution {
+    public double champagneTower(int poured, int query_row, int query_glass) {
+         double[][] dp = new double[poured + 1][poured + 1];
+    dp[0][0] = poured;
+    for (int i = 0 ; i < dp.length; i++) {
+      for (int j = 0 ; j <= i; j++) {
+
+        if (dp[i][j] > 1.0) {
+          double spare = dp[i][j] - 1.0;
+          dp[i][j] = 1.0;
+          dp[i + 1][j] += spare / 2.0;
+          dp[i + 1][j + 1] += spare / 2.0;
+        }
+
+      }
+    }
+    return dp[query_row][query_glass];
+    }
+}  
+
+
+
+107. MINIMUM DELETION TO MAKE PALINDROME SEQUENECE 
+
+import java.util.Scanner;
+public class Main{
+    public static int minimumDeletionsToPalindrome(String str){
+        //  System.out.println(str);
+         int n = str.length();
+         int dp[][] = new int[n][n];
+         // 1. find length of longest palindromic subsequence
+         for(int gap = 0;gap < n;gap++){
+             for(int i = 0,j = gap;j<n;i++,j++){
+                 if(gap == 0){
+                     dp[i][j] = 1;
+                 }else if(gap == 1){
+                     if(str.charAt(i) == str.charAt(j))
+                        dp[i][j] = 2;
+                     else 
+                        dp[i][j] = 1;
+                 }else{
+                     if(str.charAt(i) == str.charAt(j) && dp[i+1][j-1] != 0){
+                         dp[i][j] = dp[i+1][j-1] + 2;
+                     }else{
+                         dp[i][j] = Math.max(dp[i+1][j],dp[i][j-1]);
+                     }
+                 }
+             }
+         }
+         int length = dp[0][n-1];
+         // 2. calculate answer
+         return n - length;
+     }
+     public static void main(String []args){
+         Scanner scn = new Scanner(System.in);
+         String str = scn.nextLine();
+         System.out.println(minimumDeletionsToPalindrome(str));
+     }
+}   
+
+
+
+108. INTERLEAVING OF STRINGS
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    String s1 = scn.nextLine();
+    String s2 = scn.nextLine();
+    String s3 = scn.nextLine();
+    System.out.println(solution(s1, s2, s3, 0, 0, new Boolean[s1.length() + 1][s2.length() + 1] ));
+    System.out.println(solution2(s1, s2, s3));
+  }
+
+  public static boolean solution2(String s1, String s2, String s3) {
+    if (s1.length() + s2.length() != s3.length()) {
+      return false;
+    }
+
+    boolean[][] dp = new boolean[s1.length() + 1][s2.length() + 1];
+
+    for (int i = 0 ; i < dp.length; i++) {
+      for (int j = 0 ; j < dp[0].length; j++) {
+        if (i == 0 && j == 0) {
+          dp[i][j] = true;
+        } else if (i == 0) {
+          dp[i][j] = s2.charAt(j - 1) == s3.charAt(i + j - 1) ? dp[i][j - 1] : false;
+        } else if (j == 0) {
+          dp[i][j] = s1.charAt(i - 1) == s3.charAt(i + j - 1) ? dp[i - 1][j] : false;
+        } else {
+          if (s1.charAt(i - 1) == s3.charAt(i + j - 1)) {
+            dp[i][j] = dp[i - 1][j];
+          }
+          if (!dp[i][j] && s2.charAt(j - 1) == s3.charAt(i + j - 1)) {
+            dp[i][j] = dp[i][j - 1];
+          }
+        }
+      }
+    }
+    return dp[dp.length - 1][dp[0].length - 1];
+  }
+
+  public static boolean solution(String s1, String s2, String s3, int i, int j, Boolean[][] dp) {
+    if (i == s1.length() && j == s2.length()) {
+      return true;
+    }
+
+     if(dp[i][j] != null){
+          return dp[i][j];
+}
+
+    if (i < s1.length() && s1.charAt(i) == s3.charAt(i + j)) {
+      boolean f1 =  (solution(s1, s2, s3, i + 1, j, dp)) {
+          dp[i][j] = f1;
+        return true;
+      }
+    }
+
+    if (j < s2.length() && s2.charAt(j) == s3.charAt(i + j)) {
+      boolean f2 =  (solution(s1, s2, s3, i, j + 1, dp)) {
+        dp[i][j] = f2;
+        return true;
+      }
+    }
+    dp[i][j] = false;
+    return false;
+  }
+
+}
+
+
+
+109. MAXIMUM SUM OF 2 NON OVERLAPPING SUBARRAY
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	public static int solution(int[] arr, int x, int y){
+		// write your code here
+		int n = arr.length;
+		int[] dp1 = new int[n];
+		int[] dp2 = new int[n];
+		int sum = 0;
+		
+		for(int i = 0; i < n; i++){
+		    if(i < x){
+		        sum += arr[i];
+		        dp1[i] = sum;
+		    } else {
+		        sum += arr[i] - arr[i - x];
+		        dp1[i] = Math.max(dp1[i-1], sum);
+		    }
+		}
+		
+		sum = 0;
+		for(int i = n - 1; i >= 0; i--){
+		    if(i + y >= n){
+		        sum += arr[i];
+		        dp2[i] = sum;
+		    } else {
+		        sum += arr[i] - arr[i + y];
+		        dp2[i] = Math.max(dp2[i + 1], sum);
+		    }
+		}
+		
+		int ans = 0;
+		for(int i = x - 1; i < n - y; i++){
+		    ans = Math.max(ans, dp1[i] + dp2[i + 1]);
+		}
+		
+		
+		
+		
+		 dp1 = new int[n];
+		 dp2 = new int[n];
+		 sum = 0;
+		
+		for(int i = 0; i < n; i++){
+		    if(i < y){
+		        sum += arr[i];
+		        dp1[i] = sum;
+		    } else {
+		        sum += arr[i] - arr[i - y];
+		        dp1[i] = Math.max(dp1[i-1], sum);
+		    }
+		}
+		
+		sum = 0;
+		for(int i = n - 1; i >= 0; i--){
+		    if(i + x >= n){
+		        sum += arr[i];
+		        dp2[i] = sum;
+		    } else {
+		        sum += arr[i] - arr[i + x];
+		        dp2[i] = Math.max(dp2[i + 1], sum);
+		    }
+		}
+		
+		
+		for(int i = y - 1; i < n - x; i++){
+		    ans = Math.max(ans, dp1[i] + dp2[i + 1]);
+		}
+		
+		
+
+		return ans;
+	}
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		int n = scn.nextInt();
+		int[] arr = new int[n];
+		for(int i = 0 ; i < arr.length; i++){
+			arr[i] = scn.nextInt();
+		}
+		int x = scn.nextInt();
+		int y = scn.nextInt();
+		System.out.println(solution(arr,x,y));
+	}
+
+}
+
+
+
+110. MAXIMUM SUM OF 3 NON OVERLAPPING SUBARRAY
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+  public static void solution(int[] arr, int k) {
+    // write your code here
+
+	if(arr == null || arr.length < 3){
+            return;
+        }
+        
+        
+        int n = arr.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        int[] pSum = new int[n];
+		
+		  for(int i = 0; i < n; i++){
+            if(i == 0){
+                pSum[i] = arr[i];
+            }else{
+                pSum[i] = pSum[i - 1] + arr[i];
+            }
+        }
+        
+        
+		int sum = 0;
+		for(int i = 0; i < n; i++){
+		    if(i < k){
+		        sum += arr[i];
+		        left[i] = sum;
+		    } else {
+		        sum += arr[i] - arr[i - k];
+		        left[i] = Math.max(left[i-1], sum);
+		    }
+		}
+		
+		sum = 0;
+		for(int i = n - 1; i >= 0; i--){
+		    if(i + k >= n){
+		        sum += arr[i];
+		        right[i] = sum;
+		    } else {
+		        sum += arr[i] - arr[i + k];
+		        right[i] = Math.max(right[i + 1], sum);
+		    }
+		}
+		
+		int maxSum = 0;
+		int spmsa = -1;
+		int lsum = 0;
+		int rsum = 0;
+		
+		for(int i = k; i <= n - 2*k; i++){
+		    if( left[i - 1] + right[i + k] + (pSum[i + k - 1] - pSum[i - 1]) > maxSum){
+		        maxSum = left[i - 1] + right[i + k] + (pSum[i + k - 1] - pSum[i - 1]);
+		        lsum = left[i - 1];
+		        rsum = right[i + k];
+		        spmsa = i;
+		    }
+		}
+		
+		
+		System.out.print(maxSum + " ");
+		
+		for(int i = k - 1; i < spmsa; i++){
+		    if(pSum[i] - (i - k < 0 ? 0 : pSum[i - k]) == lsum){
+		        System.out.print( (i - k + 1) + " ");
+		        break;
+		    }
+		}
+		
+			System.out.print(spmsa + " ");
+			
+		for(int i = spmsa + 2*k - 1; i < n; i++){
+		    if(pSum[i] - (i - k < 0 ? 0 : pSum[i - k]) == rsum){
+		        System.out.print( (i - k + 1) + " ");
+		        break;
+		    }
+		}	
+			
+		
+		 
+	}
+	
+
+
+  public static void main(String[] args) {
+    Scanner scn = new Scanner(System.in);
+    int n = scn.nextInt();
+    int[] arr = new int[n];
+    for (int i = 0 ; i < arr.length; i++) {
+      arr[i] = scn.nextInt();
+    }
+    int k = scn.nextInt();
+    solution(arr, k);
+  }
+
+}
+
+
+
+111. MAXIMUM SUM OF M NON OVERLAPPING SUBARRAY
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+
+	public static int solution(int[] arr, int idx, int m, int k, int[] pSum, int[][] dp){
+		// write your code here
+		
+		if(m == 0) return 0;
+		
+		if(idx >= arr.length) return 0;
+		
+		if(dp[idx][m] != 0) return dp[idx][m];
+		
+		
+		int exclude = 0 + solution(arr, idx + 1, m, k, pSum, dp);
+		int include = pSum[idx] + solution(arr, idx + k, m - 1, k,  pSum, dp);
+		
+		int ans = Math.max(include, exclude);
+		dp[idx][m] = ans;
+		return ans;
+	}
+	
+	// TABULATION 
+	 public static int maxSumTab(int[] arr, int m, int k){
+        int[] ssum = new int[arr.length];
+        for(int i = arr.length - 1; i >= arr.length - k; i--){
+            ssum[arr.length - 1] += arr[i];
+        }
+        for(int i = arr.length - 2; i >= k - 1; i--){
+            ssum[i] = ssum[i + 1] + arr[i - k + 1] - arr[i + 1];
+        }
+
+        int[][] dp = new int[arr.length + 1][m + 1];
+        for(int i = 1; i < dp.length; i++){
+            for(int j = 1; j < dp[0].length; j++){
+                dp[i][j] = Math.max(dp[i - 1][j],i - k >= 0 ? dp[i - k][j - 1] + ssum[i - 1] : 0);
+            }
+        }
+        
+        return dp[dp.length - 1][dp[0].length - 1];
+    }
+    
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		int n = scn.nextInt();
+		int[] arr = new int[n];
+		for(int i = 0 ; i < arr.length; i++){
+			arr[i] = scn.nextInt();
+		}
+		
+		int m = scn.nextInt();
+        int k = scn.nextInt();
+        
+		int[] pSum = new int[n];
+		int sum = 0;
+		for(int i = 0; i < k; i++){
+		    sum += arr[i];
+		}
+		pSum[0] = sum;
+		for(int i = k, j = 0; i < n; i++, j++){
+		    sum += arr[i] - arr[j];
+		    pSum[i - k + 1] = sum;
+		}
+      
+        System.out.println(solution(arr, 0,  m , k, pSum, new int[arr.length][m + 1]));
+	}
+
+}
+
+
+
+112. SCRAMBLE STRING 
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	class Solution {
+    public boolean isScramble(String s1, String s2) {
+        int n = s1.length();
+        return isScramble2(s1,s2, 0, s1.length() - 1, 0, s2.length() - 1, new Boolean[n+1][n+1][n+1][n+1]);
+    }
+    
+    public static boolean isScramble2(String s1, String s2, int si1, int ei1, int si2, int ei2, Boolean[][][][] dp ) {
+		//write your code here
+		if(s1.substring(si1, ei1 + 1).equals(s2.substring(si2, ei2 + 1))){
+		    return true;
+		}
+		
+        if( dp[si1][ei1][si2][ei2] != null){
+            return  dp[si1][ei1][si2][ei2];
+        }
+		for(int i = 0; i < ei1 - si1; i++){
+		    if((isScramble2(s1, s2, si1, si1 + i, si2, si2 + i, dp) && isScramble2(s1, s2, si1 + i + 1, ei1, si2 + i + 1, ei2, dp)) ||
+		       (isScramble2(s1, s2, si1, si1 + i, ei2 + i, ei2, dp) && isScramble2(s1, s2, si1 + i + 1, ei1, si2, ei2 - i - 1, dp)) ){
+                dp[si1][ei1][si2][ei2] = true;
+		           return true;
+		       }
+		}
+		 dp[si1][ei1][si2][ei2] = false;
+		return false;
+	}
+}
+	}
+
+}
+
+
+
+
+113. CHERRY PICKUP BACKTRACKING
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+static int maxchc = 0;
+	public static void cp1(int row, int col, int[][] arr, int ccsf) {
+	   
+	   if(row < 0 || row >= arr.length || col < 0 || col >= arr[0].length || arr[row][col] == -1){
+	       return;
+	   }
+	   
+	   if(row == arr.length - 1 && col == arr[0].length - 1){
+	       helper(row, col, arr, ccsf);
+	       
+	   }
+		int cherries = arr[row][col];
+		arr[row][col] = 0;
+		
+		cp1(row, col + 1, arr, ccsf + cherries);
+		cp1(row + 1, col, arr, ccsf + cherries);
+		arr[row][col] = cherries;
+		
+	}
+	
+		public static void helper(int row, int col, int[][] arr, int ccsf) {
+	   
+	   if(row < 0 || row >= arr.length || col < 0 || col >= arr[0].length || arr[row][col] == -1){
+	       return;
+	   }
+	   
+	   if(row == 0 && col == 0){
+	       maxchc = Math.max(maxchc, ccsf);
+	       return;
+	   }
+	   
+		int cherries = arr[row][col];
+		arr[row][col] = 0;
+		
+		helper(row, col - 1, arr, ccsf + cherries);
+		helper(row - 1, col, arr, ccsf + cherries);
+		arr[row][col] = cherries;
+		
+	}
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		int n = scn.nextInt();
+		int[][] arr = new int[n][n];
+		for(int i = 0; i < n; i++){
+			for(int j = 0 ; j < n; j++){
+				arr[i][j] = scn.nextInt();
+			}
+		}
+		cp1(0, 0, arr, 0);
+		System.out.println(maxchc);
+	}
+
+}
+
+
+
+DP
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		int n = scn.nextInt();
+		int[][] arr = new int[n][n];
+		for(int i = 0; i < n; i++){
+			for(int j = 0 ; j < n; j++){
+				arr[i][j] = scn.nextInt();
+			}
+		}
+		int ans = Math.max(0,Solution(0, 0, 0, 0, arr, new int[n][n][n]));
+		System.out.println(ans);
+	}
+
+	public static int Solution(int r1, int c1, int r2, int c2,  int[][] arr, int[][][] dp) {
+		int c2 = r1 + c1 - r2;
+		// negative base case
+		if (r1 >= arr.length || c1 >= arr.length || r2 >= arr.length || c2 >= arr.length)
+			return 0;
+
+		if(arr[r1][c1] == -1 || arr[r2][c2] == -1) {
+			return Integer.MIN_VALUE;
+		}
+		//using dp
+		if (dp[r1][c1][r2] != 0)
+			return dp[r1][c1][r2];
+
+		// if person 1 reached the bottom right
+		if (r1 == arr.length - 1 && c1 == arr.length - 1)
+			return arr[r1][c1];
+
+		// if person 2 reached the bottom right
+		if (r2 == arr.length - 1 && c2 == arr.length - 1)
+			return arr[r2][c2];
+
+		int cherries = 0;
+
+		if (r1 == r2 && c1 == c2)
+			cherries += arr[r1][c1];
+		else
+			cherries += arr[r1][c1] + arr[r2][c2];
+
+		int f1 = recursion(r1,c1+1,r2,c2+1,grid); // hh
+        int f2 = recursion(r1+1,c1,r2+1,c2,grid); // vv
+        int f3 = recursion(r1,c1+1,r2+1,c2,grid); // hv
+        int f4 = recursion(r1+1,c1,r2,c2+1,grid); // vh
+
+		cherries += Math.max(Math.max(f1, f2), Math.max(f3, f4));
+		dp[r1][c1][r2] = cherries;
+		return cherries;
+	}
+
+}	                        
+
+
+
+
+11. TEMPLE OFFERINGS
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		int height[] = new int[n];
+		for (int i = 0; i < n; i++) {
+			height[i] = scn.nextInt();
+		}
+
+		int offering = totaloffering(height);
+		System.out.println(offering);
+	}
+
+	private static int totaloffering(int[] height) {
+		int[] larr = new int[height.length];
+		larr[0] = 1;
+		int[] rarr = new int[height.length];
+		rarr[rarr.length - 1] = 1;
+		int ans = 0;
+		for (int i = 1; i < height.length; i++) {
+			if (height[i] > height[i - 1]) {
+				larr[i] = larr[i - 1] + 1;
+			} else {
+				larr[i] = 1;
+			}
+		}
+
+		for (int i = height.length - 2; i >= 0; i--) {
+			if (height[i] > height[i + 1]) {
+				rarr[i] = rarr[i + 1] + 1;
+			} else {
+				rarr[i] = 1;
+			}
+		}
+		
+		for(int i = 0 ; i < height.length ;i++) {
+			ans += Math.max(larr[i] , rarr[i]);
+		}
+		return ans;
+		
+	}
+
+}
+		          	                    
+
+12. HIGHWAY BILLIBOARD O(N^2) SOLUTION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		    int m = scn.nextInt();
+	        int n = scn.nextInt();
+	        
+	        int x[] = new int[n];
+	        for(int i = 0;i< x.length;i++){
+	            x[i] = scn.nextInt();
+	        }
+
+	        int revenue[] = new int[n];
+	        for(int i = 0;i<revenue.length;i++){
+	            revenue[i] = scn.nextInt();
+	        }
+
+	        int t = scn.nextInt();
+
+	        System.out.println(solution(m, x, revenue, t));
+	        scn.close();
+	    }
+	
+
+	private static int solution(int m, int[] x, int[] rev, int t) {
+		int[] dp = new int[x.length];
+		int ans = 0;
+		
+		dp[0] = rev[0];
+		for(int i = 1; i < x.length; i++) {
+			int max = 0;
+			
+			for(int j = 0; j < i; j++) {
+				int dist = x[i] - x[j];
+				if(dist > t) {
+					max = Math.max(max, dp[j]);
+				}
+			}
+			dp[i] = max + rev[i];
+			ans = Math.max(ans, dp[i]);
+		}
+		return ans;
+		
+	}
+}
+
+
+		          	                    
+    O(N) SOLUTION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass { 
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		    int m = scn.nextInt();
+	        int n = scn.nextInt();
+	        
+	        int x[] = new int[n];
+	        for(int i = 0;i< x.length;i++){
+	            x[i] = scn.nextInt();
+	        }
+
+	        int revenue[] = new int[n];
+	        for(int i = 0;i<revenue.length;i++){
+	            revenue[i] = scn.nextInt();
+	        }
+
+	        int t = scn.nextInt();
+
+	        System.out.println(solution(m, x, revenue, t));
+	        scn.close();
+	    }
+	
+
+	private static int solution(int m, int[] x, int[] rev, int t) {
+		
+		HashMap<Integer, Integer> map = new HashMap<>();
+		for(int i = 0; i < x.length; i++) {
+			map.put(x[i], rev[i]);
+		}
+		
+		int[] dp = new int[m + 1];
+		dp[0] = 0;
+		
+		for(int i = 1; i <= m; i++) {
+			if(map.containsKey(i) == false) {
+				dp[i] = dp[i - 1];
+			} else {
+				int boardNotInstalled = dp[i - 1];
+				int boardInstalled = map.get(i);
+				if(i >= t + 1) {
+					boardInstalled += dp[i - t - 1];
+				}
+				
+				dp[i] = Math.max(boardNotInstalled, boardInstalled);
+			}
+		}
+		return dp[m];
+		
+	}
+}
+
+
+
+
+74. 2 KEYS KEYBOARD
+
+class Solution {
+    public int minSteps(int n) {
+        	int res = 0;
+		for (int d = 2; d*d <= n;) {
+			if(n % d == 0) {
+				res += d;
+				n /= d;
+			}else {i++
+};
+		}
+		if(n != 1){
+            res+=n;
+        }
+        return res;
+    }
+}
+
+
+LARGEST MULTIPLE OF THREE
+
+class Solution {
+    public String largestMultipleOfThree(int[] digits) {
+           int n = digits.length;
+        int sum = 0;
+        for(int val : digits)   sum += val;
+        Arrays.sort(digits);
+        if(sum % 3 == 0){
+            if(digits[n - 1] == 0)
+                return "0";
+            String s = "";
+            for(int i=n-1; i>=0; i--) s += "" + digits[i];
+            return s;
+            
+        }else if(sum % 3 == 1){
+            boolean found = false;
+            for(int i = 0; i < n; i++){
+                if(digits[i] % 3 == 1){
+                    digits[i] = -1;
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                int[] vals = new int[2];
+                Arrays.fill(vals, -1);
+                for(int i = 0; i < n; i++){
+                    if(digits[i] % 3 == 2){
+                        if(vals[0] == -1)   vals[0] = i;
+                        else{
+                            vals[1] = i;
+                            break;
+                        }
+                    }
+                }
+                if(vals[1] == -1)
+                    return "";
+                digits[vals[0]] = -1;
+                digits[vals[1]] = -1;
+            }
+        }else{
+            boolean found = false;;
+            for(int i = 0; i < n; i++){
+                if(digits[i] % 3 == 2){
+                    digits[i] = -1;
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                int[] vals = new int[2];
+                Arrays.fill(vals, -1);
+                for(int i = 0; i < n; i++){
+                    if(digits[i] % 3 == 1){
+                        if(vals[0] == -1)   vals[0] = i;
+                        else{
+                            vals[1] = i;
+                            break;
+                        }
+                    }
+                }
+                if(vals[1] == -1)
+                    return "";
+                digits[vals[0]] = -1;
+                digits[vals[1]] = -1;
+            }
+        }
+        
+         StringBuilder sb = new StringBuilder();
+        for(int i = n - 1; i >= 0; i--)
+            if(digits[i] != -1)
+                sb.append(digits[i]);
+        
+        if(sb.length() == 0)
+            return "";
+        if(sb.charAt(0) == '0'){
+            return "" + 0;
+        }
+        return "" + sb;
+    }
+}
+
+
+75. DISTINCT ECHO SUBSTRING
+
+class Solution {
+    public int distinctEchoSubstrings(String text) {
+        int n = text.length();
+        
+        HashSet<String> set = new HashSet<>();
+        
+        for(int len=1; len<=n/2; len++){
+            int count = 0;
+            for(int l=0, r=len; r<n; l++, r++){
+                
+                if(text.charAt(l) == text.charAt(r)){
+                    count++;
+                } else {
+                    count = 0;
+                }
+                
+                if(count == len){
+                    String str = text.substring(l, r+1);
+                    set.add(str);
+                    count--; // first char remove
+                    
+                }
+            }
+        }
+        
+        return set.size();
+    }
+}
+
+
+76. DELETE AND EARN
+
+class Solution {
+    public int deleteAndEarn(int[] nums) {
+        
+        int inc = 0;
+        int exc = 0;
+        
+        int count[] = new int[10001];
+        
+        for(int val : nums) count[val]++;
+        
+        for(int i=0; i<=10000; i++){
+            int ni = exc + count[i]*i;
+            int ne = Math.max(inc, exc);
+            
+            inc = ni;
+            exc = ne;
+        }
+        
+        return Math.max(inc, exc);
+    }
+}
+
+
+
+77. NO. OF GOOD WAYS TO SPLIT A STRING
+
+class Solution {
+    public int numSplits(String s) {
+        int n = s.length();
+        int count = 0;
+        int[] pre = new int[n];
+        int[] suff = new int[n];
+        
+        int[] freq = new int[26];
+        
+        for(int i=0; i<n; i++){
+            int ch = s.charAt(i) - 'a';
+            
+            freq[ch]++;
+            
+            if(freq[ch] == 1){
+                count++;
+            }
+            
+            pre[i] = count;
+        }
+        
+        freq = new int[26];
+        count = 0;
+        
+        for(int i=n-1; i>=0; i--){
+            int idx = s.charAt(i)-'a';
+            
+            freq[idx]++;
+            
+             if(freq[idx] == 1){
+                count++;
+            }
+            
+            suff[i] = count;
+            
+        }
+        
+        int split = 0;
+        
+        for(int i=0; i<n-1; i++){
+            if(pre[i] == suff[i+1]){
+                split++;
+            }
+        }
+        
+        return split;
+    }
+}
+
+
+78. MINIMUM COST FOR TRAVEL
+
+class Solution {
+    public int mincostTickets(int[] days, int[] costs) {
+        int n= days.length;
+        int[] dp = new int[400];
+        Arrays.fill(dp, -1);
+        return rec(days[0], costs, days, dp);
+    }
+    
+    public  int rec(int cday, int[] costs, int[] days, int[] dp){
+        
+        if(cday > days[days.length-1]) return dp[cday] =  0;
+        
+        if(dp[cday] != -1 ) return dp[cday];
+        
+        int ans = (int)1e8;
+        if(willtraveltoday(cday, days)){
+            ans = rec(cday+1, costs, days, dp) + costs[0];
+            
+            ans = Math.min(ans, rec(cday+7, costs, days, dp) + costs[1]);
+            
+            ans = Math.min(ans, rec(cday+30, costs, days, dp) + costs[2]);
+        } else {
+            return dp[cday] = rec(cday+1, costs, days, dp);
+        }
+        
+        return dp[cday] = ans;
+    }
+    
+    public boolean willtraveltoday(int cday, int[] days){
+        for(int i=0; i< days.length; i++){
+            if(days[i] == cday) return true;
+        }
+        
+        return false;
+    }
+}
+
+
+
+79. STONE GAME 7
+
+class Solution {
+    int[] pref;
+    public int stoneGameVII(int[] stones) {
+        int n = stones.length;
+        pref = new int[n];
+        
+        pref[0] = stones[0];
+        
+        for(int i=1; i<n; i++){
+            pref[i] = pref[i-1] + stones[i];
+        }
+        int[][] memo = new int[n][n];
+        return rec(stones, 0, n-1, memo);
+    }
+    
+    public int rec(int[] stones, int i, int j, int[][] memo){
+        if(i >= j) return 0;
+        
+        if(i+1 == j){
+            return Math.max(stones[i], stones[j]);
+        }
+        
+        if(memo[i][j] != 0) return memo[i][j];
+        
+        //ith
+        int scoreI = pref[j] - pref[i] - rec(stones, i+1, j, memo);
+        
+        //jth
+        int scoreJ = pref[j-1] - (i==0 ? 0 : pref[i-1]) - rec(stones, i, j-1, memo);
+        
+        return memo[i][j] = Math.max(scoreI, scoreJ);
+    }
+}
+
+
+80. MAXIMUM ALTERNATING SUBSEQUENCE
+class Solution {
+    public long maxAlternatingSum(int[] nums) {
+        long curMax = nums[0];
+        for(int i=1;i<nums.length;i++){
+            if(nums[i]>nums[i-1]){
+                curMax += nums[i]-nums[i-1];
+            }
+        }
+        return curMax;
+    }
+}
+
+class Solution {
+    public long maxAlternatingSum(int[] nums) {
+        int n = nums.length;
+        long[][] memo = new long[n][2];
+        for(long[] e : memo){
+            Arrays.fill(e, -1);
+        }
+        
+        return rec(0, nums, 0, memo);
+    }
+    
+    public long rec(int idx, int[] nums, int p, long[][] memo){
+        
+        if(idx >= nums.length) return 0;
+        
+        if(memo[idx][p] != -1) return memo[idx][p];
+        
+        long ans = 0;
+        long ele = (long)(nums[idx]);
+        
+        if(p == 0){
+            ans =  rec(idx+1, nums,1, memo) + ele;
+        } else {
+            ans =  rec(idx+1, nums, 0, memo) - ele;
+        }
+        
+// won't choose
+        ans = Math.max(ans, rec(idx+1, nums, p, memo));
+        
+        return memo[idx][p] = ans;
+    }
+}		          	                    
+
+
+CHERRY PICKUP II
+
+class Solution {
+    public int cherryPickup(int[][] grid) {
+      int n = grid.length;
+    int m = grid[0].length;
+        
+    // i => Row index for both the robots
+    // j1 => column index for first robot
+    // j2 => column index for second robot
+    Integer[][][] dp = new Integer[n][m][m];
+    int ans = cherry(grid, n, m, 0 , 0 , m-1, dp);
+    return ans;
+}
+
+public int cherry(int[][] grid, int n, int m, int r, int col1, int col2, Integer[][][] dp)
+{
+    if(r < 0 || r >= n || col1 < 0 || col1 >= m || col2 < 0 || col2 >= m)
+    {
+        return 0;
+    }
+    
+   
+    
+    if(dp[r][col1][col2] != null)
+        return dp[r][col1][col2];
+    
+    int maxCherries = 0;
+    for(int i = -1 ; i <= 1 ; i++)
+    {
+        for(int j = -1 ; j <= 1 ; j++)
+        {
+            int newCol1 = col1 + i;
+            int newCol2 = col2 + j;
+            maxCherries = Math.max(maxCherries, cherry(grid, n, m, r+1, newCol1, newCol2, dp));  
+        }
+    }
+    
+     int ans = 0;
+     if(col1 == col2)
+        ans = grid[r][col1];
+    else
+    {
+        ans = grid[r][col1] + grid[r][col2];
+    }
+   
+    dp[r][col1][col2] = ans + maxCherries;
+    return  dp[r][col1][col2];
+}
+}
+

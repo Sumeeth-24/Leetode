@@ -1,0 +1,1366 @@
+COUNT SORTED VOWEL STRING
+
+class Solution {
+    int a=1, e=1, i=1, o=1, u=1;
+    public int countVowelStrings(int n) {
+        
+    	for(int j=2; j <= n; j++){
+        	increment();
+        }
+    	return a+e+i+o+u;
+    }
+
+    private void increment() {
+		a = a+e+i+o+u;
+		e = e+i+o+u;
+		i = i+o+u;
+		o = o+u;
+	} 
+}
+
+
+WORD BREAK II
+
+class Solution {
+   List<String> res = new ArrayList<>();
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        Set<String> wordSet = new HashSet<>();
+        for(String word: wordDict){
+            wordSet.add(word);
+        }
+        helper(s, wordSet, new String());
+        return res;
+    }
+    
+    private void helper(String s, Set<String> set, String tempS){
+        if(set.contains(s)){
+            res.add(tempS+s);
+        }
+        for(int i=0;i<s.length();i++){
+                String subS = s.substring(0,i);
+                if(set.contains(subS)){
+                    helper(s.substring(i), set, tempS+subS+" ");
+                }
+            
+        }
+    }
+}
+
+COIN CHANGE
+
+class Solution {
+    public int coinChange(int[] nums, int amount) {
+         int n=nums.length;
+        int[] dp=new int[amount+1];
+        
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        
+        dp[0] = 0;
+        
+        for(int i=1;i<=amount;i++){
+        
+           for(int ele: nums){
+                if(i - ele >= 0 && dp[i-ele] != Integer.MAX_VALUE){
+                    dp[i] = Math.min(dp[i], dp[i-ele] +1);
+                } 
+            }
+        }
+        if(dp[amount]==Integer.MAX_VALUE) return -1;
+        return dp[amount];
+    }
+}
+
+
+
+DOMINO AND TROMINO TILING
+
+class Solution {
+    public int numTilings(int n) {
+        if(n == 1) return 1;
+        else if (n == 2) return 2;
+        
+        int mod = 1000000007;
+         int[] dp = new int[n + 1];
+	            dp[1] = 1;
+	            dp[2] = 2;
+                dp[3] = 5;
+	            for (int i = 4; i <= n; i++) {
+	                dp[i] = (2 * dp[i - 1] % mod + dp[i - 3] % mod) % mod;
+	            }
+
+	            return (dp[n]) ;
+    }
+}
+
+BEST SIGHTSEEING PAIR
+
+class Solution {
+    public int maxScoreSightseeingPair(int[] A) {
+        //Intitialize previously seen value of A[i] + i
+        int prev_max = A[0]+0;
+		//Initialize the value of first pair
+        int res =  - 1;
+        for(int j = 1; j < A.length; j++){
+			//update res if a higher value of prev_max+A[j]-j is found
+            res = Math.max(prev_max + A[j] - j, res);
+			//Update prev_max
+            prev_max = Math.max(A[j] + j, prev_max);
+        }
+        return res;
+    }
+}
+
+
+
+                                                DYNAMIC PROBLEM
+1.GOLDMINE PROBLEM
+                                                 
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	
+		public static void main(String[] args) throws Exception {
+		    Scanner t = new Scanner(System.in);
+		    System.out.println("Enter number");
+		    int n = t.nextInt();
+		    int m = t.nextInt();
+		    int[][] arr = new int[n][m];
+		    System.out.println("Enter value");
+		     
+		      for (int i = 0; i < n; i++) {
+		         for (int j = 0; j < m; j++) {
+		            arr[i][j] = t.nextInt();
+		         }
+		      }
+
+		      int[][] dp = new int[n][m];
+		      for (int j = arr[0].length - 1; j >= 0; j--) {
+		         for (int i = arr.length - 1; i >= 0; i--) {
+		            if (j == arr[0].length - 1) {
+		               dp[i][j] = arr[i][j];
+		            } else if (i == arr.length - 1) {
+		               dp[i][j] = arr[i][j] + Math.max(dp[i][j + 1], dp[i - 1][j + 1]);
+		            } else if (i == 0) {
+		               dp[i][j] = arr[i][j] + Math.max(dp[i][j + 1], dp[i + 1][j + 1]);
+		            } else {
+		               dp[i][j] = arr[i][j] + Math.max(dp[i][j + 1], Math.max(dp[i + 1][j + 1], dp[i - 1][j + 1]));
+		            }
+		         }
+		      }
+
+		      int max = dp[0][0];
+		      for (int i = 1; i < dp.length; i++) {
+		         max = Math.max(max, dp[i][0]);
+		      }
+		      System.out.println(max);
+		   }
+
+		}
+
+2. FRIENDS PAIRING PROBLEM
+                                                 
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	
+		public static void main(String[] args) throws Exception {
+		    Scanner t = new Scanner(System.in);
+		    System.out.println("Enter number");
+		    int n = t.nextInt();
+		    long[] dp = new long[n + 1];
+		      dp[0] = 0;
+		      dp[1] = 1;
+		      dp[2] = 2;
+
+		      for (int i = 3; i <= n; i++) {
+		         dp[i] = dp[i - 1] + (i - 1) * dp[i - 2];
+		      }
+
+		      System.out.println(dp[n]);
+		   }
+
+		}
+
+3. PAINT THE FENCE PROBLEM
+                                                 
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	  public static void main(String[] args) throws Exception {
+	        Scanner t = new Scanner(System.in);
+	        System.out.println("Enter the number");
+	        int n = t.nextInt();
+	        int k = t.nextInt();
+	        
+	        
+	        long same = k*1;
+	        long diff = k * (k-1);
+	        long total = same + diff;
+
+	        for(int i = 3; i <= n; i++){
+	            same = diff * 1; // number of ways in which this fence is painted same as old fence following the rule of not more than 2.
+	            diff = total * (k - 1); // number of ways in which this fence can be painted different from old fence.
+	            total = same + diff; // number of ways in which this fence can be painted
+	        }
+
+	        System.out.println(total);
+	    }
+	}
+4.  PRINT THE MINIMUM JUMPS AND ALSO PRINT ALL PATHS WITH MINIMUM JUMPS
+                                                 
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	
+	
+		 public static class Pair{
+		        int i;
+		        int s;
+		        int j;
+		        String psf;
+		        Pair(int i,int s,int j, String psf){
+		            this.i = i;
+		            this.s = s;
+		            this.j = j;
+		            this.psf = psf;
+		        }
+		 }
+		    
+		           
+		    public static void Solution(int arr[]){
+		        Integer dp[] = new Integer[arr.length];
+
+		         dp[dp.length-1] = 0 ;
+
+		        for(int i = arr.length-1 ; i >= 0 ; i--){
+		            int steps = arr[i];
+		        
+		            int min = Integer.MAX_VALUE;
+		            for(int j = 1; j <= steps && i + j < arr.length; j++) {
+		            	if(dp[i + j] != null && dp[i+j] < min) {
+		            		min = dp[i + j];
+		            	}
+		            }
+		            if(min != Integer.MAX_VALUE) {
+		            	dp[i] = min + 1;
+		            }
+		         
+		        }
+		         System.out.println(dp[0]+" ");
+		         ArrayDeque<Pair> queue = new ArrayDeque<>();
+		         queue.add(new Pair(0 , arr[0], dp[0], 0 + ""));
+		         
+		         
+		        
+
+			        while(queue.size() > 0){
+			            Pair rem = queue.removeFirst();
+			            
+			            if(rem.j == 0) {
+			            	System.out.println(rem.psf);
+			            }
+			            
+			            for(int j = 1; j <=rem.s && rem.i + j < arr.length; j++) {
+			            	int ci = rem.i + j;
+			            
+			            	if(dp[ci] != null && dp[ci] == rem.j - 1) {
+			            		   queue.add(new Pair(ci , arr[ci], dp[ci], rem.psf  + "->" + ci));
+			       		        
+			            	}
+			            }
+		    }
+			        }
+
+		 
+		    public static void main(String []args){
+		        Scanner scn = new Scanner(System.in);
+		        System.out.println("Enter the number");
+		        int n = scn.nextInt();
+
+		        int arr[] = new int[n];
+		        System.out.println("Enter the value");
+		        for(int i = 0 ; i < n ; i++)
+		            arr[i] = scn.nextInt();
+
+		        Solution(arr);
+		        scn.close();
+		      
+		    }
+		}
+5. CLIMB STAIR PATH VALUE
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	           
+		    public static int countPaths(int n){
+		      
+
+		        int[] dp = new int[n + 1];
+		        dp[0] = 1;
+		        for(int i = 1; i <= n; i++) {
+		        	if(i == 1) {
+		        		dp[i] = dp[i-1];
+		        	} else if ( i == 2) {
+		        		dp[i] = dp[i - 1] + dp[i - 2];
+		        	} else {
+		        		dp[i] = dp[i - 1] + dp[i - 2] + dp[ i - 3];
+		        	}
+		        }
+		        return dp[n];
+		        }
+
+		 
+		    public static void main(String []args){
+		        Scanner scn = new Scanner(System.in);
+		        System.out.println("Enter the number");
+		        int n = scn.nextInt();
+
+	            int cp = countPaths(n);
+		        System.out.println(cp);
+
+		    }
+		}
+6. CLIMB STAIR PATH VALUE WITH VARIABLE JUMPS
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   public static void main(String[] args) throws Exception {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      System.out.println("Enter the number");
+      int n = Integer.parseInt(br.readLine());
+      int[] arr = new int[n];
+      System.out.println("Enter the value");
+      for (int i = 0; i < arr.length; i++) {
+         arr[i] = Integer.parseInt(br.readLine());
+      }
+
+      int[] dp = new int[n + 1];
+      dp[n] = 1;
+
+      for (int i = n - 1; i >= 0; i--) {
+         if (arr[i] > 0) {
+            for (int j = 1; j <= arr[i] && i + j < dp.length; j++) {
+               dp[i] += dp[i + j];
+            }
+         }
+      }
+
+      System.out.println(dp[0]);
+   }
+
+}
+
+7. MINIMUM COST IN MAZE TRAVERSAL
+package automate;
+
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+Scanner t = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = t.nextInt();
+	      int m = t.nextInt();
+	      int[][] arr = new int[n][m];
+	      System.out.println("Enter the value");
+
+	      for (int i = 0; i < n; i++) {
+	         for (int j = 0; j < m; j++) {
+	            arr[i][j] = t.nextInt();
+	         }
+	      }
+
+	      int[][] dp = new int[n][m];
+	      for(int i = arr.length - 1; i >= 0; i--){
+	         for(int j = arr[0].length - 1; j >= 0; j--){
+	            if(i == arr.length - 1 && j == arr[0].length - 1){
+	               dp[i][j] = arr[i][j];
+	            } else if(i == arr.length - 1){
+	               dp[i][j] = arr[i][j] + dp[i][j + 1];
+	            } else if(j == arr[0].length - 1){
+	               dp[i][j] = arr[i][j] + dp[i + 1][j];
+	            } else {
+	               dp[i][j] = arr[i][j] + Math.min(dp[i][j + 1], dp[i + 1][j]);
+	            }
+	         }
+	      }
+
+	      System.out.println(dp[0][0]);
+	   }
+
+	}
+
+8. TARGET SUM SUBSET
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+Scanner t = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = t.nextInt();
+		  int[] arr = new int[n];
+
+	        for (int i = 0; i < n; i++) {
+	            arr[i] = t.nextInt();
+	        }
+	        System.out.println("Enter the value");
+	        int tar = t.nextInt();
+
+	        boolean[][] dp = new boolean[arr.length + 1][tar + 1];
+	        for (int i = 0; i < dp.length; i++) {
+	            for (int j = 0; j < dp[0].length; j++) {
+	                if (i == 0 && j == 0) {
+	                    dp[i][j] = true;
+	                } else if (i == 0) {
+	                    dp[i][j] = false;
+	                } else if (j == 0) {
+	                    dp[i][j] = true;
+	                } else {
+	                    if(dp[i - 1][j] == true){
+	                        dp[i][j] = true;
+	                    } else {
+	                        int val = arr[i - 1];
+	                        if (j >= val && dp[i - 1][j - val] == true) {
+	                            dp[i][j] = true;
+	                        }
+	                    }
+	                }
+	            }
+	        }
+
+	        System.out.println(dp[dp.length - 1][tar]);
+	    }
+	}
+
+
+TARGET SUM
+
+class Solution {
+    public int count=0;
+    
+    public void worker(int []nums,int target,int sum,int i)
+    {
+        if(i==nums.length )
+        {
+            if(sum==target)
+            {
+                count++;
+                return ;
+            }
+            else
+            return ;
+        }
+        
+        
+        
+        worker(nums,target,sum+nums[i],i+1);
+        worker(nums,target,sum+(-nums[i]),i+1);
+    }
+    
+    public int findTargetSumWays(int[] nums, int target) {
+        worker(nums,target,0,0);
+        return count;
+    }
+}
+
+9. BUY AND SELL STOCK (ONE TRANSACTION )
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+          Scanner t = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = t.nextInt();
+		   int[] prices = new int[n];
+		   System.out.println("Enter the value");
+		      for (int i = 0; i < prices.length; i++) {
+		         prices[i] = t.nextInt();
+		      }
+
+		      int lsf = Integer.MAX_VALUE;    //  LEAST SO FAR
+		      int op = 0;                     // OVERALL PROFIT
+		      int pist = 0;                   // PROFIT IF SOLD TODAY
+		      for(int i = 0; i < prices.length; i++){
+		         if(prices[i] < lsf){
+		            lsf = prices[i];
+		         }
+
+		          pist = prices[i] - lsf;
+		         if(pist > op){
+		            op = pist;
+		         }
+		      }
+
+		      System.out.println(op);
+		   }
+
+		}
+
+10. BUY AND SELL STOCK ( INFINITE TRANSACTION )
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+          Scanner t = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = t.nextInt();
+		   int[] arr = new int[n];
+		   System.out.println("Enter the value");
+		      for (int i = 0; i < arr.length; i++) {
+		         arr[i] = t.nextInt();
+		      }
+
+		      int bd = 0;
+		      int sd = 0;
+		      int profit = 0;
+		      for(int i = 1; i < arr.length; i++){
+		         if(arr[i] >= arr[i - 1]){
+		        	 sd++;
+		         } else {
+		        	 profit += arr[sd] - arr[bd];
+			            bd = sd = i;
+		           
+		         }
+		      }
+
+		      profit += arr[sd] - arr[bd];
+		      System.out.println(profit);
+		   }
+
+		}
+
+11. BUY AND SELL STOCK  (INFINITE TRANSACTION WITH TRANSACTION FESS )
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+          Scanner t = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = t.nextInt();
+		   int[] arr = new int[n];
+		   System.out.println("Enter the value");
+		      for (int i = 0; i < arr.length; i++) {
+		         arr[i] = t.nextInt();
+		      }
+		      System.out.println("Enter the value");
+		      int fee = t.nextInt();
+
+		      int obsp = -arr[0];
+		      int ossp = 0;
+		      for(int i = 1; i < arr.length; i++){
+		         int nbsp = 0;
+		         int nssp = 0;
+
+		         if(ossp - arr[i] > obsp){
+		            nbsp = ossp - arr[i];
+		         } else {
+		            nbsp = obsp;
+		         }
+
+		         if(obsp + arr[i] - fee > ossp){
+		            nssp = obsp + arr[i] - fee;
+		         } else {
+		            nssp = ossp;
+		         }
+
+		         obsp = nbsp;
+		         ossp = nssp;
+		      }
+
+		      System.out.println(ossp);
+		   }
+
+		}
+
+12. BUY AND SELL STOCK WITH COOL DOWN ( INFINITE TRANSACTION )
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+          Scanner t = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = t.nextInt();
+		   int[] arr = new int[n];
+		   System.out.println("Enter the value");
+		      for (int i = 0; i < arr.length; i++) {
+		         arr[i] = t.nextInt();
+		      }
+		      int obsp = -arr[0];
+		      int ossp = 0;
+		      int ocsp = 0;
+		      for(int i = 1; i < arr.length; i++){
+		         int nbsp = 0;
+		         int nssp = 0;
+		         int ncsp = 0;
+
+		         if(ocsp - arr[i] > obsp){
+		            nbsp = ocsp - arr[i];
+		         } else {
+		            nbsp = obsp;
+		         }
+
+		         if(obsp + arr[i] > ossp){
+		            nssp = obsp + arr[i];
+		         } else {
+		            nssp = ossp;
+		         }
+
+		         if(ossp > ocsp){
+		            ncsp = ossp;
+		         } else {
+		            ncsp = ocsp;
+		         }
+
+		         obsp = nbsp;
+		         ossp = nssp;
+		         ocsp = ncsp;
+		      }
+
+		      System.out.println(ossp);
+		   }
+
+		}
+
+13. BUY AND SELL STOCK WITH TWO TRANSACTIONS
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+          Scanner t = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = t.nextInt();
+		   int[] arr = new int[n];
+		   System.out.println("Enter the value");
+		      for (int i = 0; i < arr.length; i++) {
+		         arr[i] = t.nextInt();
+		      }
+		      int mpist = 0;
+		      int leastsf = arr[0];
+		      int[] dpl = new int[arr.length];
+		      for(int i = 1; i < arr.length; i++){
+		         if(arr[i] < leastsf){
+		            leastsf = arr[i];
+		         }
+		         mpist = arr[i] - leastsf;
+
+		         if( mpist > dpl[i - 1]){
+		            dpl[i] = mpist;
+		         } else {
+		            dpl[i] = dpl[i - 1];
+		         }
+		      }
+
+		      int mpibt = 0;
+		      int maxat = arr[arr.length - 1];
+		      int[] dpr = new int[arr.length];
+		      for(int i = arr.length - 2; i >= 0; i--){
+		         if(arr[i] > maxat){
+		            maxat = arr[i];
+		         }
+		     
+                   mpibt = maxat - arr[i];
+		         if(mpibt > dpr[i + 1]){
+		            dpr[i] = mpibt;
+		         } else {
+		            dpr[i] = dpr[i + 1];
+		         }
+		      }
+
+		      int op = 0;
+		      for(int i = 0; i < arr.length; i++){
+		         if(dpl[i] + dpr[i] > op){
+		            op = dpl[i] + dpr[i];
+		         }
+		      }
+
+		      System.out.println(op);
+		   }
+
+		}
+
+14. BUY AND SELL STOCKS WITH K TRANSACTIONS
+package automate;
+
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception{
+          Scanner scn = new Scanner(System.in);
+		  System.out.println("Enter the value");
+	    
+		  int n = scn.nextInt();
+		   int[] arr = new int[n];
+		   System.out.println("Enter the value");
+		      for (int i = 0; i < arr.length; i++) {
+		         arr[i] = scn.nextInt();
+		      }
+		     
+		      int k = scn.nextInt();
+
+		      int[][] dp = new int[k + 1][n];
+
+		      for(int t = 1; t <= k; t++){
+		         int max = Integer.MIN_VALUE;
+
+		         for(int d = 1; d < arr.length; d++){
+		            if(dp[t - 1][d - 1] - arr[d - 1] > max){
+		               max = dp[t - 1][d - 1] - arr[d - 1];
+		            }
+
+		            if(max + arr[d] > dp[t][d - 1]){
+		               dp[t][d] = max + arr[d];
+		            } else {
+		               dp[t][d] = dp[t][d - 1];
+		            }
+		         }
+		      }
+
+		      System.out.println(dp[k][n - 1]);
+		   }
+
+		}
+
+15. COUNT BINARY STRINGS WITH NO CONSECUTIVE ZEROES
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	      Scanner t = new Scanner(System.in);
+	      System.out.println("Enter the value");
+	      int n = t.nextInt();
+	      
+	      int ozeroes = 1;
+	      int oones = 1;
+	      for(int i = 2; i <= n; i++){
+	         int nzeroes = oones;
+	         int nones = oones + ozeroes;
+
+	         ozeroes = nzeroes;
+	         oones = nones;
+	      }
+
+	      System.out.println(ozeroes + oones);
+	   }
+
+	}
+
+16. ARRANGE BUILDINGS
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	      Scanner t = new Scanner(System.in);
+	      System.out.println("Enter the value");
+	      long n = t.nextInt();
+	      
+	      long ob = 1;
+	      long os = 1;
+	      for (int i = 2; i <= n; i++) {
+	         long nb = os;
+	         long ns = ob + os;
+
+	         ob = nb;
+	         os = ns;
+	      }
+
+	      long total = os + ob;
+	      total = total * total;
+	      System.out.println(total);
+	   }
+
+	}
+
+17. FIND NTH CATALAN NUMBER
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	 public static void main(String[] args) throws Exception {
+	      Scanner t = new Scanner(System.in);
+	      System.out.println("Enter the number");
+	      int n = t.nextInt();
+	      long[] dp = new long[n + 1];
+	      dp[0] = 1;
+	      dp[1] = 1;
+
+	      for(int i = 2; i < dp.length; i++){
+	         for(int j = 0; j < i; j++){
+	            dp[i] += dp[j] * dp[i - j - 1];
+	         }
+	      }
+
+	      System.out.println(dp[n]);
+	   }
+
+	}
+
+18. MIN SQUARES (LEETCODE)
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	public static int solution(int n){
+		int[] dp = new int[n + 1];
+		dp[0] = 0;
+		dp[1] = 1;
+		for(int i = 2; i <= n; i++){
+		int min = Integer.MAX_VALUE;
+			for(int j = 1; j * j <= i; j++){
+				int rem = i -j*j;
+			if(dp[rem] < min) {
+				min = dp[rem];
+			}
+		}
+			dp[i] = min + 1;
+		}
+		return dp[n];
+	}
+
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the number");
+		int n = scn.nextInt();
+		System.out.println(solution(n));
+	}
+
+
+	
+}
+
+19. PAINT HOUSE (NO TWO CONSECUTIVE COLOR)
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+	        Scanner t  = new Scanner (System.in);
+	        System.out.println("Enter the number");
+	        int n = t.nextInt();
+	        System.out.println("Enter the number");
+	        int[][] arr = new int[n][3];
+	           for(int i = 0; i < arr.length; i++) {
+	        	   for(int j = 0; j < arr[0].length; j++) {
+	        		   arr[i][j] = t.nextInt();
+	        	   }
+	           }
+	           long[][] dp = new long[n][3];
+	           dp[0][0] = arr[0][0];
+	           dp[0][1] = arr[0][1];
+	           dp[0][2] = arr[0][2];
+
+
+	        for (int i = 1; i < arr.length; i++) {
+	          dp[i][0] = arr[i][0] + Math.min(dp[i-1][1], dp[i-1][2]);
+	          dp[i][1] = arr[i][1] + Math.min(dp[i-1][0], dp[i-1][2]);
+	          dp[i][2] = arr[i][2] + Math.min(dp[i-1][0], dp[i-1][1]);
+	        }
+	        long ans = Math.min(dp[n-1][0], Math.min(dp[n-1][1], dp[n-1][2]));
+
+	        System.out.println(ans);
+	    }
+	} 
+
+
+MANY COLOR
+
+  int min = Integer.MAX_VALUE;
+        int smin = Integer.MAX_VALUE;
+        for(int j = 0; j < arr[0].length; j++){
+            if(arr[0][j] <= min){
+                smin = min;
+                min = arr[0][j];
+            } else if(arr[0][j] <= smin){
+                smin = arr[0][j];
+            }
+        }
+
+        for (int i = 1; i < arr.length; i++) {
+            int cmin = Integer.MAX_VALUE;
+            int csmin = Integer.MAX_VALUE;
+
+            for(int j = 0; j < arr[0].length; j++){
+                if(arr[i - 1][j] = min){
+                    arr[i][j] += smin;
+                } else {
+                    arr[i][j] += min;
+                }
+
+                if(arr[i][j] <= cmin){
+                    csmin = cmin;
+                    cmin = arr[i][j];
+                } else if(arr[i][j] <= csmin){
+                    csmin = arr[i][j];
+                }
+            }
+
+            min = cmin;
+            smin = csmin;
+        }
+
+        System.out.println(min);
+
+
+
+20. TILING WITH 2 * 1 TILE
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+	        Scanner t  = new Scanner (System.in);
+	        System.out.println("Enter the number");
+	        int n = t.nextInt();
+	            int[] dp = new int[n + 1];
+	            dp[1] = 1;
+	            dp[2] = 2;
+	            for (int i = 3; i <= n; i++) {
+	                dp[i] = dp[i - 1] + dp[i - 2];
+	            }
+
+	            System.out.println(dp[n]);
+	        }
+	    }
+
+21. TILING WITH m * n TILE
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+	        Scanner t  = new Scanner (System.in);
+	        System.out.println("Enter the number");
+	        int n = t.nextInt();
+	        int m = t.nextInt();
+	            int[] dp = new int[n + 1];
+	            for (int i = 1; i <= n; i++) {
+	                if (i < m) {
+	                    dp[i] = 1;
+	                } else if (i == m) {
+	                    dp[i] = 2;
+	                } else {
+	                    dp[i] = dp[i - 1] + dp[i - m];
+	                }
+	            }
+
+	            System.out.println(dp[n]);
+	        }
+	    }
+
+22. PARTITION INTO SUBSET
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+	        Scanner scn  = new Scanner (System.in);
+	        System.out.println("Enter the number");
+	        int n = scn.nextInt();
+	        int k = scn.nextInt();
+	        if (n == 0 || k == 0 || n < k) {
+	            System.out.println(0);
+	            return;
+	         }
+
+	         long[][] dp = new long[k + 1][n + 1];
+	         for (int t = 1; t <= k; t++) {
+	            for (int p = 1; p <= n; p++) {
+	            	if(p < t) {
+	            		dp[t][p] = 0;
+	            	} else if (p == t) {
+	            		dp[t][p] = 1;
+	            	} else {
+	            		dp[t][p] = dp[t - 1][p - 1] + t * dp[t][p - 1];
+	            	}
+	            }
+	         }
+	         
+	            
+
+	         System.out.println(dp[k][n]);
+	      }
+
+	   }
+
+23. 0-1 KNAPSACK
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        int n = t.nextInt();
+	        
+	        
+	        int[] vals = new int[n];
+	        int[] wts = new int[n];
+	        System.out.println("Enter the value");
+	        for(int i=0; i< vals.length; i++) {
+	        	vals[i] = t.nextInt();
+	        }
+	        System.out.println("Enter the value");
+	        for(int i=0; i< wts.length; i++) {
+	        	wts[i] = t.nextInt();
+	        }
+	        System.out.println("Enter the value");
+	        int cap = t.nextInt();
+
+	        int[][] dp = new int[n + 1][cap + 1];
+	        for (int i = 1; i < dp.length; i++) {
+	            for (int j = 1; j < dp[0].length; j++) {
+	         if( j >= wts[i-1]) {
+	        	 int rCap = j - wts[i-1];        //remaining balls
+	        	 
+	        	 if(dp[i-1][rCap] + vals[i-1] > dp[i-1][j]) {
+	        		 dp[i][j] = dp[i-1][rCap] + vals[i-1];
+	        	 } else {
+	        		 dp[i][j] = dp[i-1][j];     //when i doesn't bat
+	        	 } 
+	         }  else {
+	        		 dp[i][j] = dp[i-1][j];      //when i doesn't bat
+	        	 }
+	         }
+
+	       } 
+
+	        System.out.println(dp[n][cap]);
+	    }
+	}
+
+24. UNBOUNDED KNAPSACK
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        int n = t.nextInt();
+	        
+	        
+	        int[] vals = new int[n];
+	        System.out.println("Enter the value");
+	        for(int i=0; i< vals.length; i++) {
+	        	vals[i] = t.nextInt();
+	        }
+	        int[] wts = new int[n];
+	        System.out.println("Enter the value");
+	        for(int i=0; i< wts.length; i++) {
+	        	wts[i] = t.nextInt();
+	        }
+	        System.out.println("Enter the value");
+	        int cap = t.nextInt();
+
+	        int[] dp = new int[cap + 1];
+	        dp[0] = 0;
+	        for (int bagc = 1; bagc <= cap; bagc++) {
+	        	int max = 0;
+	            for (int i = 0; i < n; i++) {
+	              if( wts[i] <= bagc) {
+	            	  int rbagc = bagc - wts[i];
+	            	  int rbagv = dp[rbagc];
+	            	  int tbagv = rbagv + vals[i];
+	            	  if (tbagv > max) {
+	            		  max = tbagv;
+	            	  }
+	              }
+	            }
+	            dp[bagc] = max;
+	        }
+
+	        System.out.println(dp[cap]);
+	    }
+	}
+
+25. COIN CHANGE COMBINATION
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        int n = t.nextInt();
+	        
+	        
+	        int[] arr = new int[n];
+            System.out.println("Enter the value");
+	        for (int i = 0; i < n; i++) {
+	            arr[i] = t.nextInt();
+	        }
+            
+	        System.out.println("Enter the value");
+	        int amt =t.nextInt();
+
+	        int[] dp = new int[amt + 1];
+	        dp[0] = 1;
+
+	        for (int i=0; i< arr.length; i++) { // coins ka loop 2 3 5 coins
+	            for (int j = arr[i]; j < dp.length; j++) {
+	              
+	                    dp[j] += dp[j - arr[i]];  //dp[7] = dp[5] + dp[4] + dp[3]
+	                
+	            }
+	        }
+
+	        System.out.println(dp[amt]);
+	    }
+	}
+
+REMOVE INVALID PARENTHESIS
+
+class Solution {
+    List<String> ans = new ArrayList<>();
+    public List<String> removeInvalidParentheses(String s) {
+        int mra = getMin(s);
+        solution(s, mra, new HashSet<>());
+        return ans;
+    }
+    
+    public void solution(String str, int mrallowed, HashSet<String> res){
+        if(mrallowed == 0){
+            int mrnow = getMin(str);
+            if(mrnow == 0){
+                if(!res.contains(str)){
+                    ans.add(str);
+                    res.add(str);
+                }
+            }
+            return;
+        }
+        
+        for(int i=0; i< str.length(); i++){
+            String left = str.substring(0,i);
+            String right = str.substring(i+1);
+            solution(left + right, mrallowed - 1, res);
+        }
+    }
+    
+    public int getMin(String str){
+        Stack<Character> st = new Stack<>();
+        
+        for(int i=0; i< str.length(); i++){
+            char ch = str.charAt(i);
+            
+            if(ch == '('){
+                st.push(ch);
+            } else if(ch == ')'){
+                if(st.size() == 0){
+                    st.push(ch);
+                } else if(st.peek() == ')'){
+                    st.push(ch);
+                }else if(st.peek() == '('){
+                    st.pop();
+                }
+            }
+        }
+        return st.size();
+    }
+}
+
+26. COIN CHANGE PERMUTATION
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        int n = t.nextInt();
+	        
+	        
+	        int[] coins = new int[n];
+	        System.out.println("Enter the value");
+	        for (int i = 0; i < coins.length; i++) {
+	            coins[i] = t.nextInt();
+	        }
+	        System.out.println("Enter the value");
+	        int tar = t.nextInt();
+
+	        int[] dp = new int[tar + 1];
+	        dp[0] = 1;
+
+	        for (int amt = 1; amt <= tar; amt++) {
+	            for (int coin: coins) {
+	                if (coin <= amt) {
+	                   int ramt = amt - coin;
+	                   dp[amt] += dp[ramt];
+	                }
+	            }
+	        }
+
+	        System.out.println(dp[tar]);
+	    }
+	}
+
+27. COUNT ENCODING
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        String str = t.nextLine();
+	        
+	        
+	        int[] dp = new int[str.length()];
+
+	     dp[0] = (str.charAt(0) == '0' ? 0 : 1);
+	        
+	        
+	        for (int i = 1; i < dp.length; i++) {
+	        	if(str.charAt(i-1) == '0' && str.charAt(i) == '0') {
+	        		dp[i] = 0;
+	        	} else if (str.charAt(i-1) == '0' && str.charAt(i) != '0') {
+	        		dp[i] = dp[i-1];
+	        	} else if (str.charAt(i-1) != '0' && str.charAt(i) == '0') {
+	        		if(str.charAt(i-1) == '1' || str.charAt(i-1) == '2') {
+	        			dp[i] = ( i >= 2 ? dp[i-2] : 1);
+	        		} else {
+	        			dp[i] = 0;
+	        		}
+	        	} else {
+	        		if(Integer.parseInt(str.substring(i-1, i+1)) <= 26) {
+	        			dp[i] = dp[i-1] + ( i >= 2 ? dp[i-2] : 1);
+	        		} else {
+	        			dp[i] = dp[i-1];
+	        		}
+	        	}
+	        }
+	        System.out.println(dp[str.length() - 1]);
+	  }
+	}
+
+28. COUNT A + B + C + SUBSEQUENCES
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        String str = t.nextLine();
+	        
+	        
+	        int a = 0;
+	        int ab = 0;
+	        int abc = 0;
+	        for (int i = 0; i < str.length(); i++) {
+	        	char ch = str.charAt(i);
+	            if (ch == 'a') {
+	                a = 2 * a + 1;
+	            } else if (ch == 'b') {
+	                ab = 2 * ab + a;
+	            } else if (ch == 'c') {
+	                abc = 2 * abc + ab;
+	            }
+	        }
+
+	        System.out.println(abc);
+	    }
+	}
+
+29. MAXIMUM SUM NON ADJACENT ELEMENTS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	  public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	     int n = t.nextInt();
+	     int[] arr = new int[n];
+	     System.out.println("Enter the value");
+	     for(int i = 0; i < arr.length; i++) {
+	    	 arr[i] = t.nextInt();
+	     }
+	        
+	        
+	        long inc = arr[0] < 0 ? 0 : arr[0];
+	        long exc = 0;
+
+	        for (int i = 1; i < arr.length; i++) {
+	            long ninc = exc + arr[i];
+	            long nexc = Math.max(inc, exc);
+
+	            inc = ninc;
+	            exc = nexc;
+	        }
+
+	        System.out.println(Math.max(inc, exc));
+	    }
+	}
+
+
+
+		                        
+
+
+	                    
+
+
+	                    
+
+
+	                    
+
+
+	                    

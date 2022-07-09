@@ -1,0 +1,1344 @@
+COMPLEMENT OF A NUMBER
+
+class Solution {
+    public int findComplement(int num) {
+         int c = 0, t = num;
+		//First, you need to find how many bits are present in the given number.
+        while(t>0) {
+            t = t>>1;
+            c++;
+        }
+		//Now after that, create a mask of 1's about the size of num.
+		//eg: if num = 5(101) then mask = 7(111) 
+        int mask = (1<<(c))-1;
+		//now this mask can be used to flip all the bits in num using XOR.
+        return num^mask;
+    }
+}
+
+
+
+BITWISE AND OF NUMBERS IN RANGE
+
+class Solution {
+    public int rangeBitwiseAnd(int left, int right) {
+        int count = 0;
+        
+        while(left != right){
+           left =  left >> 1;
+           right = right >> 1;
+            
+            count++;
+        }
+        
+        return left << count;
+    }
+}
+
+
+
+COUNTING BITS
+
+// 0 --> 0
+// 1 --> 1
+// 2 --> 10
+// 3 --> 11
+// 4 --> 100
+// 5 --> 101
+
+// All the even no end with 0 and ood nu end with 1
+// In binary representations of the number n, if we neglect the last bit then its value is same as n/2;
+
+
+
+
+class Solution {
+    public int[] countBits(int n) {
+        if (n == 0) return new int[1];
+        
+        int[] res = new int[n+1];
+        res[1] = 1;
+        
+        for(int i=2; i<=n; i++){
+            res[i] = res[i/2] + (i%2 == 0 ? 0 : 1);
+        }
+        return res;
+    }
+}
+
+
+
+1. SETTING INSETTING TOGGLING AND ON AND OFF CHECK
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	public static void main(String[] args){
+	    Scanner scn = new Scanner(System.in);
+	    System.out.println("Enter the value");
+	    int n = scn.nextInt();
+	    int i = scn.nextInt();
+	    int j = scn.nextInt();
+	    int k = scn.nextInt();
+	    int m = scn.nextInt();
+	    
+	    nt onmask = (1 << i);
+    int offmask = ~(1 << j);
+    int toggle = 1 << k;
+    
+
+    System.out.println(n | onmask);
+    System.out.println(n & offmask);
+    System.out.println(n ^ toogle);
+	  }
+
+	}
+
+2. RIGHT MOST SET BIT MASK(RSBM)
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	public static void main(String[] args){
+			    Scanner scn = new Scanner(System.in);
+			    System.out.println("Enter the value");
+			    int n = scn.nextInt();
+			    
+			    int rsbm = n & -n;   // -n is 2's compliment of n
+			    System.out.println(Integer.toBinaryString(rsbm));
+			  }
+
+			}
+
+
+
+
+3. KERNIGHAN'S ALGORITHM
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {                        
+public static void main(String[] args){
+    Scanner scn = new Scanner(System.in);
+    System.out.println("Enter the value");
+    int n = scn.nextInt();
+    int ans = 0;
+
+    while(n != 0){
+    	int rsbm = n & -n;
+        n = n - rsbm;
+        ans++;
+    }
+    System.out.println(ans);
+  }
+
+}
+
+
+4. JOSEPHUS PROBLEM
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+		    System.out.println(solution(n));
+		  }
+
+		  public static int solution(int n){
+		    int x = nearestPowerOf2(n);
+		    int l = n - x;
+		    return (2*l) + 1;
+		  }
+
+		  public static int nearestPowerOf2(int n){
+		   int i = 1;
+		    while(i * 2 <= n){
+		      i = i * 2;
+		    }
+		    return i;
+		  }
+		  
+
+		}
+
+
+5. N BIT GRAY CODE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static ArrayList<String> grayCode(int n) {
+         if (n == 1) {
+           ArrayList<String> bres = new ArrayList<>();
+           bres.add("0");
+           bres.add("1");
+             return bres;
+         }
+         ArrayList<String> rres = grayCode(n - 1);
+         
+         ArrayList<String> mres = new ArrayList<>();
+         for(int i = 0; i < rres.size(); i++) {
+        	 String rstr = rres.get(i);
+        	 mres.add("0" + rstr);
+         }
+      
+        
+         for(int i = rres.size() - 1; i >= 0; i--) {
+        	 String rstr = rres.get(i);
+        	 mres.add("1" + rstr);
+         }
+         
+         return mres;
+     }
+ 
+     public static void main(String[] args) {
+         Scanner scn = new Scanner(System.in);
+         System.out.println("Enter the value");
+         int n = scn.nextInt();
+        ArrayList<String> ans=grayCode(n);
+   
+        		for(String str: ans) {
+        		int decimal = Integer.parseInt(str, 2);
+        				System.out.println(decimal);
+        		}
+         System.out.println();
+ }
+}
+
+
+6. MINIMUM NO.OF SOFTWARE DEVELOPERS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+
+	static ArrayList<Integer> sol = new ArrayList<>();
+
+	public static void solution(int[] people, int nskills, int cp, ArrayList<Integer> onesol, int skills) {
+		if(cp == people.length){
+		    if(skills == ((1 << nskills) - 1)){
+		        if(onesol.size() < sol.size() || sol.size() == 0){
+		            sol = new ArrayList<>(onesol);
+		        }
+		    }
+		    return;
+		}
+		solution(people, nskills, cp + 1, onesol, skills);
+		onesol.add(cp);
+		solution(people, nskills, cp + 1, onesol, (skills | people[cp]));
+		onesol.remove(onesol.size() - 1);
+	}
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+		System.out.println("Enter the value");
+		int n = scn.nextInt();
+		HashMap<String, Integer> smap = new HashMap<>();
+		System.out.println("Enter the value");
+		for (int i = 0; i < n; i++) {
+			smap.put(scn.next(), i);
+		}
+		System.out.println("Enter the value");
+		int np = scn.nextInt();
+		int[] people = new int[np];
+		System.out.println("Enter the value");
+		for (int i = 0; i < np; i++) {
+			int personSkills = scn.nextInt();
+			for (int j = 0; j < personSkills; j++) {
+				String skill = scn.next();
+				int snum = smap.get(skill);
+				people[i] = people[i] | (1 << snum);
+			}
+		}
+
+		solution(people, n, 0, new ArrayList<>(), 0);
+		System.out.println(sol);
+		
+	}
+}
+
+
+7. FIND DUPLICATE NUMBER & MISSING NUMBER FROM 1 to N
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+		    int[] arr = new int[n];
+		    System.out.println("Enter the value");
+		    for(int i = 0 ; i < n; i++){
+		      arr[i] = scn.nextInt();
+		    }
+		    solution(arr);
+		  }
+
+		  public static void solution(int[] arr){
+		   int xor = 0;
+		   for(int i = 0 ; i < arr.length; i++){
+		       xor ^= arr[i];
+		       xor ^= (i + 1);
+		   }
+		   int rsbmask = xor & (-xor);
+		   int x = 0;
+		   int y  = 0;
+		   for(int i = 0 ; i < arr.length; i++){
+		       if((rsbmask & arr[i]) == 0){
+		           x ^= arr[i];
+		       }else{
+		           y ^= arr[i];
+		       }
+		   }
+		   
+		   for(int i = 1 ; i <= arr.length; i++){
+		       if((rsbmask & i) == 0){
+		           x ^= i;
+		       }else{
+		           y ^= i;
+		       }
+		   }
+		   
+		   for(int i = 0 ; i < arr.length; i++){
+		       if(arr[i] == x){
+		           System.out.println("Missing Number -> " + y);
+		           System.out.println("Repeating Number -> " + x);
+		           break;
+		       }
+		       
+		       if(arr[i] == y){
+		           System.out.println("Missing Number -> " + x);
+		           System.out.println("Repeating Number -> " + y);
+		           break;
+		       }
+		   }   
+		   
+		  }
+
+		}
+
+         
+8. ALL REPEATING EXCEPTS TWO
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+		    int[] arr = new int[n];
+		    System.out.println("Enter the value");
+		    for(int i = 0 ; i < n; i++){
+		      arr[i] = scn.nextInt();
+		    }
+		    solution(arr);
+		  }
+
+		  public static void solution(int[] arr){
+		    int xxory = 0;
+		    for(int val: arr){
+		      xxory ^= val;  // 010010
+		    }
+		    int rsbm = xxory & -xxory;  // 000010
+		    
+		    int x = 0;
+		    int y = 0;
+		    for(int val: arr){
+		      if((val & rsbm) == 0){
+		        x ^= val;
+		      }else{
+		        y ^= val;
+		      }
+		    }
+		    if(x < y){
+		      System.out.println(x);
+		      System.out.println(y);
+		    }else{
+		      System.out.println(y);
+		      System.out.println(x);
+		    }
+		  }
+
+		}
+
+
+		                        
+9. ALL REPEATING EXCEPT ONE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+		    int[] arr = new int[n];
+		    System.out.println("Enter the value");
+		    for(int i = 0 ; i < n; i++){
+		      arr[i] = scn.nextInt();
+		    }
+		    int ans = 0;
+		    for(int val: arr){
+		      ans ^= val;
+		    }
+		    System.out.println(ans);
+		  }
+
+		}
+
+
+10. FLIP BITS TO CONVERT A to B
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int a = scn.nextInt();
+		    int b = scn.nextInt();
+		    
+		    int flipped = a ^ b;
+
+		    int ans = 0;
+		    while(flipped != 0){
+		    	int rsb = (flipped & -flipped);
+		       flipped-= rsb;;
+		      ans++;
+		    }
+		    System.out.println(ans);
+		  }
+}
+
+		                        
+11. NUMBER OF VALID WORDS FOR EACH PUZZLE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+	    System.out.println("Enter the value");
+		int n = scn.nextInt();
+		String[] words = new String[n];
+		for(int i = 0 ; i < words.length; i++) {
+			words[i] = scn.next();
+		}
+	    System.out.println("Enter the value");
+		int m = scn.nextInt();
+		String[] puzzles = new String[m];
+		for(int i = 0 ; i < m ;i++) {
+			puzzles[i] = scn.next();
+		}
+		ArrayList<Integer> ans = findNumOfValidWords(words,puzzles);
+		for(int i = 0 ; i < m; i++){
+            System.out.println(puzzles[i] + " -> " + ans.get(i));
+        }
+	}
+	
+	public static ArrayList<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
+        HashMap<Character, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < 26; i++) {
+            map.put((char)('a' + i), new ArrayList<>());
+        }
+        for (String word : words) {
+            int mask = 0;
+            //make bit mask of every word
+            for (char ch : word.toCharArray()) {
+            	int bit = ch - 'a';
+                mask = mask | ((1 << bit));
+            }
+            HashSet<Character> unique = new HashSet<>();
+            //jo jo bit on hai uske saamne word rkh diya
+            for (char ch : word.toCharArray()) {
+            	if(unique.contains(ch)) {
+            		continue;
+            	}
+            	unique.add(ch);
+                    map.get(ch).add(mask);
+                }
+            }
+        
+        ArrayList<Integer> res = new ArrayList<>();
+        for (String puzzle : puzzles) {
+        	 int pmask = 0;
+             //make bit mask of every puzzle
+             for (char ch : puzzle.toCharArray()) {
+             	int bit = ch - 'a';
+                 pmask = pmask | ((1 << bit));
+             }
+            //bring out the first character
+            char fch = puzzle.charAt(0);
+            ArrayList<Integer> wordsToCheck =  map.get(fch);
+            int count = 0;
+            for (int wmask : wordsToCheck) {
+                if ((wmask & pmask) == wmask) {
+                    count++;
+                }
+            }
+            res.add(count);
+        }
+        return res;
+    }
+}                  
+
+	                        
+12. FIND TRIPLET
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+	    System.out.println("Enter the value");
+		int n = scn.nextInt();
+        int[] arr = new int[n];
+       
+        for(int i = 0 ; i < arr.length; i++){
+            arr[i] = scn.nextInt();
+        }
+        solution(arr);
+    }
+    
+    public static void solution(int[] arr){
+        int ans = 0;
+        for (int i = 0; i < arr.length; i++) {
+            int xor = arr[i];
+            for (int k = i + 1; k < arr.length; k++) {
+                xor = xor ^ arr[k];
+                if (xor == 0) {
+                    ans += (k - i);
+                }
+            }
+        }
+        System.out.println(ans);
+    }
+	
+	
+}
+	                        		                        
+
+	                        
+13. XOR OF SUM OF ALL PAIRS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static int solution(int[] arr){
+	        int ans = 0;
+	        for(int val: arr){
+	            ans = ans ^ (2 * val);
+	        }
+	        return ans;
+	    }
+		public static void main(String[] args) {
+			Scanner scn = new Scanner(System.in);
+			System.out.println("Enter the value");
+	        int n = scn.nextInt();
+	        int[] arr = new int[n];
+	        for(int i = 0 ; i < n; i++){
+	            arr[i] = scn.nextInt();
+	        }
+	        System.out.println(solution(arr));
+	    }
+	    
+	    
+	}
+
+
+
+14. POWER OF 2
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+		    
+		    int val = (n & (n - 1));
+		    
+		    if(val == 0) {
+		    	 System.out.println(true);
+		    } else {
+			    System.out.println(false);
+		    }
+
+		  }
+
+		}
+
+                	                        	                        
+15. BINARY STRING IS DIVISIBLE BY 3
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    String str = scn.nextLine();
+
+		    int even = 0;
+		    int odd = 0;
+		    for(int i = 0 ; i < str.length(); i++){
+		    	int bit = str.charAt(i) - '0';
+		      if(i % 2 == 0){
+		       
+		          even+= bit;;
+		        }else{
+		          odd+= bit;
+		        }
+		      }
+		    int delta = even - odd;
+		    if(delta % 11 == 0) {
+		    	 System.out.println(true);
+		    } else {
+		    	 System.out.println(false);
+		    }
+		   
+		  }
+
+}				                        
+
+	                        
+16. REDUCE A NUMBER 'N' TO 1 IN MINIMUM STEPS
+package automate;
+import java.io.*;
+import java.util.*;
+
+
+BINARY TO DECIMAL
+
+long res = 0;
+      
+        String num = s;
+        
+        long n = 0;
+        
+        long base = 1;
+        
+        long len = num.length();
+        
+        for(long i = len - 1; i >= 0; i--){
+            if(num.charAt(i) == '1')
+                n += base;
+            base = base*2;
+        }
+
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+			long n = scn.nextInt();
+	        System.out.println(solution(n));
+	    }
+	    
+	    public static int solution(long n) {
+	        int res = 0;
+	      
+	        while(n != 1) {
+	            if(n % 2 == 0) {
+	                n = n / 2;
+	            } else if(n == 3) {
+	            	res = 2;
+	            	break;
+	            } else if ((n & 3) == 1) {
+	            	n = n - 1;
+	            }else if ((n & 3) == 3) {
+	            	n = n + 1;
+	            }
+	           
+	            res ++;
+	        }
+	        return res;
+	    }
+		
+		
+	}                       
+
+		                        
+17. SAME NO OF SET BITS AS THAT OF N
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static long ncr(long n, long r){
+	        if(n < r){
+	            return 0L;    
+	        }
+	        
+	        long res = 1L;
+	        
+	        for(long i = 0L; i < r; i++){
+	            res = res * (n - i);
+	            res = res / (i + 1);
+	        }
+	        
+	        return res;
+	    }
+	    
+	    public static long solution(long n, int k, int i) {
+	        if(i == 0){
+	            return 0;    
+	        }
+	        
+	        long mask = 1L << i;
+	        
+	        long res = 0;
+	        
+	        if((n & mask) == 0){
+	            res = solution(n, k, i - 1);
+	        } else {
+	            long res1 = solution(n, k - 1, i - 1);
+	            long res0 = ncr(i, k);
+	            res = res1 + res0;
+	        }
+	        
+	        return res;
+	    }
+	    
+	    public static int csb(long n){
+	        int res = 0;
+	        
+	        while(n > 0){
+	            long rsb = n & -n;
+	            n -= rsb;
+	            res++;
+	        }
+	        
+	        return res;
+	    }
+	    
+		public static void main(String[] args) {
+		Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        long n = scn.nextLong();
+	        int k = csb(n);
+	        System.out.println(solution(n, k, 63));
+	    }
+		
+		
+	}
+
+	                                              
+
+18. PRINT ABBREVIATIONS USING BIT
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void solve(String str){
+	        for(int i = 0; i < (1 << str.length()); i++){
+	            StringBuilder sb = new StringBuilder();
+	            int count = 0;
+	            
+	            for(int j = 0; j < str.length(); j++){
+	                char ch = str.charAt(j);
+	                int b = str.length() - 1 - j;
+	                
+	                if((i & (1 << b)) == 0){ // check on or off at ith bit
+	                    if(count == 0){
+	                        sb.append(ch);
+	                    } else {
+	                        sb.append(count);
+	                        sb.append(ch);
+	                        count = 0;
+	                    }
+	                } else {
+	                    count++;
+	                }
+	            }
+	            
+	            if(count > 0){
+	                sb.append(count);
+	            }
+	            
+	            System.out.println(sb);
+	        }
+	    }
+	    
+		public static void main(String[] args) {
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        String str = scn.nextLine();
+	        solve(str);
+	    }
+	}
+		                        
+
+19. SWAP ALL ODD AND EVEN BITS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+
+		   
+		    int om = n & 0x55555555;  
+		      int em = n & 0xAAAAAAAA; 
+		      
+		    int odds = (n & om);
+		    int evens = (n & em);
+		    
+
+		    evens >>= 1;   
+		    odds <<= 1;  
+		    
+		    n = odds | evens;
+		    System.out.println(n);  
+		  }
+
+
+		}
+
+20. SUM OF BIT DIFFERENCES AMONG ALL PAIRS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+		    int[] arr = new int[n];
+		    for(int i = 0 ; i < arr.length; i++){
+		      arr[i] = scn.nextInt();
+		    }
+		    System.out.println(solution(arr));
+		  }
+
+		  public static long solution(int[] arr){
+		 
+		    long res = 0;
+		    for (int i = 0; i < 32; i++) { 
+		      int counton = 0; 
+		      
+		      for (int val: arr){ 
+		        if ((val & (1 << i)) != 0){ 
+		            counton++;
+		        }
+		      } 
+		      int countoff = arr.length - counton;
+		     int diff =  counton * countoff * 2;
+		     res += diff;
+		    }  
+		    return res; 
+res/2 for total hamming distance;
+		  }
+
+		}
+
+
+21. UTF-8 ENCODING
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static boolean solution(int[] arr) {
+	        int rbytes = 0;
+	        
+	        for (int val : arr) {
+	           if (rbytes == 0){
+	                if ((val >> 7) == 0b0) {  // 1st byte of 1 length char
+	                    rbytes = 0;
+	                } else if ((val >> 5) == 0b110) { // 1st byte of 2 length char
+	                    rbytes = 1;
+	                } else if ((val >> 4) == 0b1110) { // 1st byte of 3 length char
+	                    rbytes = 2;
+	                } else if ((val >> 3) == 0b11110) { //  1st byte of 4 length char
+	                    rbytes = 3;
+	                } else {
+	                    return false;
+	                }
+	            }   else   {
+	                if ((val >> 6) == 0b10) {
+	                    rbytes--;
+	                } else {
+	                    return false;
+	                }
+	            }
+	        }
+
+	        if (rbytes == 0) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    }
+
+	    public static void main(String[] args) {
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        int n = scn.nextInt();
+	        int[] arr = new int[n];
+	        for (int i = 0; i < n; i++) {
+	            arr[i] = scn.nextInt();
+	        }
+	        System.out.println(solution(arr));
+	    }
+
+	}
+
+
+22. SUDOKU SOLVER
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void display(int[][] arr){
+		    for (int ii = 0; ii < arr.length; ii++) {
+		      for (int jj = 0; jj < arr.length; jj++) {
+		        System.out.print(arr[ii][jj] + " ");
+		      }
+		      System.out.println();
+		    }
+		    System.out.println();
+		  }
+
+		  public static void solveSudoku(int[][] arr, int[] rows, int[] cols, int[][] grid, int i, int j) {
+		    if (i == arr.length) {
+		      display(arr);
+		      return;
+		    }
+
+		    if (arr[i][j] != 0) {
+		      solveSudoku(arr, rows, cols, grid, j == arr[0].length - 1 ?  i + 1 : i, j == arr[0].length - 1 ? 0 : j + 1 );
+		    } else {
+		      for (int num = 1; num <= 9; num++) {
+		        if (((rows[i] & (1 << num)) == 0) && ((cols[j] & (1 << num)) == 0)
+		            && ((grid[i / 3][j / 3] & (1 << num)) == 0)) {
+		          rows[i] ^= (1 << num);
+		          cols[j] ^= (1 << num);
+		          grid[i / 3][j / 3] ^= (1 << num);
+		          arr[i][j] = num;
+		          solveSudoku(arr, rows, cols, grid,  j == arr[0].length - 1 ?  i + 1 : i, j == arr[0].length - 1 ? 0 : j + 1);
+		          arr[i][j] = 0;
+		          grid[i / 3][j / 3] ^= (1 << num);
+		          cols[j] ^= (1 << num);
+		          rows[i] ^= (1 << num);
+		        }
+		      }
+		    }
+		  }
+
+		  public static void main(String[] args) throws Exception {
+		    Scanner scn = new Scanner(System.in);
+		    int[][] arr = new int[9][9];
+		    int[] rows = new int[9];
+		    int[] cols = new int[9];
+		    int[][] grid = new int[3][3];
+		    System.out.println("Enter the value");
+		    for (int i = 0; i < 9; i++) {
+		      for (int j = 0; j < 9; j++) {
+		  
+		        int digit = scn.nextInt();
+		     
+		        arr[i][j] = digit;
+		        rows[i] |= (1 << digit);
+		        cols[j] |= (1 << digit);
+		        grid[i / 3][j / 3] |= (1 << digit);
+		      }
+		    }
+
+		    solveSudoku(arr, rows, cols, grid, 0, 0);
+		  }
+
+		}
+
+                  
+	                                     		                        	                        		                        
+23. COPY SET BITS IN A RANGE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int a = scn.nextInt();
+		    int b = scn.nextInt();
+		    int left = scn.nextInt();
+		    int right = scn.nextInt();
+
+		    int mask = (1 << (right - left + 1)) ;
+		    mask--;
+		    mask = (mask << (left - 1));
+		    mask = (mask & a);
+		    b |= mask;
+		    System.out.println(b);
+		    
+		  }
+
+		}
+	                         
+	                        
+24. N QUEENS PROBLEM USING BIT
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	public static void solution(boolean[][] board, int row, int cols, int ndiag, int rdiag, String asf) {
+	    if (row == board.length) {
+	      System.out.println(asf + ".");
+	      return;
+	    }
+
+	    for (int col = 0; col < board.length; col++) {
+	      if ((cols & (1 << col)) == 0 && (ndiag & (1 << (row + col))) == 0 && (rdiag & (1 << (row - col + board.length - 1))) == 0) {
+	        board[row][col] = true;
+	        cols ^= (1 << col);
+	        ndiag ^= (1 << (row + col));
+	        rdiag ^= (1 << (row - col + board.length - 1));
+	        solution(board, row + 1, cols, ndiag, rdiag, asf + row + "-" + col + ", ");
+	        board[row][col] = false;
+	        cols ^= (1 << col);
+	        ndiag ^= (1 << (row + col));
+	        rdiag ^= (1 << (row - col + board.length - 1));
+	      }
+	    }
+	  }
+
+	  public static void main(String[] args) throws Exception {
+	    Scanner scn = new Scanner(System.in);
+	    System.out.println("Enter the value");
+	    int n = scn.nextInt();
+	    boolean[][] board = new boolean[n][n];
+	    int cols = 0;
+	    int ndiag = 0;
+	    int rdiag = 0;
+	    solution(board, 0, cols, ndiag, rdiag, "");
+	  }
+
+	}
+
+25. SOLVE 7N/8
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args){
+    Scanner scn = new Scanner(System.in);
+    int n = scn.nextInt();
+    System.out.println(((n << 3) - n) >> 3);
+  }
+
+
+}
+	                        
+
+26. FIND ELEMENT THAT APPEAR ONCE WHILE ALL OTHER APPEAR THRICE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	int o = 0;
+        int t = 0;
+        
+        for(int x: nums){
+            int oo = ((~t)&o&(~x)) | ((~t)&(~o)&x);
+            int tt = (t&(~o)&(~x)) | ((~t)&o&x);
+            
+            o = oo;
+            t = tt;
+        }
+        return o;
+
+
+27. COUNT SET BITS IN FIRST 'N' NATURAL NUMBERS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	  public static void main(String[] args) {
+          Scanner scn = new Scanner(System.in);
+          System.out.println("Enter the value");
+          int n = scn.nextInt();
+          System.out.println(solution(n));
+
+      }
+
+      public static int solution(int n) {
+          if (n == 0) {
+              return 0;
+          }
+
+          int x = largestPowerOf2inrange(n);
+          int btill2x = x * (1 << (x - 1));
+          int msb2xton = n - (1 << x) + 1;
+          int rest = n - (1 << x);
+          int ans = btill2x + msb2xton + solution(rest);
+          return ans;
+
+      }
+
+      public static int largestPowerOf2inrange(int n) {
+          int x = 0;
+
+          while ((1 << x) <= n) {
+              x++;
+          }
+
+          return x - 1;
+      }
+  }
+
+
+                      
+28. REVERSE BITS USING BIT MANIPULATION
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void main(String[] args){
+		    Scanner scn = new Scanner(System.in);
+		    System.out.println("Enter the value");
+		    int n = scn.nextInt();
+		    
+		    boolean flag = false;
+		    int rev = 0;
+		    int j = 0;
+		    
+		    for(int i = 31; i >= 0; i--){
+		    	int mask = (1 << i);
+		    	
+		     if(flag) {
+		    	 if((n & mask) != 0) {
+		    		 System.out.print(1);
+		    		 
+		    		 int smask = (1 << j);
+		    		 rev |= smask;
+		    	 } else {
+		    		 System.out.print(0);
+		    	 }
+		    	 j++;
+		     } else {
+		    	 if((n & mask) != 0) {
+		    		 flag = true;
+		    		 System.out.print(1);
+		    		 
+		    		 int smask = (1 << j);
+		    		 rev |= smask;
+		    		 j++;
+		    	 } else {
+		    		 
+		    	 }
+		     }
+		}
+		    System.out.println();
+		    System.out.println(rev);
+	 }
+}	 
+
+
+29. MINIMUM XOR PAIRS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 public static void solution(int[] arr) {
+	        Arrays.sort(arr);
+	        
+	        ArrayList<String> res = new ArrayList<>();
+	        int min = Integer.MAX_VALUE;
+	        
+	       
+	        for(int i = 0; i < arr.length - 1; i++){
+	        	int xor = arr[i] ^ arr[i + 1];
+	        	
+	           if(xor < min) {
+	        	   min = xor;
+	        	   res = new ArrayList<>();
+	        	   res.add(arr[i] + ", " + arr[i + 1]);
+	           } else if (xor == min) {
+	        	   res.add(arr[i] + ", " + arr[i + 1]);
+	           }
+	        }
+	        
+	        for(String val: res){
+	            System.out.println(val);
+	        }
+	    }
+		public static void main(String[] args) {
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        int n = scn.nextInt();
+	        int[] arr = new int[n];
+	        for(int i = 0 ; i < n; i++){
+	            arr[i] = scn.nextInt();
+	        }
+	        solution(arr);
+	    }
+	    
+	    
+	}
+
+
+	                                   
+30. PALINDROMIC BINARY REPRESENTATION
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	  public static int revBin(int n) {
+	        int rev = 0;
+	        while (n > 0) {
+	            int m = (n & 1);
+	            rev |= m;
+	            n = n >> 1;
+	            rev = rev << 1;
+	        }
+	        return (rev >> 1);
+	    }
+
+	    public static int NthPalindromicBinary(int n) {
+	        int count = 1;
+	        int len = 1;
+	        while (count < n) {
+	            len++;
+	            int elementsForThisLen = (1 << (len - 1) / 2);
+	            count += elementsForThisLen;
+	        }
+	        count -= (1 << (len - 1) / 2);
+	        int offset = n - count - 1;
+
+	        int ans = (1 << (len - 1));
+	        ans |= (offset << (len / 2));
+	        
+	        
+	        int val = ans >> (len / 2);
+	        int rev = revBin(val);
+
+	        ans |= rev;
+	        
+	        return ans;
+	    }
+
+	    public static void main(String[] args) {
+	        Scanner scn = new Scanner(System.in);
+	        System.out.println("Enter the value");
+	        int n = scn.nextInt();
+	        System.out.println(NthPalindromicBinary(n));
+	    }
+
+	}
+
+
+31. XOR QUERIES SUBARRAY
+
+class Solution {
+    public int[] xorQueries(int[] arr, int[][] q) {
+        int n = arr.length;
+        int qs = q.length;
+        int[] prefXor = new int[n];
+        prefXor[0] = arr[0];
+        for(int i=1; i< n; i++){
+            prefXor[i] = prefXor[i-1] ^ arr[i];
+        }
+        
+        int[] ans = new int[qs];
+        
+        for(int i=0; i< qs; i++){
+            int l = q[i][0];
+            int r = q[i][1];
+            if(l==0) ans[i] = prefXor[r];
+            else ans[i] = prefXor[r] ^ prefXor[l-1];
+        }
+        return ans;
+    }
+}
+
+
+32. MIN FLIPS TO MAKE A OR B EQUAL C
+
+class Solution {
+    public int minFlips(int a, int b, int c) {
+        int ans = 0;
+        
+        for(int i=0; i< 32; i++){
+            boolean ai = false;
+            boolean bi = false;
+            boolean ci = false;
+            
+            if((a & (1 << i)) > 0) ai = true;
+            if((b & (1 << i)) > 0) bi = true;
+            if((c & (1 << i)) > 0) ci = true;
+            
+            if(ci){
+                if(!ai && !bi) ans++;
+            } else {
+                if(ai && bi) ans += 2;
+                else if(ai || bi) ans++;
+            }
+        }
+        return ans;
+    }
+}                        
+
+
+	                                   		                        
+	                        

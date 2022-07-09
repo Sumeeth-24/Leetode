@@ -1,0 +1,3400 @@
+EVALUATE DIVISION
+
+class Solution {
+    private  Map<String, Map<String, Double>> makeGraph(List<List<String>> e, double[] values){
+        // build a graph
+        // like a -> b = values[i]
+        // and b -> a  = 1.0 / values[i];
+        Map<String, Map<String, Double>> graph = new HashMap<>();
+        String u, v;
+        
+        for(int i = 0; i < e.size(); i++){
+            u = e.get(i).get(0);
+            v = e.get(i).get(1);
+            
+            graph.putIfAbsent(u, new HashMap<>());
+            graph.get(u).put(v, values[i]);
+            
+            graph.putIfAbsent(v, new HashMap<>());
+            graph.get(v).put(u, 1/values[i]);
+            
+        }
+        return graph;
+    }
+    
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        Map<String, Map<String, Double>> graph = makeGraph(equations, values);
+        
+        double []results = new double[queries.size()];
+        
+        for(int i = 0; i < queries.size(); i++){
+            String dividend = queries.get(i).get(0);
+            String divisor  = queries.get(i).get(1);
+            
+            if(!graph.containsKey(dividend) || !graph.containsKey(divisor)){
+                results[i] = -1.0;
+            }else if(dividend == divisor){
+                results[i] = 1.0;
+            }else{
+                results[i] = dfs(dividend, divisor,  new HashSet(), graph);
+            }
+        }
+        
+        
+        return results;
+    }
+    
+    public double dfs(String src, String dest, Set<String> visited, Map<String, Map<String, Double>> graph){
+        // check the terminated Case
+        // if string is not present in graph return -1.0;
+        // like [a, e] or [x, x] :)
+        if(graph.containsKey(src ) == false)
+            return -1.0;
+        
+        // simply say check src and dest are equal :) then return dest 
+        // store it in weight varaible;
+        //case like [a,a] also handle
+        if(graph.get(src).containsKey(dest)){
+            return graph.get(src).get(dest);
+        }
+        
+        visited.add(src);
+        
+        for(Map.Entry<String, Double> nbr : graph.get(src).entrySet()){
+            if(visited.contains(nbr.getKey()) == false){
+                double weight = dfs(nbr.getKey(), dest, visited, graph);
+                
+                // if weight is not -1.0(terminate case)
+                // then mutliply it 
+                // like in querie   a -> c => 2 * 3 = 6
+                if(weight != -1.0){
+                    return nbr.getValue() * weight;
+                }
+            }
+        }
+        return -1.0;
+    }
+}
+
+FIND THE TOWN JUDGE
+
+class Solution {
+    public int findJudge(int n, int[][] trust) {
+        //if trust relationship is represented by edges
+        //town judge as a node should have n-1 indegree, outdegree is 0
+        //do we need an actual adj list? Nope since we don't care who are the neighbors
+        //we only care about counts
+        //parallel arrays, one for indegree counts, the other for outdegree counts based
+        //on the trust edges given
+        
+        int[] in = new int[n+1];
+        int[] out = new int[n+1];
+        
+        for (int i = 0; i < trust.length; i++)
+        {
+            int[] edge = trust[i];
+            out[edge[0]]++;
+            in[edge[1]]++;
+        }
+        
+        for (int i = 1; i < n+1; i++)
+        {
+            if (in[i] == n-1 && out[i] == 0)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+NETWORK DELAY TIME (BELLMAN FORD ) O(VE)  DIAJKSTRA IS O((V+E)LogV)
+
+class Solution {
+    public int networkDelayTime(int[][] times, int n, int k) {
+        int dist[] = new int[n + 1];
+       Arrays.fill(dist, Integer.MAX_VALUE);
+       dist[k] = 0;
+
+       for(int i = 0; i<n; i++){
+           boolean status = false;
+           for(int j=0; j<times.length; j++){
+               int u = times[j][0];
+               int v = times[j][1];
+               int weight = times[j][2];
+
+               int cumulativeWeight = dist[u] + weight;
+
+               if(dist[u] != Integer.MAX_VALUE && cumulativeWeight < dist[v]){
+                   dist[v] = cumulativeWeight;
+                   status = true;
+               }
+
+           }
+           
+           if(!status){
+               break;
+           }
+       }
+
+       int max = Integer.MIN_VALUE;
+
+       for(int i=1; i<n+1; i++){
+            if(dist[i] == Integer.MAX_VALUE){
+                return -1;
+            }
+            max = Math.max(max, dist[i]);
+       }
+
+        return max;
+    }
+}
+
+
+CHEAPEST FLIGHT WITHIN K STOPS
+
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        // O(E*k), where E <- number of edges
+        
+        int[] costArray = new int[n];
+        int[] tempCost = new int[n];
+        Arrays.fill(costArray, Integer.MAX_VALUE);
+        Arrays.fill(tempCost, Integer.MAX_VALUE);
+        costArray[src] = 0;
+        tempCost[src] = 0;
+        
+        // Loop k+1 times, for k+1 edges
+        for (int i=0; i<k+1; i++) {
+            
+            for (int edge=0; edge<flights.length; edge++) {
+                int source = flights[edge][0], dest = flights[edge][1], cost = flights[edge][2];
+                
+                if (costArray[source]!= Integer.MAX_VALUE && costArray[source] + cost < tempCost[dest]) {
+                    tempCost[dest] = costArray[source] + cost;
+                }
+            }
+            
+            costArray = Arrays.copyOf(tempCost, tempCost.length);
+            
+        }
+        
+        return costArray[dst] == Integer.MAX_VALUE ? -1 : costArray[dst];
+    }
+}
+
+MOTHER VERTEX
+
+public class Main{
+    	public static void main(String args[]) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String[] st = br.readLine().split(" ");
+		int n = Integer.parseInt(st[0]);
+		int m = Integer.parseInt(st[1]);
+
+		ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			graph.add(new ArrayList<>());
+		}
+
+		for (int i = 0; i < m; i++) {
+			st = br.readLine().split(" ");
+			int u = Integer.parseInt(st[0]) - 1;
+			int v = Integer.parseInt(st[1]) - 1;
+			graph.get(u).add(v);
+		}
+
+		System.out.println(findMotherVertex(n, graph));
+	}
+    public static int findMotherVertex(int N, ArrayList<ArrayList<Integer>>adj){
+        Stack<Integer> stack = new Stack<>();
+		boolean[] visited = new boolean[N];
+		for (int i = 0; i < N; i++) {
+			if (!visited[i]) {
+				dfs(adj, visited, i, stack);
+			}
+		}
+		count=0;
+		visited = new boolean[N];
+		int ans = stack.pop();
+		dfs(adj,visited,ans);
+		if(count == N){
+		 return ans+1;
+		}else{
+		   return -1;
+		}
+		
+    }
+   static int count;
+
+   public static void dfs(ArrayList<ArrayList<Integer>> graph, boolean[] visited, int cur) {
+		visited[cur] = true;
+		count++;
+		for (Integer neighbour : graph.get(cur)) {
+			if (!visited[neighbour]) {
+				dfs(graph, visited, neighbour);
+			}
+		}
+	}
+    public static void dfs(ArrayList<ArrayList<Integer>> graph, boolean[] visited, int cur, Stack<Integer> stack) {
+		visited[cur] = true;
+		for (Integer neighbour : graph.get(cur)) {
+			if (!visited[neighbour]) {
+				dfs(graph, visited, neighbour, stack);
+			}
+		}
+		stack.push(cur);
+	}
+}
+
+
+BRIDGES IN GRAPH
+
+import java.util.*; 
+O(N+E) DFS TC
+class Main
+{
+
+	private void dfs(int node, int parent, int vis[], int tin[], int low[], ArrayList<ArrayList<Integer>> adj, int timer) {
+		vis[node] = 1; 
+		tin[node] = low[node] = timer++; 
+
+		for(Integer it: adj.get(node)) {
+			if(it == parent) continue; 
+
+			if(vis[it] == 0) {
+				dfs(it, node, vis, tin, low, adj, timer); 
+				low[node] = Math.min(low[node], low[it]); 
+
+				if(low[it] > tin[node]) {
+					System.out.println(it + " " +node); 
+				}
+			} else {
+				low[node] = Math.min(low[node], tin[it]); 
+			}
+		}
+	}
+    void printBridges(ArrayList<ArrayList<Integer>> adj, int n)
+    {
+        int vis[] = new int[n]; 
+        int tin[] = new int[n];
+        int low[] = new int[n]; // I AM THE LOWEST INSERTION TIME AMONG ALL ITS ADJACENT
+
+        int timer = 0; 
+        for(int i = 0;i<n;i++) {
+        	if(vis[i] == 0) {
+        		dfs(i, -1, vis, tin, low, adj, timer); 
+        	}
+        }
+    }
+
+
+
+ARTICULATION POINTS
+
+class Main
+{
+
+	private void dfs(int node, int parent, int vis[], int tin[], int low[], ArrayList<ArrayList<Integer>> adj, int timer, int isArticulation[]) {
+		vis[node] = 1; 
+		tin[node] = low[node] = timer++; 
+		int child = 0; 
+		for(Integer it: adj.get(node)) {
+			if(it == parent) continue; 
+
+			if(vis[it] == 0) {
+				dfs(it, node, vis, tin, low, adj, timer, isArticulation); 
+				low[node] = Math.min(low[node], low[it]); 
+
+				if(low[it] >= tin[node] && parent != -1) {
+					isArticulation[node] = 1;  
+				}
+				child++; 
+			} else {
+				low[node] = Math.min(low[node], tin[it]); 
+			}
+		}
+		if(parent != -1 && child > 1) isArticulation[node] = 1;  
+	}
+    void printBridges(ArrayList<ArrayList<Integer>> adj, int n)
+    {
+        int vis[] = new int[n]; 
+        int tin[] = new int[n];
+        int low[] = new int[n]; 
+        
+        int isArticulation[] = new int[n];
+
+        int timer = 0; 
+        for(int i = 0;i<n;i++) {
+        	if(vis[i] == 0) {
+        		dfs(i, -1, vis, tin, low, adj, timer, isArticulation); 
+        	}
+        }
+        
+        for(int i = 0;i<n;i++) {
+            if(isArticulation[i] == 1) System.out.println(i); 
+        }
+    }
+
+
+ALIEN DICTIONARY
+
+
+class Solution
+{
+    public String findOrder(String [] words, int N, int K)
+    {
+       Map<Character, Set<Character>> map = new HashMap<Character, Set<Character>>();
+    Map<Character, Integer> degree = new HashMap<Character, Integer>();
+    String result = "";
+    if (words == null || words.length == 0)
+      return result;
+    for (String s : words) {
+      for (char c : s.toCharArray()) {
+        degree.put(c, 0);
+      }
+    }
+    for (int i = 0; i < words.length - 1; i++) {
+      boolean flag = false;
+      String cur = words[i];
+      String next = words[i + 1];
+      int length = Math.min(cur.length(), next.length());
+      for (int j = 0; j < length; j++) {
+        char c1 = cur.charAt(j);
+        char c2 = next.charAt(j);
+        if (c1 != c2) {
+          Set<Character> set = new HashSet<Character>();
+          if (map.containsKey(c1))
+            set = map.get(c1);
+          if (!set.contains(c2)) {
+            set.add(c2);
+            map.put(c1, set);
+            degree.put(c2, degree.get(c2) + 1);
+          }
+          flag = true;
+          break;
+        }
+      }
+
+      if (flag == false && next.length() < cur.length()) {
+        return "";
+      }
+    }
+    Queue<Character> q = new LinkedList<Character>();
+    for (char c : degree.keySet()) {
+      if (degree.get(c) == 0)
+        q.add(c);
+    }
+    while (!q.isEmpty()) {
+      char c = q.remove();
+      result += c;
+      if (map.containsKey(c)) {
+        for (char c2 : map.get(c)) {
+          degree.put(c2, degree.get(c2) - 1);
+          if (degree.get(c2) == 0)
+            q.add(c2);
+        }
+      }
+    }
+
+    if (result.length() != degree.size()) {
+      return "";
+    }
+
+    return result;
+        
+        
+    }
+}
+COURSE SCHEDULE
+
+class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        List<Integer>[] graph = new ArrayList[numCourses];
+        
+        for(int i=0; i< numCourses; i++){
+            graph[i] = new ArrayList<>();
+        }
+        
+        int[] inDegree = new int[numCourses];
+        
+        for (int i = 0; i < prerequisites.length; i++) {
+            graph[prerequisites[i][1]].add(prerequisites[i][0]);
+            inDegree[prerequisites[i][0]]++; 
+        }
+        
+        Queue<Integer> q = new LinkedList<>();
+        for(int i=0; i< numCourses; i++){
+            if(inDegree[i] == 0)
+                q.add(i);
+        }
+        
+        while(!q.isEmpty()){
+            int current = q.poll();
+            for(int c : graph[current]){
+                inDegree[c]--;
+                
+                if(inDegree[c] == 0)
+                    q.add(c);
+            }
+            numCourses--;
+        }
+        
+        return numCourses == 0;
+    }
+}
+
+
+COURSE SCHEDULE II
+
+class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        int[] order = new int[numCourses];
+        int index = 0;
+        
+        List<Integer>[] graph = new ArrayList[numCourses];
+        
+        for(int i=0; i< numCourses; i++){
+            graph[i] = new ArrayList<>();
+        }
+        
+        int[] inDegree = new int[numCourses];
+        
+        for (int i = 0; i < prerequisites.length; i++) {
+            graph[prerequisites[i][1]].add(prerequisites[i][0]);
+            inDegree[prerequisites[i][0]]++; 
+        }
+        
+        Queue<Integer> q = new LinkedList<>();
+        for(int i=0; i< numCourses; i++){
+            if(inDegree[i] == 0){
+                q.add(i);
+                order[index++] = i;
+        }
+      }
+        
+        while(!q.isEmpty()){
+            int current = q.poll();
+            for(int c : graph[current]){
+                inDegree[c]--;
+                
+                if(inDegree[c] == 0){
+                    q.add(c);
+                order[index++] = c;
+            }
+            } 
+        }
+        
+        return index ==  numCourses ? order : new int[0];
+    }
+}
+
+ALL ANCESTOR OF A NODE IN DAG
+
+class Solution {
+    public List<List<Integer>> getAncestors(int n, int[][] edges) {
+         List<Set<Integer>> parents = new ArrayList<>();
+        List<Integer>[] adj = new ArrayList[n];//graph as adjasency matrix
+        
+        for(int i = 0; i < n; ++i){
+            parents.add(new HashSet<>());
+            adj[i] = new ArrayList<>();
+        }
+        int in[] = new int[n];
+        for(int i[] : edges){
+            in[i[1]]++;
+            adj[i[0]].add(i[1]);
+        }
+        
+        Queue<Integer> q = new LinkedList<>();
+        for(int i = 0; i < n; ++i){
+            if(in[i] == 0)
+                q.add(i);
+        }
+        
+        while(!q.isEmpty()){
+            int ele = q.poll();
+            for(int neigh : adj[ele]){
+                parents.get(neigh).addAll(parents.get(ele));
+                parents.get(neigh).add(ele);
+                
+                in[neigh]--;
+                if(in[neigh] == 0)
+                    q.add(neigh);
+                
+            }
+        }
+        
+        List<List<Integer>> list = new ArrayList<>();
+        int i = 0;
+        for(Set<Integer> s : parents){
+            list.add(new ArrayList<>(s));
+            Collections.sort(list.get(i));
+            ++i;
+        }
+        return list;
+    }
+}
+
+COURSE SCHEDULE III
+Input: courses = [[100,200],[200,1300],[1000,1250],[2000,3200]]
+Output: 3
+
+class Solution {
+    public int scheduleCourse(int[][] courses) {
+        // Sort courses by last day in ascending order.
+        Arrays.sort(courses, (c1, c2) -> Integer.compare(c1[1], c2[1]));
+        // Max Heap to track the max duration courses
+        PriorityQueue<Integer> pq = new PriorityQueue<>((d1, d2) -> Integer.compare(d2, d1));
+        int timeElapsed = 0;
+        for (int[] course : courses) {
+            if(timeElapsed + course[0] <= course[1]){
+                pq.offer(course[0]);
+                timeElapsed += course[0];
+            }else if(!pq.isEmpty() && pq.peek() > course[0]){
+                timeElapsed = timeElapsed - pq.poll();
+                pq.offer(course[0]);
+                timeElapsed = timeElapsed + course[0];
+            } else {
+                // reject the course
+            }
+        }
+        return pq.size();
+    }
+}
+
+
+FIND ALL RECIPES FROM GIVEN SUPPLIES
+Input: recipes = ["bread","sandwich","burger"], ingredients = [["yeast","flour"],["bread","meat"],["sandwich","meat","bread"]], supplies = ["yeast","flour","meat"]
+Output: ["bread","sandwich","burger"]
+Explanation:
+We can create "bread" since we have the ingredients "yeast" and "flour".
+We can create "sandwich" since we have the ingredient "meat" and can create the ingredient "bread".
+We can create "burger" since we have the ingredient "meat" and can create the ingredients "bread" and "sandwich".
+
+class Solution {
+    public List<String> findAllRecipes(String[] recipes, List<List<String>> ingredients, String[] supplies) {
+    
+        List<String> allRecipes= new ArrayList();
+        Map<String, Integer> map = new HashMap();
+        List<String> supplyList = new ArrayList();
+        
+        for(String supply: supplies){
+            supplyList.add(supply);
+        }
+        
+        for(int i = 0;i<recipes.length;i++){
+            map.put(recipes[i], i);
+        }
+        Queue<Integer> queue = new LinkedList();
+        int [] degree = new int[recipes.length];
+        ArrayList<String> [] recipeEdges = new ArrayList[recipes.length];
+        
+        for(int i = 0;i<recipes.length;i++){
+            recipeEdges[i] = new ArrayList<String>();
+        }
+		
+		 // Create the adjacency list representation of the graph
+        for(int i = 0;i<ingredients.size();i++){
+            List<String> currIngredients = ingredients.get(i);
+            for(int j = 0;j<currIngredients.size();j++){
+                if(map.containsKey(currIngredients.get(j))){
+				      // Record in-degree of each vertex
+                    degree[i]++;
+                    recipeEdges[map.get(currIngredients.get(j))].add(recipes[i]);
+                    
+                }
+            }
+        }
+        
+        // Add all vertices with 0 in-degree to the queue
+       for(int i = 0;i<degree.length;i++){
+           if(degree[i] == 0){
+               queue.add(i);
+           }
+       }
+        
+		 // Process until the Q becomes empty
+        while(!queue.isEmpty()){
+            
+            int currRecipe = queue.poll();
+            //If indegree is 0 check if supplyList contains all ingredients for the recipe, if it does add the recipe itself to the supply            chain
+            if(supplyList.containsAll(ingredients.get(currRecipe))){
+               supplyList.add(recipes[currRecipe]);
+               allRecipes.add(recipes[currRecipe]);
+            }
+			 // Reduce the in-degree of each neighbor by 1  and If in-degree of a neighbor becomes 0, add it to the Q
+            for(String node : recipeEdges[currRecipe]){
+                if(--degree[map.get(node)] == 0){
+                    queue.add(map.get(node));                    
+          
+                }
+            }
+            
+        }
+                                
+       return allRecipes;
+}
+}
+
+
+
+PROCESS TASKS USING SERVERS
+
+class Solution {
+    public int[] assignTasks(int[] servers, int[] tasks) {
+         PriorityQueue<int[]> free = new PriorityQueue<>((s1, s2) -> 
+            s1[1] == s2[1] ? s1[0] - s2[0] : s1[1] - s2[1]);
+        PriorityQueue<int[]> work = new PriorityQueue<>((s1, s2) -> {
+           if (s1[2] == s2[2]) {
+               return s1[1] == s2[1] ? s1[0] - s2[0] : s1[1] - s2[1];
+           } else {
+               return s1[2] - s2[2];
+           }
+        });
+        
+        int n = servers.length;
+        for (int i = 0; i < n; i++) {
+            free.add(new int[]{i, servers[i], 0});
+        }
+        
+        int m = tasks.length;
+        int[] res = new int[m];
+        for (int i = 0; i < m; i++) {
+            // check if the first "work" server we could set free
+            // if running time <= current second
+            while (!work.isEmpty() && work.peek()[2] <= i) {
+                // not forget to add back free queue
+                free.add(work.poll());
+            }
+            
+            // if there are free servers, use server from it
+            if (!free.isEmpty()) {
+                int[] server = free.poll();
+                // update time as current + required
+                server[2] = i + tasks[i];
+                work.add(server);
+                res[i] = server[0];
+            } else {
+                // if no available free servers, we poll the next-avaiable work one
+                int[] server = work.poll();
+                // update the time
+                server[2] += tasks[i];
+                work.add(server);
+                // update the "enqueue" time
+                res[i] = server[0];
+            }
+        }
+        
+        return res;
+    }
+}
+
+
+ALL PATHS FROM SOURCE TO TARGET
+
+class Solution {
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        int startIndex = 0;
+        int endIndex = graph.length - 1;
+        
+        List<List<Integer>> ans = new ArrayList<>();
+        
+        Queue<List<Integer>> q = new LinkedList<>();
+        
+        
+        q.add(Arrays.asList(startIndex));
+        
+        while(!q.isEmpty()) {
+            int size = q.size();
+            while(size-- > 0){
+                List<Integer> headList = q.poll();
+                
+                if(headList.get(headList.size() - 1) == endIndex)
+                {
+                    ans.add(headList);
+                }
+                
+                int lastNode = headList.get(headList.size() - 1);
+                
+                for(int connection : graph[lastNode]){
+                    List<Integer> copylist = new ArrayList<>(headList);
+                    copylist.add(connection);
+                    q.add(copylist);
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+
+PATH WITH MAXIMUM PROBABILITY
+
+class Solution {
+    
+   class Pair {
+	int node;
+	double prob;
+       
+	Pair(int node, double prob) {
+		this.node = node;
+		this.prob = prob;
+	}
+}
+
+public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
+
+	// build graph -> double[0]: node, double[1]: parent-to-node prob
+	Map<Integer, List<double[]>> map = new HashMap<>();
+	for (int i = 0; i < edges.length; ++i) {
+		int[] edge = edges[i];
+
+		map.putIfAbsent(edge[0], new ArrayList<>());
+		map.putIfAbsent(edge[1], new ArrayList<>());
+
+		map.get(edge[0]).add(new double[] {edge[1], succProb[i]});
+		map.get(edge[1]).add(new double[] {edge[0], succProb[i]});
+	}
+
+	double[] probs = new double[n];  // best prob so far for each node
+	PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> (((Double) b.prob).compareTo((Double) a.prob)));
+	pq.add(new Pair(start, 1.0));
+
+	while (!pq.isEmpty()) {
+
+		Pair state = pq.poll();
+		int parent = state.node;
+		double prob = state.prob;
+
+		if (parent == end) return prob;
+
+		for (double[] child : map.getOrDefault(parent, new ArrayList<>())) {
+			// add to pq only if: it can make a better prob
+			if (probs[(int) child[0]] >= prob * child[1]) continue;
+
+			pq.add(new Pair((int) child[0], prob * child[1]));
+			probs[(int) child[0]] = prob * child[1];
+		}
+
+	}
+
+	return 0;
+  }
+
+NO OF PROVINCES
+
+class Solution {
+    
+    // used optimized union find data structure for finding number of disjoint sets
+    public int findCircleNum(int[][] isConnected) {
+        int n=isConnected.length;
+        int[] root = new int[n];
+        int[] rank = new int[n];
+        
+        for(int i=0;i<n; i++) { 
+            root[i]=i; // marking every node as its own root
+            rank[i]=1; // rank of each vertex is default 1
+        }
+        
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                if(isConnected[i][j]==1) {
+                    union(root, rank, i, j);
+                    
+                }
+            }
+        }
+        
+        
+        Set<Integer> distinctRoots = new HashSet<>();
+        for(int thisRoot: root) {
+            distinctRoots.add(find(root, thisRoot));
+        }
+        return distinctRoots.size();
+    }
+    
+    public int find(int[] root, int x) { // path compressed find operation O(LOGN)
+        if(x == root[x]) {
+            return x;
+        }
+        int temp = find(root, root[x]);
+        root[x] = temp;
+        return temp;
+    }
+    
+    public void union(int[] root, int[] rank, int x, int y) { // union operation by rank  O(LOGN)
+        int rootX = find(root, x);
+        int rootY = find(root, y);
+        if(rootX==rootY) {
+            return; // they are already connected
+        }
+        if(rank[rootX] > rank[rootY]) {
+            root[rootY] = rootX; /* rootX becomes root, rank of rootX remains unchanged, rank of rootY doesn't matter because its not a root anymore */
+        } else if(rank[rootX] < rank[rootY]) {
+            root[rootX] = rootY; /* rootY becomes root, rank of rootY remains unchanged, rank of rootX doesn't matter because its not a root anymore */
+        } else {
+            root[rootY] = rootX; // random chosen one of them
+            rank[rootX]++; // we chose rootX to be new root after union, increment its rank
+        }
+    }
+    
+}
+
+
+SATISFIABILITY OF EQUATIONS
+
+class Solution {
+    static int[] parent;
+  static int[] rank;
+    public boolean equationsPossible(String[] equations) {
+        parent = new int[26];
+        rank = new int[26];
+        for (int i = 0; i < 26; ++i) {
+          parent[i] = i;
+          rank[i] = 1;
+    }
+        
+         for (String e : equations) {
+      if (e.charAt(1) == '=') {
+        union(e.charAt(0) - 'a', e.charAt(3) - 'a');
+      }
+    }
+
+    for (String e : equations) {
+      if (e.charAt(1) == '!' ){
+          int lx =  find(e.charAt(0) - 'a');
+          int ly = find(e.charAt(3) - 'a') ;
+      
+          if(lx == ly){
+              return false;
+          }
+        
+      }
+    }
+
+    return true;
+  }
+    
+        
+        public static void union(int x, int y) {
+    int lx = find(x);
+    int ly = find(y);
+
+    if (lx != ly) {
+      if (rank[lx] > rank[ly]) {
+        parent[ly] = lx;
+      } else if (rank[lx] < rank[ly]) {
+        parent[lx] = ly;
+      } else {
+        parent[lx] = ly;
+        rank[ly]++;
+      }
+    }
+
+  }
+        
+        
+         public static int find(int x) {
+    if (x == parent[x]) {
+      return x;
+    }
+
+    int temp = find(parent[x]);
+    parent[x] = temp;
+    return temp;
+  }
+        
+        
+    }
+
+SMALLEST STRING WITH SWAPS
+Input: s = "cba", pairs = [[0,1],[1,2]] => 0-1-2
+Output: "abc"
+Explaination: 
+Swap s[0] and s[1], s = "bca"
+Swap s[1] and s[2], s = "bac"
+Swap s[0] and s[1], s = "abc"
+
+class Solution {
+    int[] parent;
+    int[] rank;
+    
+    public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) {
+        int n =s.length();
+        parent = new int[n];
+        rank = new int[n];
+        
+        for(int i = 0; i<n; i++){
+            parent[i] = i;
+            rank[i] = 1;
+        }
+        
+        for(List<Integer> v : pairs){
+            union(v.get(0), v.get(1));  // union of all the pairs that can be swappped
+        }
+        
+        
+        StringBuilder sb = new StringBuilder();
+        Map<Integer, Queue<Character>> map = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            find(i); 
+            Queue<Character> pq = map.getOrDefault(parent[i], new PriorityQueue<>());
+            pq.offer(s.charAt(i));
+            map.put(parent[i], pq);
+        }
+        for (int i = 0; i < n; i++) {
+            Queue<Character> pq = map.get(parent[i]);
+            sb.append(pq.poll());
+        }    
+        return sb.toString();
+    }
+    
+   public void union(int a, int b){
+        int lx = find(a);
+        int ly = find(b);
+
+        if (lx != ly) {
+          if (rank[lx] > rank[ly]) {
+            parent[ly] = lx;
+          } else if (rank[lx] < rank[ly]) {
+            parent[lx] = ly;
+          } else {
+            parent[lx] = ly;
+            rank[ly]++;
+          }
+        }
+    }
+    
+  public  int find(int x){
+       if (x == parent[x]) {
+           return x;
+        }
+
+        int temp = find(parent[x]);
+        parent[x] = temp;
+        return temp;
+        }
+}
+
+
+
+
+SENTENCE SIMILARITY
+
+ static HashMap<String, String> parent;
+  static HashMap<String, Integer> rank;
+
+  public static boolean areSentencesSimilarTwo(String[] Sentence1, String[] Sentence2, String[][] pairs) {
+    rank = new HashMap<>();
+    parent = new HashMap<>();
+    if (Sentence1.length != Sentence2.length) {
+      return false;
+    }
+    parent = new HashMap<>();
+    for (String[] p : pairs) {
+      union(p[0], p[1]);
+    }
+
+    for (int i = 0; i < Sentence1.length; i++) {
+      if (!Sentence1[i].equals(Sentence2[i]) && !find(Sentence1[i]).equals(find(Sentence2[i]))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public static String find(String s) {
+    if (!parent.containsKey(s)) {
+      parent.put(s, s);
+      rank.put(s, 1);
+    }
+
+    if (s.equals(parent.get(s))) {
+      return s;
+    }
+    String temp = find(parent.get(s));
+    parent.put(s, temp);
+    return temp;
+  }
+
+  public static void union(String x, String y) {
+    String lx = find(x);
+    String ly = find(y);
+
+    if (lx.equals(ly) == false) {
+      if (rank.get(lx) > rank.get(ly)) {
+        parent.put(ly, lx);
+      } else if (rank.get(lx) < rank.get(ly)) {
+        parent.put(lx, ly);
+      } else {
+        parent.put(lx, ly);
+        rank.put(ly, rank.get(ly) + 1);
+      }
+    }
+  }
+
+}
+
+
+ACCOUNTS MERGE
+
+class Solution {
+    
+    int[] parent;
+    int[] rank;
+    
+       public int find(int x) {
+            if (x == parent[x]) {
+            return x;
+        }
+
+            int temp = find(parent[x]);
+            parent[x] = temp;
+            return temp;
+  }
+    
+    
+    
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        parent = new int[100010];
+        rank = new int[100010];
+        for (int i = 0; i < 100010; ++i) {
+          parent[i] = i;
+          rank[i] = 1;
+    }
+        
+        HashMap<String, Integer> euid = new HashMap<>();  // email to id
+        
+        HashMap<String, String> etn = new HashMap<>();  //email to name
+        int uid = 0;
+        
+        for(List<String> account : accounts){
+            String name = "";
+            
+            for(String email: account){
+                if(name == ""){
+                    name = email;
+                    continue;
+                }
+                
+                if(!euid.containsKey(email)){
+                    euid.put(email, uid);
+                    uid++;
+                }
+                
+                if(!etn.containsKey(email)){
+                    etn.put(email, name);
+                }
+                
+                int e1uid = euid.get(account.get(1));
+                int cuid = euid.get(email);
+                
+                int lx = find(e1uid);
+                int ly = find(cuid);
+                
+                if (lx != ly) {
+                  if (rank[lx] > rank[ly]) {
+                    parent[ly] = lx;
+                  } else if (rank[lx] < rank[ly]) {
+                    parent[lx] = ly;
+                  } else {
+                    parent[lx] = ly;
+                    rank[ly]++;
+                  }
+                }
+                
+            }
+        }
+        
+        HashMap<Integer, List<String>> pte = new HashMap<>();
+        
+        for(String email : etn.keySet()){
+            int cuid = euid.get(email);
+            
+            int par = find(cuid);
+            
+            if(pte.containsKey(par)){
+                pte.get(par).add(email);
+            } else {
+                pte.put(par, new ArrayList<>());
+                pte.get(par).add(email);
+            }
+        }
+        
+        List<List<String>> ans = new ArrayList<>();
+        
+        for(List<String> emails: pte.values()){
+            Collections.sort(emails);
+            
+            List<String> tp = new ArrayList<>();
+            String email = emails.get(0);
+            String name = etn.get(email);
+            
+            tp.add(name);
+            for(String e : emails){
+                tp.add(e);
+            }
+            ans.add(new ArrayList<>(tp));
+        }
+        
+        return ans;
+        
+        
+    }
+}
+
+
+SLIDING PUZZLE
+
+class Solution {
+    public String swapchar(String st, int i, int j){
+    StringBuilder sb = new StringBuilder();
+    sb.setCharAt(i, st.charAt(j));
+     sb.setCharAt(j, st.charAt(i));
+    
+    return sb.toString();
+}
+    
+    public int slidingPuzzle(int[][] board) {
+        Queue<String> que = new ArrayDeque<>();
+        String tar = "123450";
+        
+          StringBuilder sb = new StringBuilder();
+        
+          for(int i = 0; i < board.length; i++) {
+              for(int j = 0; j < board[0].length; j++) {
+                  sb.append(board[i][j]);
+              }
+          }
+         String initial = sb.toString();
+          HashSet<String> set = new HashSet<>();
+          int[][] list = {{1, 3}, {0, 2, 4}, {1, 5}, {0, 4}, {1, 3, 5}, {2, 4}};
+          
+          que.add(initial);
+          set.add(initial);
+          int level = 0;
+          while(que.size() > 0) {
+              int size = que.size();
+              while(size-- > 0) {
+                  String rem = que.remove();
+                  if(rem.compareTo(tar) == 0){
+                      return level;
+                  }
+                  
+                  int idx = -1;
+                  for(int i = 0; i < rem.length(); i++) {
+                      if(rem.charAt(i) == '0') {
+                          idx = i;
+                          break;
+                      }
+                  }
+                  
+                  int[] swap = list[idx];
+                  
+                for(int j = 0; j < swap.length; j++) {
+                  String tobeadded =  swapchar(rem, idx, swap[j]);
+                    if(set.contains(tobeadded)){
+                        continue;
+                    }
+                  que.add(tobeadded);
+                  set.add(tobeadded);
+              }          
+                  
+              } 
+           level++;              
+      }
+                  
+              
+          return -1;
+    }
+  
+
+
+}
+
+
+1. HAS PATH
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+		   static class Edge {
+		      int src;
+		      int nbr;
+		      int wt;
+
+		      Edge(int src, int nbr, int wt) {
+		         this.src = src;
+		         this.nbr = nbr;
+		         this.wt = wt;
+		      }
+		   }
+
+		   public static void main(String[] args) throws Exception {
+			   BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                           System.out.println("Enter the value");
+			      int vtces = Integer.parseInt(br.readLine());
+			      ArrayList<Edge>[] graph = new ArrayList[vtces];
+			      for (int i = 0; i < vtces; i++) {
+			         graph[i] = new ArrayList<>();
+			      }
+
+			      int edges = Integer.parseInt(br.readLine());
+			      for (int i = 0; i < edges; i++) {
+			         String[] parts = br.readLine().split(" ");
+			         int v1 = Integer.parseInt(parts[0]);
+			         int v2 = Integer.parseInt(parts[1]);
+			         int wt = Integer.parseInt(parts[2]);
+			         graph[v1].add(new Edge(v1, v2, wt));
+			         graph[v2].add(new Edge(v2, v1, wt));
+			      }
+
+			      int src = Integer.parseInt(br.readLine());
+			      int dest = Integer.parseInt(br.readLine());
+
+			      boolean[] visited = new boolean[vtces];
+			      boolean flag = hasPath(graph, src, dest, visited);
+			      System.out.println(flag);
+			   }
+
+			   public static boolean hasPath(ArrayList<Edge>[] graph, int src, int dest, boolean[] visited) {
+			      if (src == dest) {
+			         return true;
+			      }
+
+			      visited[src] = true;
+			      for (Edge e : graph[src]) {
+			         if (visited[e.nbr] == false) {
+			            boolean nbrHasPath = hasPath(graph, e.nbr, dest, visited);
+			            if (nbrHasPath == true) {
+			               return true;
+			            }
+			         }
+			      }
+
+			      return false;
+			   }
+
+			}
+
+2. PRINT ALL PATHS USING DFS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+		   static class Edge {
+		      int src;
+		      int nbr;
+		      int wt;
+
+		      Edge(int src, int nbr, int wt) {
+		         this.src = src;
+		         this.nbr = nbr;
+		         this.wt = wt;
+		      }
+		   }
+
+		   public static void main(String[] args) throws Exception {
+			      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			      System.out.println("Enter the value");
+			      int vtces = Integer.parseInt(br.readLine());
+			      ArrayList<Edge>[] graph = new ArrayList[vtces];
+			      for (int i = 0; i < vtces; i++) {
+			         graph[i] = new ArrayList<>();
+			      }
+
+			      int edges = Integer.parseInt(br.readLine());
+			      for (int i = 0; i < edges; i++) {
+			         String[] parts = br.readLine().split(" ");
+			         int v1 = Integer.parseInt(parts[0]);
+			         int v2 = Integer.parseInt(parts[1]);
+			         int wt = Integer.parseInt(parts[2]);
+			         graph[v1].add(new Edge(v1, v2, wt));
+			         graph[v2].add(new Edge(v2, v1, wt));
+			      }
+
+			      int src = Integer.parseInt(br.readLine());
+			      int dest = Integer.parseInt(br.readLine());
+
+			      boolean[] visited = new boolean[vtces];
+			      printAllPaths(graph, src, dest, visited, src + "");
+			   }
+
+			   public static void printAllPaths(ArrayList<Edge>[] graph, int src, int dest, boolean[] visited, String psf) {
+			      if (src == dest) {
+			         System.out.println(psf);
+			         return;
+			      }
+
+			      visited[src] = true;
+			      for (Edge e : graph[src]) {
+			         if (visited[e.nbr] == false) {
+			            printAllPaths(graph, e.nbr, dest, visited, psf + e.nbr);
+			         }
+			      }
+			      visited[src] = false;
+			   }
+
+			}
+
+
+
+
+			                        
+
+
+4. GET CONNECTED COMPONENTS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+		   static class Edge {
+		      int src;
+		      int nbr;
+		      int wt;
+
+		      Edge(int src, int nbr, int wt) {
+		         this.src = src;
+		         this.nbr = nbr;
+		         this.wt = wt;
+		      }
+		   }
+
+
+			   public static void main(String[] args) throws Exception {
+			      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                  System.out.println("Enter the value");
+                  int vtces = Integer.parseInt(br.readLine());
+                  ArrayList<Edge>[] graph = new ArrayList[vtces];
+                  for (int i = 0; i < vtces; i++) {
+                     graph[i] = new ArrayList<>();
+                  }
+
+                  int edges = Integer.parseInt(br.readLine());
+                  for (int i = 0; i < edges; i++) {
+                     String[] parts = br.readLine().split(" ");
+                     int v1 = Integer.parseInt(parts[0]);
+                     int v2 = Integer.parseInt(parts[1]);
+                     int wt = Integer.parseInt(parts[2]);
+                     graph[v1].add(new Edge(v1, v2, wt));
+                     graph[v2].add(new Edge(v2, v1, wt));
+                  }
+
+                  boolean[] visited = new boolean[vtces];
+                  ArrayList<ArrayList<Integer>> comps = new ArrayList<>();
+                  for(int v = 0; v < vtces; v++){
+                     if(visited[v] == false){
+                        ArrayList<Integer> comp = new ArrayList<>();
+                        gcc(graph, v, visited, comp);
+                        comps.add(comp);
+                     }
+                  }
+
+                  System.out.println(comps);
+               }
+
+               public static void gcc(ArrayList<Edge>[] graph, int src, boolean[] visited, ArrayList<Integer> comp) {
+            	   visited[src] = true;
+                   comp.add(src);
+                  for (Edge e : graph[src]) {
+                     if (visited[e.nbr] == false) {
+                        gcc(graph, e.nbr, visited, comp);
+                     }
+                  }
+               }
+
+            }
+
+
+                                    			                        			                        
+
+5. DETECT CYCLE IN UNDIRECTED GRAPH
+class GFG
+{
+    public static void main(String[] args) throws IOException
+    {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine().trim());
+        while(T-->0)
+        {
+            String[] s = br.readLine().trim().split(" ");
+            int V = Integer.parseInt(s[0]);
+            int E = Integer.parseInt(s[1]);
+            ArrayList<ArrayList<Integer>>adj = new ArrayList<>();
+            for(int i = 0; i < V; i++)
+                adj.add(i, new ArrayList<Integer>());
+            for(int i = 0; i < E; i++){
+                String[] S = br.readLine().trim().split(" ");
+                int u = Integer.parseInt(S[0]);
+                int v = Integer.parseInt(S[1]);
+                adj.get(u).add(v);
+                adj.get(v).add(u);
+            }
+            Solution obj = new Solution();
+            boolean ans = obj.isCycle(V, adj);
+            if(ans)
+                System.out.println("1");
+            else
+                System.out.println("0");
+        }
+    }
+}// } Driver Code Ends
+
+TC = O(N+E) SC O(N+E) + O(N) + O(N)
+class Solution {
+    // Function to detect cycle in an undirected graph.
+    public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj) {
+        Boolean isVisited[] = new Boolean[V];
+       for(int i=0;i<V;i++)
+       {
+           isVisited[i] = false;
+       }
+       for(int u=0;u<V;u++)
+       {
+           if(!isVisited[u])
+           {
+               if(isCycleCheck(u,isVisited,-1,adj))
+                   return true;
+           }
+       }
+       return false;
+    }
+    
+    public boolean isCycleCheck(int v,Boolean visited[], int parent, ArrayList<ArrayList<Integer>> adj)
+   {
+       visited[v] = true;
+       for(Integer node : adj.get(v)){
+           if (!visited[node])
+           {
+               if(isCycleCheck(node, visited, v, adj))
+                   return true;
+           }
+           else if (node != parent)
+               return true;
+       }
+       return false;
+   }
+    
+    
+}
+
+
+
+DETECT CYCLE IN DIRECTED GRAPH
+
+
+
+class Solution {
+    // Function to detect cycle in a directed graph.
+    public boolean isCyclic(int V, ArrayList<ArrayList<Integer>> adj) {
+       // code here
+       int vis[]=new int[V]; // for visited we will mark it as 1
+       int dfs[]=new int[V];
+       for(int i=0;i<V;i++){
+           if(vis[i]==0){
+               if(checkCycle(i,vis,dfs,adj)==true)
+                 return true; // if the function return true then it means that there is a cycle
+           }
+       }
+       return false; // if no cycle found
+   }
+   public boolean checkCycle(int node,int[] vis,int[] dfs,ArrayList<ArrayList<Integer>> adj){
+       vis[node]=1;
+       dfs[node]=1;
+       for(int it:adj.get(node)){
+           if(vis[it]==0){
+               if(checkCycle(it,vis,dfs,adj)==true) return true;
+           }else if(dfs[it]==1)
+              return true;
+       }
+       dfs[node]=0; //again making the node unvisited if no cycle is found
+       return false;
+   }
+}
+                                    			                        
+			                        
+6. COUNT NO.OF ISLAND
+class Solution {
+    public int numIslands(char[][] grid) {
+        int count = 0;
+        for(int i = 0; i < grid.length; i ++){
+            for(int j = 0; j < grid[0].length; j ++){
+                if(grid[i][j] == '1'){
+                    count ++;
+                    helper(grid, i, j);
+                }
+            }
+        }
+        return count;
+    }
+    
+    public void helper(char[][] grid, int x, int y){
+        if(x >= grid.length || y >= grid[0].length || x < 0 || y < 0 || grid[x][y] == '0'){
+           return;
+        }
+        else{
+           grid[x][y] = '0';
+        }
+
+        helper(grid, x+1, y);
+        helper(grid, x-1, y);
+        helper(grid, x, y+1);
+        helper(grid, x, y-1);
+    }
+}
+
+
+COUNT SUBISLANDS
+
+class Solution {
+   public boolean isSub = true;
+public void dfs(int[][] grid1, int[][] grid2, int row, int col){
+    int m = grid2.length;
+    int n = grid2[0].length;
+    if (row < 0 || row >= m || col < 0 || col >= n  || (grid2[row][col] == 0)) return ;
+    
+    if (grid1[row][col] != grid2[row][col]){
+        isSub = false;              
+    }
+    grid2[row][col] = 0;
+    dfs(grid1, grid2, row-1, col);
+    dfs(grid1, grid2, row+1, col);
+    dfs(grid1, grid2, row, col-1);
+    dfs(grid1, grid2, row, col+1);        
+}
+    
+public int countSubIslands(int[][] grid1, int[][] grid2) {
+    int res = 0 ;
+   
+    for(int i = 0; i < grid2.length; i++){
+        for (int j = 0;  j < grid2[0].length; j++){
+            if (grid2[i][j] == 1){
+                dfs(grid1, grid2, i, j);
+                if (isSub){
+                    res++;
+                }
+                isSub = true;
+            }
+        }
+    }
+    return res;
+}
+
+}
+
+
+
+27. NO. OF DISTINCT ISLAND
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+class Main {
+
+  public static void main(String[] args) throws NumberFormatException, IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String[] st = br.readLine().split(" ");
+    int n = Integer.parseInt(st[0]);
+    int m = Integer.parseInt(st[1]);
+
+    int[][] arr = new int[n][m];
+
+    for (int i = 0; i < n; i++) {
+      st = br.readLine().split(" ");
+      for (int j = 0; j < m; j++) {
+        arr[i][j] = Integer.parseInt(st[j]);
+      }
+    }
+
+    System.out.println(numDistinctIslands(arr));
+
+  }
+
+  public static StringBuilder psf = new StringBuilder();
+
+  public static int numDistinctIslands(int[][] arr) {
+    if (arr == null || arr.length < 1 || arr[0].length < 1)
+      return 0;
+
+    HashSet<String> set = new HashSet<String>();
+
+    for (int i = 0; i < arr.length; i++) {
+      for (int j = 0; j < arr[0].length; j++) {
+        psf = new StringBuilder();
+        if (arr[i][j] == 1) {
+          psf.append("x");
+          funcall(arr, i, j);
+          set.add(psf.toString());
+        }
+      }
+    }
+
+    return set.size();
+  }
+
+  private static void funcall(int[][] arr, int i, int j) {
+
+    arr[i][j] = 0;
+    if (i + 1 < arr.length && arr[i + 1][j] == 1) {
+      psf.append("d");
+      funcall(arr, i + 1, j);
+
+    }
+    if (i - 1 >= 0 && arr[i - 1][j] == 1) {
+      psf.append("u");
+      funcall(arr, i - 1, j);
+
+    }
+    if (j + 1 < arr[0].length && arr[i][j + 1] == 1) {
+      psf.append("r");
+      funcall(arr, i, j + 1);
+
+    }
+    if (j - 1 >= 0 && arr[i][j - 1] == 1) {
+      psf.append("l");
+      funcall(arr, i, j - 1);
+
+    }
+    psf.append("z");
+
+  }
+
+}
+	
+
+
+                                   		                        
+
+
+		                        			                        
+
+8. HAMILTONIAN PATH AND CYCLES
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 static class Edge {
+	      int src;
+	      int nbr;
+	      int wt;
+
+	      Edge(int src, int nbr, int wt) {
+	         this.src = src;
+	         this.nbr = nbr;
+	         this.wt = wt;
+	      }
+	   }
+
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	      System.out.println("Enter the value");
+	      int vtces = Integer.parseInt(br.readLine());
+	      ArrayList<Edge>[] graph = new ArrayList[vtces];
+	      for (int i = 0; i < vtces; i++) {
+	         graph[i] = new ArrayList<>();
+	      }
+
+	      int edges = Integer.parseInt(br.readLine());
+	      for (int i = 0; i < edges; i++) {
+	         String[] parts = br.readLine().split(" ");
+	         int v1 = Integer.parseInt(parts[0]);
+	         int v2 = Integer.parseInt(parts[1]);
+	         int wt = Integer.parseInt(parts[2]);
+	         graph[v1].add(new Edge(v1, v2, wt));
+	         graph[v2].add(new Edge(v2, v1, wt));
+	      }
+
+	      int src = Integer.parseInt(br.readLine());
+
+	      HashSet<Integer> visited = new HashSet<>();
+	      hamiltonianPathAndCycle(graph, src, src, visited, src + "");
+	   }
+
+	   public static void hamiltonianPathAndCycle(ArrayList<Edge>[] graph, int osrc, int src, HashSet<Integer> visited, String psf) {
+	      if (visited.size() == graph.length - 1) {
+	         System.out.print(psf);
+
+	         boolean closingEdge = false;
+	         for(Edge e: graph[src]){
+	            if(e.nbr == osrc){
+	               closingEdge = true;
+	               break;
+	            }
+	         }
+
+	         if(closingEdge){
+	            System.out.println("*");
+	         } else {
+	            System.out.println(".");
+	         }
+	         return;
+	      }
+
+	      visited.add(src);
+	      for (Edge e : graph[src]) {
+	         if (!visited.contains(e.nbr)) {
+	            hamiltonianPathAndCycle(graph, osrc, e.nbr, visited, psf + e.nbr);
+	         }
+	      }
+	      visited.remove(src);
+	   }
+
+	}
+  
+
+9. BREADTH FIRST TRAVERSAL
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 static class Edge {
+	      int src;
+	      int nbr;
+	     
+
+	      Edge(int src, int nbr) {
+	         this.src = src;
+	         this.nbr = nbr;
+	         
+	      }
+	   }
+
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	      System.out.println("Enter the value");
+	      int vtces = Integer.parseInt(br.readLine());
+	      ArrayList<Edge>[] graph = new ArrayList[vtces];
+	      for (int i = 0; i < vtces; i++) {
+	         graph[i] = new ArrayList<>();
+	      }
+
+	      int edges = Integer.parseInt(br.readLine());
+	      for (int i = 0; i < edges; i++) {
+	         String[] parts = br.readLine().split(" ");
+	         int v1 = Integer.parseInt(parts[0]);
+	         int v2 = Integer.parseInt(parts[1]);
+	         graph[v1].add(new Edge(v1, v2));
+	         graph[v2].add(new Edge(v2, v1));
+	      }
+
+	      int src = Integer.parseInt(br.readLine());
+
+	      ArrayDeque<Pair> queue = new ArrayDeque<>();
+	      queue.add(new Pair(src, src + ""));
+	      boolean[] visited = new boolean[vtces];
+	      while(queue.size() > 0){
+	         Pair rem = queue.remove();
+
+	         if(visited[rem.v] == true){
+	            continue;
+	         }
+	         visited[rem.v] = true;
+	         System.out.println(rem.v + "@" + rem.psf);
+	         
+	         for (Edge e : graph[rem.v]) {
+	            if (visited[e.nbr] == false) {
+	               queue.add(new Pair(e.nbr, rem.psf + e.nbr));
+	            }
+	         }
+	      }
+	   }
+
+	   static class Pair {
+	      int v;
+	      String psf;
+
+	      Pair(int v, String psf){
+	         this.v = v;
+	         this.psf = psf;
+	      }
+	   }
+	}
+
+			                        			                        
+
+
+			
+
+11. SPREAD INFECTIONS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	  static class Edge {
+	      int src;
+	      int nbr;
+	      
+
+	      Edge(int src, int nbr) {
+	         this.src = src;
+	         this.nbr = nbr;
+	       
+	      }
+	   }
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	      System.out.println("Enter the value");
+	      int vtces = Integer.parseInt(br.readLine());
+	      ArrayList<Edge>[] graph = new ArrayList[vtces];
+	      for (int i = 0; i < vtces; i++) {
+	         graph[i] = new ArrayList<>();
+	      }
+
+	      int edges = Integer.parseInt(br.readLine());
+	      for (int i = 0; i < edges; i++) {
+	         String[] parts = br.readLine().split(" ");
+	         int v1 = Integer.parseInt(parts[0]);
+	         int v2 = Integer.parseInt(parts[1]);
+	         graph[v1].add(new Edge(v1, v2));
+	         graph[v2].add(new Edge(v2, v1));
+	      }
+
+	      int src = Integer.parseInt(br.readLine());
+	      int t = Integer.parseInt(br.readLine());
+	      int count = 0;
+
+	      ArrayDeque<Pair> queue = new ArrayDeque<>();
+	      queue.add(new Pair(src, 1));
+	      int[] visited = new int[vtces];
+	      while(queue.size() > 0){
+	         Pair rem = queue.remove();
+
+	         if(visited[rem.v] > 0){
+	            continue;
+	         }
+	         visited[rem.v] = rem.time;
+	         if(rem.time > t){
+	            break;
+	         } else {
+	            count++;
+	         }
+	         
+	         for (Edge e : graph[rem.v]) {
+	            if (visited[e.nbr] == 0) {
+	               queue.add(new Pair(e.nbr, rem.time + 1));
+	            }
+	         }
+	      }
+
+	      System.out.println(count);
+	   }
+
+	   static class Pair {
+	      int v;
+	      int time;
+
+	      Pair(int v, int time){
+	         this.v = v;
+	         this.time = time;
+	      }
+	   }
+	}
+
+
+	                  			                        
+12. IS GRAPH BIPARTITE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	  static class Edge {
+	      int src;
+	      int nbr;
+	      int wt;
+
+	      Edge(int src, int nbr, int wt) {
+	         this.src = src;
+	         this.nbr = nbr;
+	         this.wt = wt;
+	      }
+	   }
+	  
+        static class Pair {
+		      int v;
+		      String psf;
+		      int level;
+
+		      Pair(int v, String psf, int level) {
+		         this.v = v;
+		         this.psf = psf;
+		         this.level = level;
+		      }
+		   }
+
+
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+          System.out.println("Enter the value");
+	      int vtces = Integer.parseInt(br.readLine());
+	      ArrayList<Edge>[] graph = new ArrayList[vtces];
+	      for (int i = 0; i < vtces; i++) {
+	         graph[i] = new ArrayList<>();
+	      }
+
+	      int edges = Integer.parseInt(br.readLine());
+	      for (int i = 0; i < edges; i++) {
+	         String[] parts = br.readLine().split(" ");
+	         int v1 = Integer.parseInt(parts[0]);
+	         int v2 = Integer.parseInt(parts[1]);
+	         int wt = Integer.parseInt(parts[2]);
+	         graph[v1].add(new Edge(v1, v2, wt));
+	         graph[v2].add(new Edge(v2, v1, wt));
+	      }
+
+	    int[] visited = new int[vtces];
+	    Arrays.fill(visited, -1);
+	    
+	      for (int v = 0; v < vtces; v++) {
+	         if (visited[v] == -1) {
+	            boolean isCompBipartite = checkComponentforBipartiteness(graph, v, visited);
+	            if (isCompBipartite == false) {
+	               System.out.println(false);
+	               return;
+	            }
+	         }
+	      }
+
+	      System.out.println(true);
+	   }
+
+
+	   public static boolean checkComponentforBipartiteness(ArrayList<Edge>[] graph, int src, int[] visited) {
+		   ArrayDeque<Pair> queue = new ArrayDeque<>();
+		      queue.add(new Pair(src, src + "", 0));
+		     
+		      while(queue.size() > 0){
+		         Pair rem = queue.remove();
+
+		         if(visited[rem.v] != -1){
+		           if(rem.level != visited[rem.v]) {
+		        	   return false;
+		           }
+		         } else {
+		        	  visited[rem.v] = rem.level; 
+		         }
+		       
+		        
+		         for (Edge e : graph[rem.v]) {
+		            if (visited[e.nbr] == -1) {
+		               queue.add(new Pair(e.nbr, rem.psf + e.nbr, rem.level + 1));
+		            }
+		         }
+		      }
+
+
+	      return true;
+	   }
+
+	}
+
+
+	                        
+
+
+13. DJIAKSTRA ALGORITHM
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	  static class Edge {
+	      int src;
+	      int nbr;
+	      int wt;
+
+	      Edge(int src, int nbr, int wt) {
+	         this.src = src;
+	         this.nbr = nbr;
+	         this.wt = wt;
+	      }
+	   }
+
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	      System.out.println("Enter the value");
+	      int vtces = Integer.parseInt(br.readLine());
+	      ArrayList<Edge>[] graph = new ArrayList[vtces];
+	      for (int i = 0; i < vtces; i++) {
+	         graph[i] = new ArrayList<>();
+	      }
+
+	      int edges = Integer.parseInt(br.readLine());
+	      for (int i = 0; i < edges; i++) {
+	         String[] parts = br.readLine().split(" ");
+	         int v1 = Integer.parseInt(parts[0]);
+	         int v2 = Integer.parseInt(parts[1]);
+	         int wt = Integer.parseInt(parts[2]);
+	         graph[v1].add(new Edge(v1, v2, wt));
+	         graph[v2].add(new Edge(v2, v1, wt));
+	      }
+
+	      int src = Integer.parseInt(br.readLine());
+
+	      PriorityQueue<Pair> queue = new PriorityQueue<>();
+	      queue.add(new Pair(src, src + "", 0));
+	      boolean[] visited = new boolean[vtces];
+	      while(queue.size() > 0){
+	         Pair rem = queue.remove();
+
+	         if(visited[rem.v] == true){
+	            continue;
+	         }
+	         visited[rem.v] = true;
+	         System.out.println(rem.v + " via " + rem.psf + " @ " + rem.wsf);
+	         
+	         for (Edge e : graph[rem.v]) {
+	            if (visited[e.nbr] == false) {
+	               queue.add(new Pair(e.nbr, rem.psf + e.nbr, rem.wsf + e.wt));
+	            }
+	         }
+	      }
+	   }
+
+	   static class Pair implements Comparable<Pair> {
+	      int v;
+	      String psf;
+	      int wsf;
+
+	      Pair(int v, String psf, int wsf){
+	         this.v = v;
+	         this.psf = psf;
+	         this.wsf = wsf;
+	      }
+
+	      public int compareTo(Pair o){
+	         return this.wsf - o.wsf;
+	      }
+	   }
+	}
+
+
+	                        
+
+
+14. PRIM'S ALGORITHM (CONNECT ALL PC'S)
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	static class Edge {
+	      int src;
+	      int nbr;
+	      int wt;
+
+	      Edge(int src, int nbr, int wt) {
+	         this.src = src;
+	         this.nbr = nbr;
+	         this.wt = wt;
+	      }
+	   }
+
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	      System.out.println("Enter the value");
+	      int vtces = Integer.parseInt(br.readLine());
+	      ArrayList<Edge>[] graph = new ArrayList[vtces];
+	      for (int i = 0; i < vtces; i++) {
+	         graph[i] = new ArrayList<>();
+	      }
+
+	      int edges = Integer.parseInt(br.readLine());
+	      for (int i = 0; i < edges; i++) {
+	         String[] parts = br.readLine().split(" ");
+	         int v1 = Integer.parseInt(parts[0]);
+	         int v2 = Integer.parseInt(parts[1]);
+	         int wt = Integer.parseInt(parts[2]);
+	         graph[v1].add(new Edge(v1, v2, wt));
+	         graph[v2].add(new Edge(v2, v1, wt));
+	      }
+
+	      
+	      PriorityQueue<Pair> queue = new PriorityQueue<>();
+	      queue.add(new Pair(0, -1, 0));
+	      boolean[] visited = new boolean[vtces];
+	      
+	      while(queue.size() > 0){
+	         Pair rem = queue.remove();
+
+	         if(visited[rem.v] == true){
+	            continue;
+	         }
+	         visited[rem.v] = true;
+	         if(rem.av != -1){
+	            System.out.println("[" + rem.v + "-" + rem.av + "@" + rem.wt + "]");
+	         }
+	         
+	         for (Edge e : graph[rem.v]) {
+	            if (visited[e.nbr] == false) {
+	               queue.add(new Pair(e.nbr, rem.v, e.wt));
+	            }
+	         }
+	      }
+	   }
+
+	   static class Pair implements Comparable<Pair> {
+	      int v;
+	      int av;
+	      int wt;
+
+	      Pair(int v, int av, int wt){
+	         this.v = v;
+	         this.av = av;
+	         this.wt = wt;
+	      }
+
+	      public int compareTo(Pair o){
+	         return this.wt - o.wt;
+	      }
+	   }
+	}
+	                     	                        
+MIN COST TO CONNECT CITIES
+
+Input: points = [[0,0],[2,2],[3,10],[5,2],[7,0]]
+Output: 20
+
+class Solution {
+     class Edge {
+	      int src;
+	      int nbr;
+	      int wt;
+
+	      Edge(int src, int nbr, int wt) {
+	         this.src = src;
+	         this.nbr = nbr;
+	         this.wt = wt;
+	      }
+	   }
+    
+     class Pair implements Comparable<Pair> {
+	      int v;
+	      int wt;
+
+	      Pair(int v, int wt){
+	         this.v = v;
+	         this.wt = wt;
+	      }
+
+	      public int compareTo(Pair o){
+	         return this.wt - o.wt;
+	      }
+	   }
+    public int minCostConnectPoints(int[][] points) {
+         int n = points.length;
+        
+         List<Edge>[] graph = new ArrayList[n];
+	      for (int i = 0; i < n; i++) {
+	         graph[i] = new ArrayList<>();    // building the graph
+	      }
+        
+         for(int i = 0; i < n - 1; i++) {
+            for(int j = i + 1; j < n; j++) {
+                int x1 = points[i][0];
+                int x2 = points[i][1];
+                int y1 = points[j][0];
+                int y2 = points[j][1];
+                int d = Math.abs(x1 - y1) + Math.abs(x2 - y2);
+                graph[i].add(new Edge(i, j, d));
+                graph[j].add(new Edge(j, i, d));
+            }
+        }
+        
+        int ans = 0;
+	      PriorityQueue<Pair> queue = new PriorityQueue<>();
+	      queue.add(new Pair(0,  0));
+	      boolean[] visited = new boolean[n];
+	      
+	      while(queue.size() > 0){
+	         Pair rem = queue.remove();
+
+	         if(visited[rem.v] == true){
+	            continue;
+	         }
+	         visited[rem.v] = true;
+           ans = ans + rem.wt;
+	         
+	         
+	         for (Edge e : graph[rem.v]) {
+	            if (visited[e.nbr] == false) {
+	               queue.add(new Pair(e.nbr, e.wt));
+	            }
+	         }
+           
+	      }
+        return ans;
+    }
+    
+}
+
+
+15. TOPOLOGICAL SORT
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	 static class Edge {
+	      int src;
+	      int nbr;
+
+	      Edge(int src, int nbr) {
+	         this.src = src;
+	         this.nbr = nbr;
+	      }
+	   }
+
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	      System.out.println("Enter the value");
+	      int vtces = Integer.parseInt(br.readLine());
+	      ArrayList<Edge>[] graph = new ArrayList[vtces];
+	      for (int i = 0; i < vtces; i++) {
+	         graph[i] = new ArrayList<>();
+	      }
+
+	      int edges = Integer.parseInt(br.readLine());
+	      for (int i = 0; i < edges; i++) {
+	         String[] parts = br.readLine().split(" ");
+	         int v1 = Integer.parseInt(parts[0]);
+	         int v2 = Integer.parseInt(parts[1]);
+	         graph[v1].add(new Edge(v1, v2));
+	      }
+
+	      boolean[] visited = new boolean[vtces];
+	      Stack<Integer> st = new Stack<>();
+	      for(int v = 0; v < vtces; v++){
+	         if(visited[v] == false){
+	            topological(graph, v, visited, st);
+	         }
+	      }
+
+	      while(st.size() > 0){
+	         System.out.println(st.pop());
+	      }
+	   }
+
+	   public static void topological(ArrayList<Edge>[] graph, int src, boolean[] visited, Stack<Integer> st) {
+	      visited[src] = true;
+	      for (Edge e : graph[src]) {
+	         if (visited[e.nbr] == false) {
+	            topological(graph, e.nbr, visited, st);
+	         }
+	      }
+	      st.push(src);
+	   }
+	}
+
+
+	                        
+
+16. MINIMUM OBSTACLE REMOVE TO REACH CORNER
+class Solution {
+    private int[][] directions = new int[][] {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+    public int minimumObstacles(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        
+        boolean visited[][] = new boolean[m][n];
+        
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        if(grid[0][0] == 0)
+            pq.add(new int[] {0, 0, 0}); // obstacles, row, col
+        else 
+            pq.add(new int[] {1, 0, 0}); 
+        
+        visited[0][0] = true;
+        
+        while(!pq.isEmpty()) {
+            int[] current = pq.poll();
+            if(current[1] == m-1 && current[2] == n-1)
+                return current[0];
+            
+            
+            for(int[] dir : directions) {
+                int newR = current[1] + dir[0];
+                int newC = current[2] + dir[1];
+                
+                if(newR < 0 || newC < 0 || newR == m || newC == n || visited[newR][newC])
+                    continue;
+                visited[newR][newC] = true;
+                
+                if(grid[newR][newC] == 1)
+                    pq.add(new int[] {current[0]+1, newR, newC});
+                else 
+                    pq.add(new int[]{current[0], newR, newC});
+            }
+            
+        }
+        
+        return -1;
+    }
+}
+
+
+MIN SWAPS TO SORT ARRAY
+
+
+class Solution
+{
+   private static class Pair implements Comparable<Pair> {
+    int val;
+    int idx;
+
+    Pair(int val, int idx) {
+      this.val = val;
+      this.idx = idx;
+    }
+
+    @Override
+    public int compareTo(Pair o) {
+      return this.val - o.val;
+    }
+  }
+  
+    public int minSwaps(int arr1[])
+    {
+        int N = arr1.length;
+    Pair[] arr = new Pair[N];
+    for (int i = 0; i < arr.length; i++) {
+      arr[i] = new Pair(arr1[i], i);
+    }
+
+    int ans = 0;
+    Arrays.sort(arr);
+    boolean[] visited = new boolean[N];
+    for (int i = 0; i < arr.length; i++) {
+      if (visited[i] == true || arr[i].idx == i) {
+        continue;
+      } else {
+        int cycle = 0;
+        int j = i;
+        while (!visited[j]) {
+          visited[j] = true;
+          cycle++;
+          j = arr[j].idx;
+        }
+        ans += (cycle - 1);
+      }
+    }
+    return ans;
+  }
+    
+}	                        
+
+
+
+
+22. NEGATIVE WEIGHT CYCLE DETECTION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {   
+	
+	
+
+	   public static void main(String[] args) throws Exception {
+	      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	      System.out.println("Enter the value");
+	      
+	         String[] parts = br.readLine().split(" ");
+	         
+	         int n = Integer.parseInt(parts[0]);
+	         int m = Integer.parseInt(parts[1]);
+	         
+	         int[][] edges = new int[m][3];
+	         
+	         for(int i = 0; i < m; i++) {
+	        	 parts = br.readLine().split(" ");
+	        	 edges[i][0] = Integer.parseInt(parts[0])  ;
+	        	 edges[i][1] = Integer.parseInt(parts[1]) ;
+	        	 edges[i][2] = Integer.parseInt(parts[2]);
+	       }
+	         System.out.println(isNegativeWeightCycle(n, edges));
+	   }
+	   
+	   
+	   public static int isNegativeWeightCycle(int n, int[][] edges) {
+
+	     int[] path = new int[n];
+	     Arrays.fill(path,Integer.MAX_VALUE);
+	     path[0] = 0;
+	   
+	     
+	     for(int i = 0; i < n-1; i++) {
+	    	 
+	    	 for(int j = 0; j < edges.length; j++) {
+		         int u =edges[j][0];
+		         int v = edges[j][1];
+		         int wt = edges[j][2];
+	    	 
+	    		
+	    		 
+	    		 if(path[u] == Integer.MAX_VALUE) {
+	    			 continue;
+	    		 }
+	    		 
+	    		 if(path[u] + wt < path[v]) {
+	    			 path[v] = path[u] + wt;
+	    		 }
+	    	 }
+	     }
+	    
+		 for(int j = 0; j < edges.length; j++) {
+	         int u =edges[j][0];
+	         int v = edges[j][1];
+	         int wt = edges[j][2];
+    	 
+    		
+    		 
+    		 if(path[u] == Integer.MAX_VALUE) {
+    			 continue;
+    		 }
+    		 
+    		 if(path[u] + wt < path[v]) {
+    			return 1;
+    		 }
+    	 }
+	   return 0;
+	      
+	   }
+
+	}
+
+
+
+
+
+
+
+
+                                
+SHORTEST PATH VISITING ALL NODES
+
+class Solution {
+	public int shortestPathLength(int[][] graph) {
+		if(graph.length==1)
+			return 0;
+
+		int finalState = (1 << graph.length) - 1;
+		// {i, BitState}
+		Queue<int []> qu = new LinkedList<>();
+
+		//Adding all nodes initially because we can start anywhere.
+		for(int i=0; i<graph.length; i++) {
+			qu.add(new int [] {i, 1 << i});
+
+		}
+
+		//[no of many nodes][each node may have 2^n visited bit]
+		int [][] visitedMap = new int [graph.length][finalState+1];
+
+
+		int shortestPath = 0;
+		while(!qu.isEmpty()){
+			int size = qu.size();
+			shortestPath++;
+			for(int i=0; i<size; i++){
+				int [] head = qu.poll();
+				int nodeId = head[0];
+				int visitedNodeBitState = head[1];
+				for(int neighbor : graph[nodeId]){
+					int newVisitedNodeBitState = visitedNodeBitState | (1 << neighbor);
+
+					//If the same node was visited again with same visitedNodeBit, it means this node can be skipped, For example: 1->0->1->0.  First 1 we have {1, 10}, then we have {0, 11}, then we will have {1, 11}. Lastly, we have {0, 11} which is a state we already had before. So we don't visit this again.
+
+					if(visitedMap[neighbor][newVisitedNodeBitState] == 1)               continue;
+					visitedMap[neighbor][newVisitedNodeBitState] = 1;                  if(newVisitedNodeBitState==finalState)
+						return shortestPath;
+					qu.add(new int [] {neighbor, newVisitedNodeBitState});
+				}
+			}
+		}
+		return -1;
+	}
+}
+
+
+
+
+26. NO. OF ENCLAVES
+
+
+import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.*;
+
+class Main {
+
+  public static void main(String[] args) throws NumberFormatException, IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String[] st = br.readLine().split(" ");
+    int m = Integer.parseInt(st[0]);
+    int n = Integer.parseInt(st[1]);
+
+    int[][] arr = new int[m][n];
+
+    for (int i = 0; i < m; i++) {
+      st = br.readLine().split(" ");
+      for (int j = 0; j < n; j++) {
+        arr[i][j] = Integer.parseInt(st[j]);
+      }
+    }
+
+    System.out.println(numEnclaves(arr));
+
+  }
+
+  public static int numEnclaves(int[][] A) {
+    int result = 0;
+    for (int i = 0; i < A.length; i++) {
+      for (int j = 0; j < A[i].length; j++) {
+        if (i == 0 || j == 0 || i == A.length - 1 || j == A[i].length - 1)
+          dfs(A, i, j);
+      }
+    }
+
+    for (int i = 0; i < A.length; i++) {
+      for (int j = 0; j < A[i].length; j++) {
+        if (A[i][j] == 1)
+          result++;
+      }
+    }
+
+    return result;
+  }
+
+  public static void dfs(int a[][], int i, int j) {
+    if (i >= 0 && i <= a.length - 1 && j >= 0 && j <= a[i].length - 1 && a[i][j] == 1) {
+      a[i][j] = 0;
+      dfs(a, i + 1, j);
+      dfs(a, i - 1, j);
+      dfs(a, i, j + 1);
+      dfs(a, i, j - 1);
+    }
+  }
+}
+
+
+
+
+
+
+
+28. BUS ROUTE
+
+
+  public static int numBusesToDestination(int[][] routes, int S, int T) {
+    int n = routes.length;
+    HashMap<Integer, ArrayList<Integer>> stopmap = new HashMap<>();  // busstopno, busno
+
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < routes[i].length; j++) {
+        int busstopno = routes[i][j];
+
+        ArrayList<Integer> busno = stopmap.getOrDefault(busstopno, new ArrayList<>());
+        busno.add(i);
+        stopmap.put(busstopno, busno);
+      }
+    }
+
+    LinkedList<Integer> queue = new LinkedList<>();
+    HashSet<Integer> stopvis = new HashSet<>();
+    HashSet<Integer> busnovis = new HashSet<>();
+
+    queue.addLast(S);
+    stopvis.add(S);
+    int level = 0;
+    while (queue.size() > 0) {
+      int size = queue.size();
+      while (size-- > 0) {
+        Integer rem = queue.removeFirst();
+        if (rem == T) {
+          return level;
+        }
+
+        ArrayList<Integer> buses = stopmap.get(rem);
+        for (int bus : buses) {
+          if (busnovis.contains(bus) == true) {
+            continue;
+          }
+
+          int[] arr = routes[bus];
+          for (int stop : arr) {
+            if (stopvis.contains(stop) == true) {
+              continue;
+            }
+            queue.addLast(stop);
+            stopvis.add(stop);
+          }
+          busnovis.add(bus);
+        }
+      }
+      level++;
+    }
+    return -1;
+  }
+}
+
+
+
+29. SHORTEST BRIDGE
+
+class Solution {
+    
+    public class Pair {
+    int row;
+    int col;
+
+    Pair(int row, int col) {
+      this.row= row;
+      this.col = col;
+    }
+  }
+    
+  
+    
+    public int shortestBridge(int[][] grid) {
+     LinkedList<Pair> queue = new LinkedList<>();
+        boolean[][] vis = new boolean[grid.length][grid[0].length];
+        boolean flag = false;
+        
+
+    for (int i = 0; i < grid.length && !flag; i++) {
+      for (int j = 0; j < grid[0].length && !flag; j++) {
+        if (grid[i][j] == 1) {
+          dfs(i, j, grid, queue, vis);
+          flag = true;
+        }
+      }
+    }
+
+    int steps = 0;
+    while (!queue.isEmpty()) {
+      int size = queue.size();
+      while (size-- > 0) {
+        Pair rem = queue.poll();
+          
+        for(int k=0; k<4; k++){
+          int rowdash = rem.row + dirs[k][0];
+          int coldash = rem.col + dirs[k][1];
+            
+ if (rowdash < 0 || coldash < 0 || rowdash >= grid.length || coldash >= grid[0].length || vis[rowdash][coldash] == true) {
+                continue;
+        }
+                                                                                                  
+           if(grid[rowdash][coldash] == 1){
+               return steps;
+           }
+            
+            queue.addLast(new Pair(rowdash, coldash));
+            vis[rowdash][coldash] = true;
+        
+      }
+          }
+        steps++;
+    }
+                                                                                    
+        return -1;
+  }
+                                                                                                             
+                                                                                                             
+
+        public  int[][] dirs ={ { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+  public  void dfs(int i, int j,int[][] grid, LinkedList<Pair>queue, boolean[][] visited) {
+    
+    visited[i][j] = true;
+    queue.offer(new Pair(i, j));
+      for(int m=0; m<4; m++){
+          int rowdash = i + dirs[m][0];
+          int coldash = j + dirs[m][1];
+          
+          if (rowdash < 0 || coldash < 0 || rowdash >= grid.length || coldash >= grid[0].length || visited[rowdash][coldash] || grid[rowdash][coldash] == 0) {
+                continue;
+        }
+          
+          dfs(rowdash, coldash, grid, queue, visited);
+          
+      }
+  }
+}
+
+
+                                
+
+
+30. AS FAR FROM LAND AS POSSIBLE
+
+
+
+public class Main {
+
+
+  public static int maxDistance(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+    Queue<int[]> queue = new LinkedList<>();
+    for (int i = 0; i < m; i++) {
+      for (int j = 0; j < n; j++) {
+        if (grid[i][j] == 1) {
+          queue.offer(new int[] { i, j });
+        }
+      }
+    }
+
+    if (queue.size() == 0 || queue.size() == m * n) {
+      return -1;
+    }
+
+    int[][] dirs = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+    int max = 0;
+    while (!queue.isEmpty()) {
+      int size = queue.size();
+      for (int i = 0; i < size; i++) {
+        int[] point = queue.poll();
+        for (int[] dir : dirs) {
+          int x = point[0] + dir[0];
+          int y = point[1] + dir[1];
+          if (x >= 0 && y >= 0 && x < m && y < n && grid[x][y] == 0) {
+            grid[x][y] = 1;
+            queue.offer(new int[] { x, y });
+          }
+        }
+      }
+      max++;
+    }
+    return max - 1;
+  }
+}
+
+
+
+31. 0-1 MATRIX
+
+0 se simulatineous bfs run karo
+
+class Main {
+  private static class Pair {
+    int x;
+    int y;
+
+    Pair(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+
+  private static int[][] dirs = new int[][] { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+
+ 
+
+  public static int[][] updateMatrix(int[][] matrix) {
+    LinkedList<Pair> queue = new LinkedList<>();
+
+    for (int i = 0; i < matrix.length; i++) {
+      for (int j = 0; j < matrix[0].length; j++) {
+        if (matrix[i][j] == 1) {
+          matrix[i][j] = -1;
+        } else {
+          queue.addLast(new Pair(i, j));
+        }
+      }
+    }
+    int length = 0;
+    while (!queue.isEmpty()) {
+      int size = queue.size();
+      length++;
+      for (int i = 0; i < size; i++) {
+        Pair rem = queue.removeFirst();
+        for (int[] dir : dirs) {
+          int idash = rem.x + dir[0];
+          int jdash = rem.y + dir[1];
+
+          if (idash >= 0 && jdash >= 0 && idash < matrix.length && jdash < matrix[0].length) {
+            if (matrix[idash][jdash] == -1) {
+              matrix[idash][jdash] = length;
+              queue.addLast(new Pair(idash, jdash));
+            }
+          }
+        }
+      }
+    }
+    return matrix;
+  }
+}
+
+
+
+32. COLORNG A BORDER
+
+class Solution {
+    public int[][] colorBorder(int[][] grid, int row, int col, int color) {
+        dfs(grid, row, col, grid[row][col]);
+        
+        for(int i=0; i< grid.length; i++){
+            for(int j=0; j< grid[0].length; j++){
+                if(grid[i][j] < 0){
+                    grid[i][j] = color;
+                }
+            }
+        }
+        
+        return grid;
+    }
+    
+    int[][] dirs = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+    public void dfs(int[][]grid, int row, int col, int clr){
+        grid[row][col] = -clr;
+        int count = 0;
+        
+        for(int i=0; i< 4; i++){
+            int rowdash = row + dirs[i][0];
+            int coldash = col + dirs[i][1];
+            
+            if(rowdash < 0 || coldash < 0 || rowdash >= grid.length || coldash >= grid[0].length
+              || Math.abs(grid[rowdash][coldash]) != clr){
+                continue;
+            }
+            
+            count++;
+            
+            if(grid[rowdash][coldash] == clr){
+                dfs(grid, rowdash, coldash, clr);
+            }
+        }
+        
+        if(count == 4){
+            grid[row][col] = clr;
+        }
+    }
+}
+
+
+
+
+
+
+
+35. OPTIMIZE WATER DISTRIBUTION IN VILLAGE
+
+import java.io.*;
+import java.util.*;
+
+class Main {
+  public static void main(String[] args) throws NumberFormatException, IOException {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    String[] st = br.readLine().split(" ");
+    int v = Integer.parseInt(st[0]);
+    int e = Integer.parseInt(st[1]);
+
+    int[] wells = new int[v];
+    String[] words = br.readLine().split(" ");
+
+    for (int i = 0; i < wells.length; i++) {
+      wells[i] = Integer.parseInt(words[i]);
+    }
+
+    int[][] pipes = new int[e][3];
+    for (int i = 0; i < e; i++) {
+      String[] st1 = br.readLine().split(" ");
+      pipes[i][0] = Integer.parseInt(st1[0]);
+      pipes[i][1] = Integer.parseInt(st1[1]);
+      pipes[i][2] = Integer.parseInt(st1[2]);
+
+    }
+
+    System.out.println(minCostToSupplyWater(v, wells, pipes));
+
+  }
+
+  public class Pair implements Comparable<Pair> {
+    
+    int v;
+    int wt;
+
+    Pair( int v, int wt) {
+    
+      this.v = v;
+      this.wt = wt;
+    }
+
+    @Override
+    public int compareTo(Pair o) {
+      return this.wt - o.wt;
+    }
+  }
+
+  public int minCostToSupplyWater(int n, int[] wells, int[][] pipes) {
+   
+
+    for (int i = 1; i <= n; i++) {
+       graph.get(i).add(new Pair( 0, wells[i-1));
+      graph.get(0).add(new Pair( i, wells[i-1]));
+    }
+
+    ArrayList<ArrayList<Pair>> graph = new ArrayList<>();
+    for (int i = 0; i <= n; i++) {
+      graph.add(new ArrayList<>());
+    }
+    for (int i = 0; i < pipes.length; i++) {
+       
+      int u = pipes[i][0];
+      int v = pipes[i][1];
+      int wt = pipes[i][2];
+     
+      graph.get(u).add(new Pair( v, wt));
+      graph.get(v).add(new Pair( u, wt));
+    }
+    int ans = 0;
+    PriorityQueue<Pair> pq = new PriorityQueue<>();
+    pq.add(new Pair( 0, 0));
+    boolean[] vis = new boolean[n + 1];
+    while (pq.size() > 0) {
+      Pair rem = pq.remove();
+      if (vis[rem.v] == true) {
+        continue;
+      }
+      vis[rem.v] = true;
+      ans += rem.wt;
+      ArrayList<Pair> nbrs = graph.get(rem.v);
+
+      for (Pair nbr : nbrs) {
+        if (vis[nbr.v] == false) {
+          pq.add(new Pair( nbr.v, nbr.wt));
+        }
+      }
+    }
+    return ans;
+  }
+
+
+}
+
+                                
+36. SWIM IN RISING WATER
+
+class Solution {
+    
+    public class Pair implements Comparable<Pair> {
+        int row;
+        int col;
+        int msf;
+        
+        Pair(int row, int col, int msf){
+            this.row = row;
+            this.col = col;
+            this.msf = msf;
+        }
+        
+        public int compareTo(Pair o){
+            return this.msf - o.msf;
+        }
+    }
+    public int swimInWater(int[][] grid) {
+        int n = grid.length;
+        
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        
+        pq.add(new Pair(0,0, grid[0][0]));
+        boolean[][] vis = new boolean[n][n];
+        
+        int[][] dirs = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+        
+        while(pq.size() > 0){
+            Pair rem = pq.remove();
+            
+            if(rem.row == n-1 && rem.col == n-1){
+                return rem.msf;
+            }
+            
+            if(vis[rem.row][rem.col] == true){
+                continue;
+            }
+            
+            vis[rem.row][rem.col] = true;
+            
+            for(int i=0; i< 4; i++){
+                int rowdash = rem.row + dirs[i][0];
+                int coldash = rem.col + dirs[i][1];
+                
+                if(rowdash < 0 || coldash < 0 || rowdash >= n || coldash >= n || 
+                  vis[rowdash][coldash] == true){
+                    continue;
+                }
+                pq.add(new Pair(rowdash, coldash, Math.max(rem.msf, grid[rowdash][coldash])));
+            }
+        }
+        return 0;
+    }
+} 
+
+
+KOSARAJU ALGO
+
+class Solution
+{
+    //Function to find number of strongly connected components in the graph.
+    public int kosaraju(int v, ArrayList<ArrayList<Integer>> adj)
+   {
+        //code here
+        if (adj == null || adj.size() == 0 || v <= 0) {
+            return 0;
+        }
+        // we can apply Kosarajus SCC algorithm here
+        // we just need to do 3 steps
+        // 1. Find the topological ordering for the given graph
+        // 2. Find the transpose of the graph by just changing the direction
+        // 3. Now based on the topological ordering, do a dfs on the transpose graph
+        // by these steps we can find the strongly connected component, or we can take the count whatever we need
+        
+        boolean [] visited = new boolean[v];
+        Stack<Integer> trackOrder = new Stack<>();
+        int stronglyConnectedCount = 0;
+        for (int i=0; i<v; i++) {
+            if (!visited[i]) {
+                normalDfs(i, visited, adj, trackOrder);
+            }
+        }
+        ArrayList<ArrayList<Integer>> transpose = new ArrayList<>();
+        for (int i=0; i<v; i++) {
+            transpose.add(new ArrayList<>());
+        }
+        for (int i=0; i<v; i++) {
+            visited[i] = false;
+            ArrayList<Integer> children = adj.get(i);
+            for (Integer child : children) {
+                // change direction
+                transpose.get(child).add(i);
+            }
+        }
+        while (!trackOrder.isEmpty()) {
+            int node = trackOrder.pop();
+            if (!visited[node]) {
+                stronglyConnectedCount ++;
+                specialDfs(node, visited, transpose);
+                // here also we can make use for printing the scc, which can be added inside the dfs
+            }
+        }
+        return stronglyConnectedCount;
+    }
+    
+    // this will help in finding the topo sort
+    public void normalDfs(int node, boolean [] visited, ArrayList<ArrayList<Integer>> adj, Stack<Integer> trackOrder) {
+        visited[node] = true;
+        ArrayList<Integer> children = adj.get(node);
+        for (Integer child : children) {
+            if (!visited[child]) {
+                normalDfs(child, visited, adj, trackOrder);
+            }
+        }
+        trackOrder.push(node);
+    }
+    
+    // this will track the scc
+    public void specialDfs(int node, boolean [] visited, ArrayList<ArrayList<Integer>> transpose) {
+        visited[node] = true;
+        // we can just print the node which will give our scc nodes
+        ArrayList<Integer> children = transpose.get(node);
+        for (Integer child : children) {
+            if (!visited[child]) {
+                specialDfs(child, visited, transpose);
+            }
+        }
+    }
+}  
+
+
+
+
+
+38. MAX NO OF EDGES REMOVE TO MAKE GRAPH TRAVERSAL 
+
+class Solution {
+    public int maxNumEdgesToRemove(int n, int[][] edges) {
+          Arrays.sort(edges, (a, b) -> Integer.compare(b[0], a[0]));
+    int[] parenta = new int[n + 1];
+    int[] parentb = new int[n + 1];
+    int[] ranka = new int[n + 1];
+    int[] rankb = new int[n + 1];
+    int counta = 1;
+    int countb = 1;
+
+    for (int i = 0; i <= n; i++) {
+      parenta[i] = i;
+      parentb[i] = i;
+    }
+
+    int removedEdges = 0;
+
+    for (int[] e : edges) {
+      if (e[0] == 3) {
+        boolean mergeda = union(e[1], e[2], parenta, ranka);
+        boolean mergedb = union(e[1], e[2], parentb, rankb);
+        if (mergeda == true) {
+          counta++;
+        }
+        if (mergedb == true) {
+          countb++;
+        }
+
+        if (!mergeda && !mergedb) {
+          removedEdges++;
+        }
+      } else if (e[0] == 1) {
+        boolean mergeda = union(e[1], e[2], parenta, ranka);
+        if (mergeda == true) {
+          counta++;
+        }
+
+        if (!mergeda) {
+          removedEdges++;
+        }
+      } else {
+        boolean mergedb = union(e[1], e[2], parentb, rankb);
+        if (mergedb == true) {
+          countb++;
+        }
+        if (!mergedb) {
+          removedEdges++;
+        }
+      }
+    }
+
+    if (countb != n || counta != n) {
+      return -1;
+    }
+
+    return removedEdges;
+  }
+
+  public int find(int x, int[] parent) {
+    if (parent[x] == x) {
+      return x;
+    }
+    int temp = find(parent[x], parent);
+    parent[x] = temp;
+    return temp;
+  }
+
+  public boolean union(int x, int y, int[] parent, int[] rank) {
+    int lx = find(x, parent);
+    int ly = find(y, parent);
+
+    if (lx == ly)
+      return false;
+
+    if (rank[lx] > rank[ly]) {
+      parent[ly] = lx;
+    } else if (rank[lx] < rank[ly]) {
+      parent[lx] = ly;
+    } else {
+      parent[lx] = ly;
+      rank[ly]++;
+    }
+    return true;
+        
+    }
+}
+
+38. NO OF ISLAND 2
+
+  public static List<Integer> numIslands2(int m, int n, int[][] positions) {
+    List<Integer> ans = new LinkedList<>();
+     int[][] directions =  { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+     
+     int[] par = new int[m*n];
+     int[] rank = new int[m*n];
+     Arrays.fill(par, -1);
+     int count = 0;
+     
+     for(int i=0; i<positions.length; i++){
+         int row = positions[i][0];
+         int col = positions[i][1];
+         
+         int cellno = row*n+col;
+         if(par[cellno] != -1){   // duplicacy
+             ans.add(count);
+             continue;
+         }
+         par[cellno] = cellno;
+         rank[cellno] = 1;
+         count++;
+         
+         for(int[] dir : directions){
+             int rowdash = row + dir[0];
+             int coldash = col + dir[1];
+             int celldash = rowdash * n + coldash;
+             
+             if (rowdash < 0 || rowdash >= m || coldash < 0 || coldash >= n || par[celldash] == -1) {
+              continue;
+              };
+              
+              int lx = find(cellno, par);
+              int ly = find(celldash, par);
+              
+              if(lx != ly){
+                  if(rank[lx] > rank[ly]){
+                      par[ly] = lx;
+                  }else if(rank[lx] < rank[ly]){
+                      par[lx] = ly;
+                  } else{
+                      par[ly] = lx;
+                      rank[lx]++;
+                  }
+                  count--;
+              }
+         }
+         ans.add(count);
+     }
+     return ans;
+  }
+  
+   public static int find(int x, int[] parent) {
+    if (parent[x] == x) {
+      return x;
+    }
+    int temp = find(parent[x], parent);
+    parent[x] = temp;
+    return temp;
+  }
+}
+
+
+39. REDUNDANT CONNECTION
+
+class Solution {
+     private  int find(int[] parent, int x) {
+    if (parent[x] == x) {
+        return x;
+    }
+         int temp = find(parent, parent[x]);
+      parent[x] = temp;
+    return temp;
+  }
+    
+    public int[] findRedundantConnection(int[][] edges) {
+         int[] parent = new int[edges.length + 1];
+        int[] rank = new int[edges.length + 1];
+        
+    for (int i = 1; i < parent.length; i++){
+      parent[i] = i;
+        rank[i] = 1;
+    }
+        
+    for (int[] edge : edges) {
+      int u = edge[0];
+      int  v = edge[1];
+        
+        int lu = find(parent, u);
+        int lv = find(parent, v);
+        
+        if(lu != lv){
+            if(rank[lu] > rank[lv]){
+                parent[lv] = lu;
+            } else if(rank[lu] < rank[lv]){
+                parent[lu] = lv;
+            } else {
+              parent[lu] = lv;
+                rank[lv]++;
+           }
+        }else {
+            return edge;
+        }
+    }
+      
+
+    return new int[2];
+    }
+}
+  
+
+
+LARGEST COMPONENT SIZE DIVISBLE BY FACTOR 1
+
+class Solution {
+	private class UnionFind {
+		private int[] parent;
+
+		private UnionFind(int n){
+			parent = new int[n];
+			for(int i=0;i<n;i++){
+				parent[i] = i;
+			}
+		}
+		private int getAbsoluteParent(int i){
+			if(parent[i]==i){
+				// absolute parent
+				return i;
+			}
+			parent[i]=getAbsoluteParent(parent[i]);
+			return parent[i];
+		}
+
+		private void unify(int i, int j){
+			int absoluteParentI = getAbsoluteParent(i);
+			int absoluteParentJ = getAbsoluteParent(j);
+			if(absoluteParentI!=absoluteParentJ){
+				// 7->2, 21->2 (7,21)
+				parent[absoluteParentJ] = absoluteParentI;
+			}
+		}
+
+	}
+
+	public int largestComponentSize(int[] nums) {
+		int max=0;
+		for(int el:nums) {
+			max = Math.max(el, max);
+		}
+		UnionFind uf = new UnionFind(max+1);
+
+		for(int i:nums) {
+			for(int j=2;j*j<=i;j++) {
+				if(i%j==0){ // j is a factor of i
+					uf.unify( j,i); // i=21, j=3
+					uf.unify(i/j,i); // (21,3), (21,21/3(7))
+				}
+			}
+		}
+		//<Parent, Freq>
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		int maxComponet = 0;
+		for(int el:nums){
+			int parent = uf.getAbsoluteParent(el);
+			map.put(parent, map.getOrDefault(parent, 0) + 1);
+			maxComponet= Math.max(maxComponet, map.get(parent));
+		}
+
+
+
+		return maxComponet;
+	}
+}                
+                                	                        

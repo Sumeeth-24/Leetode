@@ -1,0 +1,1268 @@
+DIFFERNT WAYS TO ADD PARENTHESIS
+
+class Solution {
+    public List<Integer> diffWaysToCompute(String expression) {
+         List<Integer> combinedResult = new ArrayList<>();
+        
+        for(int i = 0; i < expression.length(); i++){
+            // if the character at postion 'i' is not a digit then its an operator which means we have an expression
+            if(!Character.isDigit(expression.charAt(i))){        
+                // store the operator 
+                char op = expression.charAt(i);
+                
+                // divide step:
+                // obtain the substring that is to the left of the operator 
+                // and the substring that is to the right of the operator
+                String leftHalf = expression.substring(0, i);
+                String rightHalf = expression.substring(i+1);
+                
+                // conquer step:
+                // recursively find all the ways to compute the left and right halves of the expression 
+                List<Integer> leftResults = diffWaysToCompute(leftHalf);
+                List<Integer> rightResults = diffWaysToCompute(rightHalf);
+                
+                // combine step:
+                // combine the left and right halves by computing the current operation using all of the 
+                // left results with all of the right results
+                for(int leftVal : leftResults){
+                    for(int rightVal : rightResults){
+                        int result = executeOperation(leftVal, rightVal, op);
+                        combinedResult.add(result);
+                    }
+                }           
+            }
+        }
+        
+        // handle the base case where the string passed to the algorithm was just a number or empty string and not an expression
+        if(combinedResult.isEmpty() && !expression.isEmpty()) combinedResult.add(Integer.valueOf(expression));
+        
+        return combinedResult;
+    }
+    
+    public int executeOperation(int x, int y, char op){
+        if(op == '*') return x * y;
+        if(op == '-') return x - y;
+        return x + y;
+    }
+    
+}
+
+
+PERMUTATION [1 2 3]
+
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        boolean[] visited = new boolean[nums.length];
+        List<Integer> perm= new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        backtracking(nums,visited, perm, result);
+        return result;
+    }
+    private void backtracking(int[] nums, boolean[] visited, List<Integer> perm, List<List<Integer>> result){
+        if (perm.size() == nums.length){
+            result.add(new ArrayList<>(perm));
+            return;
+        }
+        for (int i = 0; i<nums.length; i++){
+            if (visited[i])
+                continue;
+            visited[i] = true;
+            perm.add(nums[i]);
+            backtracking(nums, visited, perm, result);
+            perm.remove(perm.size() -1);
+            visited[i] = false;
+        }
+    }
+}
+
+PARTITION EQUAL SUBSET SUM
+
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int num: nums) sum += num;
+       return sum % 2 == 1 ? false : helper(nums, 0, sum / 2, new Boolean[nums.length][sum / 2 + 1]);
+    }
+    
+    private boolean helper(int[] nums, int i, int ssum, Boolean[][] dp){
+        if(ssum == 0) return true;
+        if(ssum < 0) return false;
+        if(i >= nums.length) return false;
+        
+        if(dp[i][ssum] == null)
+            dp[i][ssum] = helper(nums, i+1, ssum - nums[i],dp) || helper(nums, i+1, ssum, dp);
+        return dp[i][ssum];
+    }
+}
+
+
+PARTITION K EQUAL SUBSET SUM
+
+class Solution {
+ 
+    
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+           int sum = 0;
+        for(int num:nums)sum += num;
+        if(k <= 0 || sum%k != 0)return false;
+        int[] visited = new int[nums.length];
+        return canPartition(nums, visited, 0, k, 0, sum/k);
+    }
+    
+    public boolean canPartition(int[] nums, int[] visited, int start_index, int k, int cur_sum, int target){
+        if(k==0)return true;
+        if(curr_sum > target)return false;
+        if(cur_sum == target)return canPartition(nums, visited, 0, k-1, 0, target);
+
+        for(int i = start_index; i<nums.length; i++){
+            if(visited[i] == 0){
+                visited[i] = 1;
+                if(canPartition(nums, visited, i+1, k, cur_sum + nums[i], target))return true;
+                visited[i] = 0;
+            }
+        }
+        return false;
+        
+        }
+    }
+
+
+
+1. PRINT DECREASING NUMBER USING RECURSION
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   public static void main(String[] args) throws Exception {
+    Scanner t = new Scanner(System.in);
+    System.out.println("Enter the value");
+    int n = t.nextInt();
+    printdecreasing(n);
+   } 
+    
+    public static void printdecreasing(int n) {
+    	if (n == 0) {
+    		return;
+    	}
+    		System.out.println(n);
+    		printdecreasing(n-1);
+    	}
+    }
+
+2. PRINT INCREASING NUMBER USING RECURSION
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   public static void main(String[] args) throws Exception {
+    Scanner t = new Scanner(System.in);
+    System.out.println("Enter the value");
+    int n = t.nextInt();
+    printincreasing(n);
+   } 
+    
+    public static void printincreasing(int n) {
+    	if (n == 0) {
+    		return;
+    	}
+    	printincreasing(n-1);
+    		System.out.println(n);
+    		
+    	}
+    }
+
+3. PRINT DECREASINGINCREASING FUNCTION
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+		   int n = t.nextInt();
+		   printdecreasingincreasing(n);
+		     
+		  }
+	 public static void printdecreasingincreasing(int n) {
+		 if (n == 0) {
+			 return;
+		 }
+		 System.out.println(n);
+		 printdecreasingincreasing(n-1);
+		 System.out.println(n);
+	 }
+		}
+
+4. FACTORIAL OF A NUMBER
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+		   int n = t.nextInt();
+		   int f = factorial(n);
+		   System.out.println(f);
+		     
+		  }
+	 public static int factorial(int n) {
+		 if (n == 1) {
+			 return 1;
+		 }
+		int fn1 = factorial(n-1);
+		int fact = n * fn1;
+		return fact;
+	 }
+		}
+
+
+
+4 A)  FACTORIAL OF A LARGE NUMBER
+
+package automate;
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+
+
+public class MyClass {
+	  
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+		   int n = t.nextInt();
+		    factorialofLargenumber(n);
+		  }
+	 
+	 
+	 public static void factorialofLargenumber(int n) {
+		BigInteger factorial = BigInteger.ONE;
+		
+		if(n < 0) {
+			System.out.println("Can't find factorial of negative number");
+		} 
+		else {
+			for(int counter = n; counter >= 2; counter--) {
+			factorial = factorial.multiply(BigInteger.valueOf(counter));
+		}
+			
+	 }
+ }
+}
+		
+
+
+
+5. POWER CALCULATION  (LINEAR)
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+		   int x = t.nextInt();
+		   int n = t.nextInt();
+		   int pow = power(x , n);
+		   System.out.println(pow);
+		     
+		  }
+	 public static int power(int x, int n) {
+		 if (n == 0) {
+			 return 1;
+		 }
+		int xnm1 = power(x, n-1);
+		int po = x * xnm1;
+		return po;
+	 }
+		}
+
+
+5 A   POWER CALCULATION   (LOGARITHMIC)
+
+class Solution {
+    
+    public double myPow(double x, int n) {
+        
+        if(n < 0){
+            return 1.0/helper(x, Math.abs(n));
+        }
+        
+        return helper(x, n);
+        
+    }
+    
+    
+    public double helper(double x, int n){
+        
+         if (n == 0) {
+			 return 1;
+		 }
+      
+          if (n == 1) {
+			 return x;
+		 }
+        
+        
+        if(n % 2 == 0){
+           return helper(x * x , n/2);
+        }
+        
+        return x *  helper(x * x , n/2);
+        
+        
+    }
+}
+
+
+
+6. DISPLAY ARRAY IN REVERSE
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+	       int[] a = new int[n];
+	       System.out.println("Enter the number");
+	       for(int i = 0; i < a.length; i++) {
+	    	   a[i] = t.nextInt();
+	    	   
+	       }
+	       displayreversearray(a, 0);
+	 }
+	       
+	       public static void displayreversearray(int[] a, int i) {
+	    	   if(i == a.length) {
+	    		   return;
+	    	   }
+	    	   displayreversearray(a, i + 1);
+	    	   System.out.println(a[i]);
+	       }
+	}
+
+                       
+                      
+
+
+7. FIND MAXIMUM IN AN ARRAY
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+	       int[] a = new int[n];
+	       System.out.println("Enter the number");
+	       for(int i = 0; i < a.length; i++) {
+	    	   a[i] = t.nextInt();
+	    	   
+	       }
+	      int max =  displaymaxarray(a, 0);
+	      System.out.println(max);
+	 }
+	       
+	       public static int displaymaxarray(int[] a, int i) {
+	    	   if(i == a.length - 1) {
+	    		   return a[i];
+	    	   }
+	    	  int misa = displaymaxarray(a, i+1);
+	    	  if(misa > a[i]) {
+	    		  return misa;
+	    	  } else {
+	    		  return a[i];
+	    	  }
+	    	   
+	       }
+		}
+
+8. FIND MINIMUM IN AN ARRAY
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+	       int[] a = new int[n];
+	       System.out.println("Enter the number");
+	       for(int i = 0; i < a.length; i++) {
+	    	   a[i] = t.nextInt();
+	    	   
+	       }
+	      int max =  displaymaxarray(a, 0);
+	      System.out.println(max);
+	 }
+	       
+	       public static int displaymaxarray(int[] a, int i) {
+	    	   if(i == a.length - 1) {
+	    		   return a[i];
+	    	   }
+	    	  int misa = displaymaxarray(a, i+1);
+	    	  if(misa < a[i]) {
+	    		  return misa;
+	    	  } else {
+	    		  return a[i];
+	    	  }
+	    	   
+	       }
+		}
+
+9. FIRST INDEX OF OCCURENCE IN ARRAY
+package automate;
+
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+	       int[] a = new int[n];
+	       System.out.println("Enter the number");
+	       for(int i = 0; i < a.length; i++) {
+	    	   a[i] = t.nextInt();
+	       }
+	       System.out.println("Enter the value");
+	       int d = t.nextInt();
+	       
+	      int fi =  firstIndex(a, 0, d);
+	      System.out.println(fi);
+	 }
+	       
+	       public static int firstIndex(int[] a, int i, int x) {
+	    	   if(i == a.length) {
+	    		   return -1;
+	    	   }
+
+           
+
+	    	 if(a[i] == x) {
+	    		return i;
+	    	} else {
+	    	        int fiisa = firstIndex(a, i + 1, x);
+	    		return fiisa;
+	    	}
+	     }
+        }
+
+
+10. LAST INDEX OF OCCURRENCE IN ARRAY
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+	       int[] a = new int[n];
+	       System.out.println("Enter the number");
+	       for(int i = 0; i < a.length; i++) {
+	    	   a[i] = t.nextInt();
+	       }
+	       System.out.println("Enter the value");
+	       int d = t.nextInt();
+	       
+	      int li =  lastIndex(a, 0, d);
+	      System.out.println(li);
+	 }
+	       
+	       public static int lastIndex(int[] a, int i, int x) {
+	    	   if(i == a.length) {
+	    		   return -1;
+	    	   }
+	    	int liisa = lastIndex(a, i + 1, x);
+	    	if(liisa == -1) {
+	    		if(a[i] == x) {
+	    			return i;
+	    		} else {
+	    			return -1;
+	    		}
+	    	} else {
+	    		return liisa;
+	    	}
+	       }
+		}
+
+11. TOWER OF HANOI
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+		 
+		    int n = t.nextInt();
+		    System.out.println("Enter the value");
+		   int n1 = t.nextInt();
+		    int n2 = t.nextInt();
+		
+		    int n3 = t.nextInt();
+
+		    toh(n, n1, n2, n3);
+		  }
+
+		  public static void toh(int n, int  t1id, int t2id, int t3id){
+		    if(n == 0){
+		      return;
+		    }
+		    
+		    toh(n - 1, t1id, t3id, t2id);
+		    System.out.println(n + "[" + t1id + " -> " + t2id + "]");
+		    toh(n - 1, t3id, t2id, t1id);
+		  }
+
+		}
+
+12. ALL INDICES IN AN ARRAY
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+		    int n = t.nextInt();
+	        int[] arr = new int[n];
+	        System.out.println("Enter the value");
+	        for (int i = 0; i < n; i++) {
+	            arr[i] = t.nextInt();
+	        }
+	        System.out.println("Enter the value");
+	        int x = t.nextInt();
+	        int[] iarr = allIndices(arr, x, 0, 0);
+
+	        if(iarr.length == 0){
+	            System.out.println();
+	            return;
+	        }
+	        
+	        for(int i = 0; i < iarr.length; i++){
+	            System.out.println(iarr[i]);
+	        }
+	    }
+
+	    public static int[] allIndices(int[] arr, int x, int idx, int fsf) {
+	        if(idx == arr.length){
+	            return new int[fsf];
+	        }
+	        
+	      
+
+	        if(arr[idx] == x){
+	        	  int[] iarr= allIndices(arr, x, idx + 1, fsf + 1);
+	            iarr[fsf] = idx;
+	            return iarr;
+	        } else {
+	        	int[] iarr = allIndices(arr, x, idx + 1, fsf);
+	        	return iarr;
+	        }
+	        
+	      
+	    }
+
+	}
+
+13. GET SUBSEQUENCE
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args){
+		Scanner t = new Scanner(System.in);
+		System.out.println("Enter the string");
+	        String str = t.nextLine();
+	        ArrayList<String> ss = gss(str);
+	        System.out.println(ss);
+	    }
+
+	    public static ArrayList<String> gss(String str) {
+	        if(str.length() == 0){
+	            ArrayList<String> bres = new ArrayList<>();
+	            bres.add("");
+	            return bres;
+	        }
+
+	        char ch = str.charAt(0);  // a
+	        String ros = str.substring(1);  //bc
+
+	        ArrayList<String> rres = gss(ros); //[--, -c, b-, bc]
+	        ArrayList<String> mres = new ArrayList<>();
+
+	        for(String rstr: rres){
+	            mres.add("" + rstr);
+	            mres.add(ch + rstr);
+	        }
+	        return mres;
+	    }
+	}
+
+14. GET KEYPAD CODES
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception {
+	        Scanner t = new Scanner(System.in);
+	        System.out.println("Enter the string or value");
+	        String str = t.nextLine();
+	        ArrayList<String> words = getKPC(str);
+	        System.out.println(words);
+	    }
+
+	    static String[] codes = {".;", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tu", "vwx", "yz"};
+	    public static ArrayList<String> getKPC(String str) {
+	    	
+	    	 if(str.length() == 0){
+		            ArrayList<String> bres = new ArrayList<>();
+		            bres.add("");
+		            return bres;
+		        }
+	    	 
+	    	char ch = str.charAt(0);
+	    	String ros = str.substring(1);
+	    	ArrayList<String> rres = getKPC(ros);
+	    	ArrayList<String> mres = new ArrayList<>();
+	    	String codeforch = codes[ch - '0'];
+	    	
+	       
+
+	    
+             for(int i = 0; i < codeforch.length(); i++) {
+	    char chcode = codeforch.charAt(i);
+	            for(String rstr: rres){
+	                mres.add(chcode + rstr);
+	            }
+	        }
+
+	        return mres;
+	    }
+	}
+
+
+COMBINATION SUM
+
+TC : O(2^t * K) k for every recursion call SC O(K * X)
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+            List<List<Integer>> result = new ArrayList<>();
+          
+            backtrack(candidates, 0, target,  new ArrayList<>(), result);
+            return result;
+}
+
+private void backtrack(int[] cand, int start, int target, List<Integer> list,  List<List<Integer>> result){
+    if(target < 0) return;
+    
+     if(target == 0) result.add(new ArrayList<>(list));
+     
+        for(int i = start; i < cand.length; i++){
+            list.add(cand[i]);
+            backtrack(cand, i, target - cand[i], list, result); // not i + 1 because we can reuse same elements
+            list.remove(list.size() - 1);
+        }
+    
+}
+}
+
+
+COMBINATION SUM II
+
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+         List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(candidates);
+          
+            backtrack(candidates, 0, target,  new ArrayList<>(), result);
+            return result;
+}
+
+private void backtrack(int[] cand, int start, int target, List<Integer> list,  List<List<Integer>> result){
+    if(target < 0) return;
+    
+     if(target == 0){
+         result.add(new ArrayList<>(list));
+         
+     }
+     
+        for(int i = start; i < cand.length; i++){
+            
+              if(i > start && cand[i] == cand[i-1]) continue;
+            
+            list.add(cand[i]);
+            backtrack(cand, i + 1, target - cand[i], list, result); 
+            list.remove(list.size() - 1);
+        }
+    
+}
+    
+}
+
+
+COMBINATION SUM III
+
+class Solution {
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> result = new ArrayList<>();
+          
+            backtrack(1, k, n,  new  ArrayList<>(), result);
+            return result;
+}
+
+private void backtrack( int start, int k, int n,  List<Integer> list,  List<List<Integer>> result){
+    if(k< 0 || n < 0) return;
+    
+     if(k == 0 && n == 0) result.add(new ArrayList<>(list));
+     
+        for(int i = start; i <= 9; i++){
+            list.add(i);
+            backtrack( i+1, k - 1, n - i,  list, result); 
+           list.remove(list.size() - 1);
+        }
+    
+
+        
+    }
+}
+
+
+
+
+COMBINATION SUM IV
+
+
+//RECURSIVE
+
+public int combinationSum4(int[] nums, int target) {
+    if (target == 0) {
+        return 1;
+    }
+    int res = 0;
+    for (int i = 0; i < nums.length; i++) {
+        if ( nums[i] <= target ) {
+            res += combinationSum4(nums, target - nums[i]);
+        }
+    }
+    return res;
+}
+
+
+
+	TC = N*target
+class Solution {
+    private int[] dp;
+
+public int combinationSum4(int[] nums, int target) {
+    dp = new int[target + 1];
+    Arrays.fill(dp, -1);
+    dp[0] = 1;
+    return helper(nums, target);
+return dp[target];
+}
+
+private int helper(int[] nums, int target) {
+    if (dp[target] != -1) {
+        return dp[target];
+    }
+    int res = 0;
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] <= target) {
+            res += helper(nums, target - nums[i]);
+        }
+    }
+    dp[target] = res;
+    return dp[target];
+}
+}
+
+
+
+15. PRINT STAIR PATHS WITH 1, 2, 3 JUMPS
+ import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+       Scanner t = new Scanner(System.in);
+        int n = t.nextInt();
+        printStairPaths(n, "");
+    }
+
+    public static void printStairPaths(int n, String psf) {
+        if(n <= 0){
+            if(n == 0){
+                System.out.println(psf);
+            }
+
+            return;
+        }
+    
+        printStairPaths(n - 1, psf + 1);
+        printStairPaths(n - 2, psf + 2);
+        printStairPaths(n - 3, psf + 3);
+    }
+}
+
+16. PRINT MAZE PATHS
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+       Scanner t = new Scanner(System.in);
+        int n = t.nextInt();
+        int m = t.nextInt();
+        printMazePaths(1, 1, n , m , "");
+    }
+
+    public static void printMazePaths(int sr, int sc, int dr, int dc, String psf) {
+        if(sr > dr || sc > dc){
+            return;
+        }
+
+        if(sr == dr && sc == dc){
+            System.out.println(psf);
+            return;
+        }
+
+        printMazePaths(sr, sc + 1, dr, dc, psf + "h");
+        printMazePaths(sr + 1, sc, dr, dc, psf + "v");
+    }
+}
+
+17. PRINT MAZE PATHS WITH JUMPS
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+       Scanner t = new Scanner(System.in);
+        int n = t.nextInt();
+        int m = t.nextInt();
+        printMazePaths(1, 1, n , m, "");
+    }
+
+    public static void printMazePaths(int sr, int sc, int dr, int dc, String psf) {
+      
+
+        if(sr == dr && sc == dc){
+            System.out.println(psf);
+            return;
+        }
+
+        for(int move = 1; move <= dc - sc; move++){
+            printMazePaths(sr, sc + move, dr, dc, psf + "h" + move);
+        }
+        
+        for(int move = 1; move <= dr - sr; move++){
+            printMazePaths(sr + move, sc, dr, dc, psf + "v" + move);
+        }
+
+        for(int move = 1; move <= dc - sc && move <= dr - sr; move++){
+            printMazePaths(sr + move, sc + move, dr, dc, psf + "d" + move);
+        }
+    }
+}
+
+18. PRINT ENCODING
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+    public static void main(String[] args) throws Exception {
+        Scanner t = new Scanner(System.in);
+        System.out.println("Enter the value");
+        String str = t.nextLine();
+        printEncodings(str, "");
+    }
+
+    public static void printEncodings(String ques, String ans) {
+        if (ques.length() == 0) {
+            System.out.println(ans);
+            return;
+        } else if (ques.length() == 1) {
+        char ch = ques.charAt(0);
+        if(ch == '0') {
+                return;
+            } else {
+               int chv = ch - '0';
+               char code = (char)('a' + chv - 1);
+               ans = ans + code;
+               System.out.println(ans);
+            }
+        } else {
+        	   char ch = ques.charAt(0);
+        	   String roq = ques.substring(1);
+        	   if(ch == '0') {
+                return;
+            } else {
+            	   int chv = ch - '0';
+                   char code = (char)('a' + chv - 1);
+                printEncodings(roq, ans + code);
+
+                String ch12 = ques.substring(0, 2);
+                String roq12 = ques.substring(2);
+       int ch12v = Integer.parseInt(ch12);
+       if(ch12v <= 26) {
+    	   char codev = (char)('a' + ch12v - 1);
+           printEncodings(roq12, ans + codev);
+                }
+            }
+        }
+    }
+} 
+
+19. PRINT PERMUTATIONS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   
+	 public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        String str = t.nextLine();
+	        printPermutations(str, "");
+	    }
+
+	    public static void printPermutations(String ques, String ans) {
+	        if (ques.length() == 0) {
+	            System.out.println(ans);
+	            return;
+	        }
+
+	        for (int i = 0; i < ques.length(); i++) {
+	            char ch = ques.charAt(i);
+	            String roq = ques.substring(0, i) + ques.substring(i + 1);
+	            printPermutations(roq, ans + ch);
+	        }
+	    }
+	}
+
+20. TARGET SUM SUBSET
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   
+	 public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	       int n = t.nextInt();
+	       int[] arr = new int[n];
+	       System.out.println("Enter the value");
+	        for (int i = 0; i < n; i++) {
+	            arr[i] = t.nextInt();
+	        }
+	        System.out.println("Enter the value");
+	        int tar = t.nextInt();
+	        printTargetSumSubsets(arr, 0, "", 0, tar);
+	    }
+
+	    // set is the subset
+	    // sos is sum of subset
+	    // tar is target
+	    public static void printTargetSumSubsets(int[] arr, int idx, String set, int sos, int tar) {
+	        if (sos > tar) {
+	            return;
+	        }
+
+	        if (idx == arr.length) {
+	            if (sos == tar) {
+	                System.out.println(set + ".");
+	            }
+	            return;
+	        }
+
+	        printTargetSumSubsets(arr, idx + 1, set + arr[idx] + ", ", sos + arr[idx], tar);
+	        printTargetSumSubsets(arr, idx + 1, set, sos, tar);
+	    }
+
+	}
+
+21. FLOODFILLS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   
+	 public static void main(String[] args) throws Exception {
+	      Scanner t = new Scanner(System.in);
+	      System.out.println("Enter the value");
+	        int n = t.nextInt();
+	        int m = t.nextInt();
+	        
+	        int[][] arr = new int[n][m];
+	        System.out.println("Enter the value");
+	        for (int i = 0; i < n; i++) {
+	            for (int j = 0; j < m; j++) {
+	                arr[i][j] = t.nextInt();
+	            }
+	        }
+	        
+             boolean[][]visited = new boolean[n][m];
+	        floodfill(arr, 0, 0, "", visited);
+	    }
+
+	    public static void floodfill(int[][] maze, int row, int col, String psf, boolean[][] visited) {
+	        if (row < 0 || col < 0 || row >= maze.length || col >= maze[0].length ||
+	            maze[row][col] == 1 || visited[row][col] == true) {
+	            return;
+	        } else if (row == maze.length - 1 && col == maze[0].length - 1) {
+	            System.out.println(psf);
+	            return;
+	        }
+
+	        visited[row][col] = true;
+	        floodfill(maze, row - 1, col, psf + "t", visited);
+	        floodfill(maze, row, col - 1, psf + "l", visited);
+	        floodfill(maze, row + 1, col, psf + "d", visited);
+	        floodfill(maze, row, col + 1, psf + "r", visited);
+	        visited[row][col] = false;
+	    }
+
+	}
+
+
+RAT IN A MAZE
+
+class Solution {
+    //TC (4^N*M)
+    public static ArrayList<String> findPath(int[][] m, int n) {
+        ArrayList<String> paths = new ArrayList<>();
+            findAllPathsInMaze(m, 0, 0, paths, "");
+         return paths;
+    }
+    
+     static void findAllPathsInMaze(int[][] maze, int i, int j, ArrayList<String> paths, String path) {
+       if (i < 0 || j < 0 || i > maze.length - 1 || j > maze.length - 1 || maze[i][j] == 0) {
+         return;
+       }
+       if (i == maze.length - 1 && j == maze.length - 1) {
+           paths.add(path);
+       }
+   
+       maze[i][j] = 0;
+       findAllPathsInMaze(maze, i + 1, j, paths, path+"D");
+       findAllPathsInMaze(maze, i, j + 1, paths, path+"R");
+       findAllPathsInMaze(maze, i - 1, j, paths, path+"U");
+       findAllPathsInMaze(maze, i, j - 1, paths, path+"L");
+       maze[i][j] = 1;
+     }
+}
+
+
+
+22. N QUEENS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   
+	 public static void main(String[] args) throws Exception {
+		 Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+	        int[][] chess = new int[n][n];
+	        printNQueens(chess, "", 0);
+	    }
+
+	    public static void printNQueens(int[][] chess, String qsf, int row) {
+	        if (row == chess.length) {
+	            System.out.println(qsf + ".");
+	            return;
+	        }
+	        for (int col = 0; col < chess.length; col++) {
+	            if (chess[row][col] == 0 && isQueenSafe(chess, row, col) == true) {
+	                chess[row][col] = 1;
+	                printNQueens(chess, qsf + row + "-" + col + ", ", row + 1);
+	                chess[row][col] = 0;
+	            }
+	        }
+	    }
+
+	    public static boolean isQueenSafe(int[][] chess, int row, int col) {
+	        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+	            if (chess[i][j] == 1) {
+	                return false;
+	            }
+	        }
+
+	        for (int i = row - 1, j = col; i >= 0; i--) {
+	            if (chess[i][j] == 1) {
+	                return false;
+	            }
+	        }
+
+	        for (int i = row - 1, j = col + 1; i >= 0 && j < chess.length; i--, j++) {
+	            if (chess[i][j] == 1) {
+	                return false;
+	            }
+	        }
+
+	        for (int i = row, j = col - 1; j >= 0; j--) {
+	            if (chess[i][j] == 1) {
+	                return false;
+	            }
+	        }
+
+	        return true;
+	    }
+
+	}
+
+23. KNIGHT TOURS
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   
+	public static void main(String[] args) throws Exception {
+		 Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+        int r = t.nextInt();
+        int c = t.nextInt();
+        
+        System.out.println("Enter the value");
+        int[][] chess = new int[n][n];
+        printKnightsTour(chess, r, c, 1);
+    }
+
+    public static void printKnightsTour(int[][] chess, int r, int c, int upcomingMove) {
+        if (r < 0 || c < 0 || r >= chess.length || c >= chess.length || chess[r][c] != 0) {
+            return;
+        } else if (upcomingMove == chess.length * chess.length) {
+            chess[r][c] = upcomingMove;
+            displayBoard(chess);
+            chess[r][c] = 0;
+            return;
+        }
+
+        chess[r][c] = upcomingMove;
+        printKnightsTour(chess, r - 2, c + 1, upcomingMove + 1);
+        printKnightsTour(chess, r - 1, c + 2, upcomingMove + 1);
+        printKnightsTour(chess, r + 1, c + 2, upcomingMove + 1);
+        printKnightsTour(chess, r + 2, c + 1, upcomingMove + 1);
+        printKnightsTour(chess, r + 2, c - 1, upcomingMove + 1);
+        printKnightsTour(chess, r + 1, c - 2, upcomingMove + 1);
+        printKnightsTour(chess, r - 1, c - 2, upcomingMove + 1);
+        printKnightsTour(chess, r - 2, c - 1, upcomingMove + 1);
+        chess[r][c] = 0;
+    }
+
+    public static void displayBoard(int[][] chess) {
+        for (int i = 0; i < chess.length; i++) {
+            for (int j = 0; j < chess[0].length; j++) {
+                System.out.print(chess[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+    }
+}
+
+24. PRINT ZIGZAG
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+
+	    public static void main(String[] args) throws Exception {
+	    	 Scanner t = new Scanner(System.in);
+		       System.out.println("Enter the value");
+		       int n = t.nextInt();
+	           pzz(n);
+	    }
+
+	    public static void pzz(int n) {
+	        if (n == 0) {
+	            return;
+	        }
+
+	        System.out.print(n + " ");
+	        pzz(n - 1);
+	        System.out.print(n + " ");
+	        pzz(n - 1);
+	        System.out.print(n + " ");
+	    }
+
+	}
+
+25. DISPLAY ARRAY
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] arg){
+		   Scanner t = new Scanner(System.in);
+		   System.out.println("Enter the value");
+	       int n = t.nextInt();
+	       int[] a = new int[n];
+	       System.out.println("Enter the number");
+	       for(int i = 0; i < a.length; i++) {
+	    	   a[i] = t.nextInt();
+	    	   
+	       }
+	       displayarray(a, 0);
+	 }
+	       
+	       public static void displayarray(int[] a, int i) {
+	    	   if(i == a.length) {
+	    		   return;
+	    	   }
+	    	   System.out.println(a[i]);
+	    	   displayarray(a, i + 1);
+	    	  
+	       }
+		}

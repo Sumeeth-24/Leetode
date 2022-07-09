@@ -1,0 +1,2311 @@
+MERGE TWO BINARY TREE
+
+1. RECURSIVE
+
+class Solution {
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if(t1 == null) return t2;
+        if(t2 == null) return t1;
+        t1.val += t2.val;
+        t1.left = mergeTrees(t1.left, t2.left);
+        t1.right = mergeTrees(t1.right, t2.right);
+        return t1;
+    }
+} stackoverflow issue
+
+2. ITERATIVE BFS
+
+class Solution {
+    public TreeNode mergeTrees(TreeNode a, TreeNode b) {
+         Queue<TreeNode[]> Q = new LinkedList<>();
+        if(a == null || b == null)
+            return a == null ? b : a;
+        
+        TreeNode ans = a;
+        Q.offer(new TreeNode[]{a, b});
+		
+        while(!Q.isEmpty()) {
+            int size = Q.size();
+            for(int i = 0; i < size; i++) {
+                TreeNode pop[] = Q.poll();
+                a = pop[0]; b = pop[1];
+                
+                if(a == null || b == null) 
+                    continue;
+                
+                if(a.left == null) {
+                    a.left = b.left;
+                    b.left = null;
+                }
+                
+                if(a.right == null) {
+                    a.right = b.right;
+                    b.right = null;
+                }
+                
+                a.val += b.val;
+                Q.offer(new TreeNode[]{a.left, b.left});
+                Q.offer(new TreeNode[]{a.right, b.right});
+            }
+        }
+        return ans;
+    }
+}
+
+
+INSERT INTO BST
+
+class Solution {
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        if(root == null) return new TreeNode(val);
+        TreeNode curr = root;
+        
+        while(true){
+            if(curr.val <= val){
+                if(curr.right != null) curr = curr.right;
+                else {
+                    curr.right = new TreeNode(val);
+                    break;
+                }
+            }
+            else {
+                 if(curr.left != null) curr = curr.left;
+                else {
+                    curr.left = new TreeNode(val);
+                    break;
+                }
+            }
+        }
+        return root;
+    }
+}
+
+
+MAXIMUM DIFF BETWEEN NODE AND ANCESTOR
+
+class Solution {
+    int result = 0;
+    public int maxAncestorDiff(TreeNode root) {
+        dfs(root, root.val, root.val);
+        return result;
+    }
+    
+    private void dfs(TreeNode node, int cmin, int cmax){
+        if(node == null) return;
+        
+        result = Math.max(result, Math.max(Math.abs(node.val - cmin), Math.abs(node.val - cmax)));
+        cmin = Math.min(cmin, node.val);
+        cmax = Math.max(cmax, node.val);
+        dfs(node.left, cmin, cmax);
+        dfs(node.right, cmin, cmax);
+    }
+}
+
+
+RANGE SUM OF BST
+
+class Solution {
+    // 1st solution use inorder traversal
+    
+    int sum = 0;
+    public int rangeSumBST(TreeNode root, int low, int high) {
+        
+        if(root == null) return sum;
+        
+        calculateSum(root, low, high);
+        
+        return sum;
+    }
+    
+    private void calculateSum(TreeNode root, int low, int high) {
+        
+        if(root == null) return;
+        
+        if(root.val > low)
+            calculateSum(root.left, low, high);
+        
+        if(root.val >= low && root.val <= high){
+            sum = sum + root.val;
+        }
+        
+         if(high > root.val)
+            calculateSum(root.right, low, high);
+    }
+}
+
+
+KTH SMALLEST ELEMENT
+
+class Solution {
+    // inorder of bst is always sorted
+    public int kthSmallest(TreeNode root, int k) {
+        Stack<TreeNode> st = new Stack<>();
+        TreeNode node = root;
+        int cnt = 0;
+        
+        while(true){
+            if(node != null){
+                st.push(node);
+                node = node.left;
+            }
+            else{
+                
+                if(st.isEmpty()){
+                    break;
+                }
+                
+                node = st.pop();
+                // inorder
+                cnt++;
+                if(cnt == k) return node.val;
+                
+                node = node.right;
+            }
+        }
+        return -1;
+    }
+}
+
+
+
+CONVERT BST TO DOUBLY LINKEDLIST
+
+ static Node prev = null;
+
+  public static void bToDLL_(Node root) {
+    if (root == null)
+      return;
+
+    bToDLL_(root.left);
+
+    prev.right = root;
+    root.left = prev;
+
+    prev = root;
+
+    bToDLL_(root.right);
+  }
+
+  public static Node bToDLL(Node root) {
+    Node dummy = new Node(-1);
+    prev = dummy;
+    bToDLL_(root);
+
+    Node head = dummy.right;
+    head.left = dummy.right = null;
+
+    head.left = prev;
+    prev.right = head;
+
+    return head;
+  }
+
+
+CONVERT SORTED DOUBLY LINKEDLIST TO BST
+
+ public static Node getMidNode(Node node) {
+    if (node == null || node.right == null)
+      return node;
+
+    Node slow = node, fast = node;
+    while (fast.right != null && fast.right.right != null) {
+      slow = slow.right;
+      fast = fast.right.right;
+    }
+
+    return slow;
+  }
+
+  public static Node SortedDLLToBST(Node head) {
+    if (head == null || head.right == null)
+      return head;
+
+    Node midNode= getMidNode(head);
+    Node prev = midNode.left, forw = midNode.right;
+
+    forw.left = midNode.left = midNode.right = null;
+    if(prev != null)
+      prev.right = null;
+
+    Node leftDLLHead = prev != null ? head : null;
+    Node rightDLLHead = forw;
+    Node root = midNode;
+
+
+    root.left = SortedDLLToBST(leftDLLHead);
+    root.right = SortedDLLToBST(rightDLLHead);
+
+    return root;
+  }
+
+ 
+
+
+LARGEST BST IN BT
+
+class NodeValue {
+    public  int maxNode, minNode, maxSize;
+    
+    NodeValue(int minNode, int maxNode, int maxSize) {
+        this.maxNode = maxNode;
+        this.minNode = minNode;
+        this.maxSize = maxSize;
+    }
+};
+class Solution{
+    
+
+ private  NodeValue largestBSTSubtreeHelper(Node root) {
+        // An empty tree is a BST of size 0.
+        if (root == null) {
+            return new NodeValue(Integer.MAX_VALUE, Integer.MIN_VALUE, 0);
+        }
+        
+        // Get values from left and right subtree of current tree.
+        NodeValue left = largestBSTSubtreeHelper(root.left);
+        NodeValue right = largestBSTSubtreeHelper(root.right);
+        
+        // Current node is greater than max in left AND smaller than min in right, it is a BST.
+        if (left.maxNode < root.data && root.data < right.minNode) {
+            // It is a BST.
+            return new NodeValue(Math.min(root.data, left.minNode), Math.max(root.data, right.maxNode), 
+                                left.maxSize + right.maxSize + 1);
+        }
+        
+        // Otherwise, return [-inf, inf] so that parent can't be valid BST
+        return new NodeValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 
+                            Math.max(left.maxSize, right.maxSize));
+    }
+
+     int largestBst(Node root)
+    {
+           return largestBSTSubtreeHelper(root).maxSize;
+        
+        
+    }
+    
+}
+
+
+BST ITERATOR
+
+class BSTIterator {
+    TreeNode curr = null;
+    public BSTIterator(TreeNode root) {
+        this.curr = root;
+    }
+    
+    private TreeNode getrightmostnode(TreeNode rmn){
+        while(rmn.right != null && rmn.right != this.curr){
+            rmn = rmn.right;
+        }
+        return rmn;
+    }
+    
+    private TreeNode morrisTraversal() {
+        TreeNode res = null;
+        
+        while(this.curr != null) {
+            TreeNode leftNode = this.curr.left;
+            if(leftNode == null){
+                res = this.curr;
+                this.curr = this.curr.right;
+                break;
+            } else {
+                TreeNode rightmostnode = getrightmostnode(leftNode);
+                if(rightmostnode.right == null){
+                    rightmostnode.right = this.curr;
+                    this.curr = this.curr.left;
+                } else {
+                    res = this.curr;
+                    rightmostnode.right = null;
+                    this.curr = this.curr.right;
+                    break;
+                }
+            }
+        }
+        
+        return res;
+    }
+    
+    public int next() {
+        TreeNode res = morrisTraversal();
+        return res.val;
+    }
+    
+    public boolean hasNext() {
+        return this.curr != null;
+    }
+}
+
+
+CONSTRUCT BST FROM POSTORDER
+
+class GFG
+{
+    private static int idx = 0;
+    private static Node constructTree_(int[] post, int lr, int rr){
+        if(idx < 0 || post[idx] < lr || post[idx] > rr) return null;
+        
+        Node node = new Node(post[idx--]);
+        
+        node.right = constructTree_(post, node.data, rr);
+        node.left = constructTree_(post, lr, node.data);
+        
+        return node;
+    }
+    public static Node constructTree(int post[],int n)
+    {
+        idx = post.length - 1;
+        int lr = -(int)1e9 - 1;
+        int rr = (int)1e9 + 1;
+        
+        return constructTree_(post, lr, rr);
+        
+    }
+}
+
+MIN DISTANCE BETWEEN BST NODES
+
+class Solution {
+    int min = Integer.MAX_VALUE;
+Integer pre = null;
+public int minDiffInBST(TreeNode root) {
+    check(root);
+    return min;
+}
+
+private void check(TreeNode node) {
+    if (node == null) return;
+    check(node.left);
+    if (pre != null)
+        min = Math.min(min, node.val - pre);
+    pre = node.val;
+    check(node.right);
+}
+}
+
+UNIVALUED TREE
+
+class Solution {
+    public boolean isUnivalTree(TreeNode root) {
+        if (root == null) return true;
+        
+        if (root.left != null && root.left.val != root.val)
+            return false;
+        if (root.right != null && root.right.val != root.val)
+            return false;
+        return isUnivalTree(root.left) && isUnivalTree(root.right);
+    }
+}
+
+
+UNIQUE BST II
+
+class Solution {
+    public List<TreeNode> generateTrees(int n) {
+    return genTreeList(1,n);
+}
+
+private List<TreeNode> genTreeList (int start, int end) {
+    List<TreeNode> list = new ArrayList<TreeNode>(); 
+    if (start > end) {
+        list.add(null);
+    }
+    for(int idx = start; idx <= end; idx++) {
+        List<TreeNode> leftList = genTreeList(start, idx - 1);
+        List<TreeNode> rightList = genTreeList(idx + 1, end);
+        for (TreeNode left : leftList) {
+            for(TreeNode right: rightList) {
+                TreeNode root = new TreeNode(idx);
+                root.left = left;
+                root.right = right;
+                list.add(root);
+            }
+        }
+    }
+    return list;
+}
+}
+
+
+TWO SUM IV IN BST
+
+
+class Solution {
+    public boolean findTarget(TreeNode root, int k) {
+        if (root == null) {
+            return false;
+        }
+        TreeNode start = root;
+        TreeNode end = root;
+        while (start.left != null) {
+            start = start.left;
+        }
+        while (end.right != null) {
+            end = end.right;
+        }
+        while (start != end) {
+            int sum = start.val + end.val;
+            if (sum > k) {
+                end = findPredecessor(root, end);
+            } else if (sum < k) {
+                start = findSuccessor(root, start);
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+    private TreeNode findPredecessor(TreeNode root, TreeNode node) {
+        TreeNode pre = null;
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.val < node.val) {
+                pre = cur;
+                cur = cur.right;
+            } else {
+                cur = cur.left;
+            }
+        }
+        return pre;
+    }
+    private TreeNode findSuccessor(TreeNode root, TreeNode node) {
+        TreeNode succ = null;
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.val > node.val) {
+                succ = cur;
+                cur = cur.left;
+            } else {
+                cur = cur.right;
+            }
+        }
+        return succ;
+    }
+    
+}
+
+BALANCED BINARY TREE
+
+
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return dfsHeight(root) != -1;
+    }
+    
+    public int dfsHeight(TreeNode root){
+        if(root == null) return 0;
+        
+        int lH = dfsHeight(root.left);
+        if(lH == -1) return -1;
+        
+        int rH = dfsHeight(root.right);
+        if(rH == -1) return -1;
+        
+        if(Math.abs(lH-rH) > 1) return -1;
+        return Math.max(lH, rH) + 1;
+    }
+}
+
+
+SORTED ARRAY TO BALANCED BST
+
+
+class Solution {
+    public TreeNode sortedArrayToBST(int[] num) {
+         if (num.length == 0) {
+        return null;
+    }
+    TreeNode head = helper(num, 0, num.length - 1);
+    return head;
+}
+
+public TreeNode helper(int[] num, int low, int high) {
+    if (low > high) { // Done
+        return null;
+    }
+    int mid = low +(high - low) / 2;
+    TreeNode node = new TreeNode(num[mid]);
+    node.left = helper(num, low, mid - 1);
+    node.right = helper(num, mid + 1, high);
+    return node;
+    }
+}
+
+                                                 BINARY SEARCH TREE
+
+1. DELETE NODE IN A BST
+
+class Solution {
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if(root == null) {
+	      return root;
+	    }
+        
+        
+        if(root.val == key){
+            return helper(root);
+        }
+        
+        
+	    
+	    TreeNode dummy = root;
+        while(root != null){
+            if(root.val > key){
+                if(root.left != null && root.left.val == key){
+                    root.left = helper(root.left);
+                    break;
+                }else {
+                    root = root.left;
+                }
+            } else {
+                if(root.right != null && root.right.val == key){
+                    root.right = helper(root.right);
+                    break;
+                }else {
+                    root = root.right;
+                }
+            }
+        }
+        return dummy;
+    }
+    
+    public TreeNode helper(TreeNode root){
+        if(root.left == null){
+            return root.right;
+        }
+        else if(root.right == null){
+            return root.left;
+        }
+        
+        TreeNode rightChild = root.right;
+        TreeNode lastRight = findLastRight(root.left);
+        lastRight.right = rightChild;
+        return root.left;
+    }
+    
+    public TreeNode findLastRight(TreeNode root){
+        if(root.right == null){
+            return root;
+        }
+        
+        return findLastRight(root.right);
+    }
+}
+ 
+
+2. PRINT ELEMENTS IN PRE-ORDER MANNER
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public void preorder(Node node) {
+	    if(node == null) {
+	      return;
+	    }
+	    
+	    System.out.print(node.data + " ");
+	    preorder(node.left);
+	    preorder(node.right);
+	  }
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+	    a.preorder(root);
+	    
+	  }
+
+	}
+ 
+
+3. PRINT ELEMENTS IN POST-ORDER MANNER
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public void postorder(Node node) {
+	    if(node == null) {
+	      return;
+	    }
+	    
+	    postorder(node.left);
+	    postorder(node.right);
+	    System.out.print(node.data+ " ");
+	  }
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+	    a.postorder(root);
+	    
+	  }
+
+	}
+ 
+
+4. CHECK IF A VALUE IS PRESENT IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	 public boolean ifNodePresent(Node node, int val) {
+		    if(node == null) {
+		      return false;
+		    }
+		    
+		    boolean isPresent = false;
+		    
+		    while(node != null) {
+		      if(val < node.data) {
+		        node = node.left;
+		      } else if(val > node.data) {
+		        node = node.right;
+		      } else {
+		        isPresent = true;
+		        break;
+		      }
+		    }
+		    
+		    return isPresent;
+		  }
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+	    System.out.println(a.ifNodePresent(root, 6));
+	    System.out.println(a.ifNodePresent(root, 16));
+	    
+	  }
+
+	}
+ 
+
+5. GET PARENT NODE OF A GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public Node getParentNode(Node node, int val) {
+	    if(node == null) {
+	      return null;
+	    }
+	    
+	    Node getParent = null;
+	    
+	    while(node != null) {
+	      if(val < node.data) {
+	        getParent = node;
+	        node = node.left;
+	      } else if (val > node.data) {
+	        getParent = node;
+	        node = node.right;
+	      } else {
+	        break;
+	      }
+	    }
+
+	    return getParent;
+	  }
+	
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+	    Node parentNode = a.getParentNode(root, 3);
+	    if(parentNode != null) {
+	      System.out.println("Parent: " + parentNode.data);
+	    } else {
+	      System.out.println("Parent is null");
+	    }
+	  }
+
+	}
+ 
+
+6. GET SIBLING NODE OF A GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public Node getSiblingNode(Node node, int val) {
+	    if(node == null || node.data == val) {
+	      return null;
+	    }
+	    
+	    Node parentNode = null;
+	    
+	    while(node != null) {
+	      if(val < node.data) {
+	        parentNode = node;
+	        node = node.left;
+	      } else if(val > node.data) {
+	        parentNode = node;
+	        node = node.right;
+	      } else {
+	        break;
+	      }
+	    }
+	    
+	    if(parentNode.left != null && val == parentNode.left.data) {
+	      return parentNode.right;
+	    }
+	    
+	    if(parentNode.right != null && val == parentNode.right.data) {
+	      return parentNode.left;
+	    }
+	    
+	    return null;
+	  }  
+	
+	
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+	    Node siblingNode = a.getSiblingNode(root, 3);
+	    if(siblingNode != null) {
+	      System.out.println("Sibling: " + siblingNode.data);
+	    } else {
+	      System.out.println("No Sibling");
+	    }
+	  }
+
+	}
+ 
+
+7. GET INORDER PARENT FOR A GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public Node getInorderParent(Node node, int val) {
+	    if(node == null) {
+	      return null;
+	    }
+	    
+	    Node inorderParent = null;
+	    
+	    while(node != null) {
+	      if(val < node.data) {
+	        inorderParent = node;
+	        node = node.left;
+	      } else if (val > node.data) {
+	        node = node.right;
+	      } else {
+	        break;
+	      }
+	    }
+	    
+	    return node != null ? inorderParent : null;
+	  }
+	
+	
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+	    Node inorderParentNode = a.getInorderParent(root, 3);
+	    if(inorderParentNode != null) {
+	      System.out.println("Inorder Parent: " + inorderParentNode.data);
+	    } else {
+	      System.out.println("Inorder Parent not exists");
+	    }
+	  }
+
+	}
+ 
+
+
+ 
+
+9. GET DIFFERENCE OF EVEN-ODD LEVEL
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public int getDifferenceEvenOddLevel(Node node) {
+	    if(node == null) {
+	      return 0;
+	    }
+	    
+	    return node.data - getDifferenceEvenOddLevel(node.left) - getDifferenceEvenOddLevel(node.right);
+	  }
+	  
+	 
+	 public Node getSuccessor(Node node) {
+		    if(node == null) {
+		      return null;
+		    }
+		    
+		    Node temp = node.right;
+		    
+		    while(temp.left != null) {
+		      temp = temp.left;
+		    }
+		    
+		    return temp;
+		    
+		  }
+	 
+	 
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+	    System.out.println(a.getDifferenceEvenOddLevel(root));
+	  }
+
+	}
+ 
+
+10. GET MAX VALUE ELEMENT IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	 public int getMax(Node node) {
+		    if(node == null) {
+		      System.out.println("Tree is EMpty");
+		      return -1;
+		    }
+		    
+		    while(node.right != null) {
+		      node = node.right;
+		    }
+		    
+		    return node.data;
+		  }
+	 
+	 
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+
+	    System.out.println(a.getMax(root));
+	  }
+
+	}
+ 
+
+11. GET MIN VALUE ELEMENT IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	 public int getMin(Node node) {
+		    if(node == null) {
+		      System.out.println("Tree is EMpty");
+		      return -1;
+		    }
+		    
+		    while(node.left != null) {
+		      node = node.left;
+		    }
+		    
+		    return node.data;
+		  }
+	 
+	 
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 3);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 10);
+	    root = a.insert(root, 4);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 1);
+	    root = a.insert(root, 14);
+	    root = a.insert(root, 13);
+	    
+
+	    System.out.println(a.getMin(root));
+	  }
+
+	}
+ 
+
+
+ 
+
+13. CHECK IF THERE EXISTS A TRIPLET FOR GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	 public boolean checkIfPairExists(Node node, int sum) {
+		    List<Integer> list = new ArrayList<>();
+		    
+		    inorder(node, list);
+		    return checkIfPairExistsUtil(sum, list);
+		  }
+		  
+		  public void inorder(Node node, List<Integer> list) {
+		    if(node == null) {
+		      return;
+		    }
+		    
+		    inorder(node.left, list);
+		    
+		    list.add(node.data);
+		    
+		    inorder(node.right, list);
+		  }
+		  
+		  private boolean checkIfPairExistsUtil(int sum, List<Integer> list) {
+		    int elementSize = list.size();
+		    
+		    for(int i = 0; i < elementSize - 2; i++) {
+		      int start = i + 1;
+		      int end = elementSize - 1;
+
+		      while(start < end) {
+		        int currentSum = list.get(i) + list.get(start) + list.get(end);
+		        
+		        if(currentSum == sum) {
+		          return true;
+		        } else if(currentSum < sum) {
+		          start++;
+		        } else {
+		          end--;
+		        }
+		      }
+		        
+		    }
+		    
+		    return false;
+		  }
+		  
+	  
+	  
+	 
+	 
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 15);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 2);
+	    root = a.insert(root, 7);
+	    
+	    System.out.println(a.checkIfPairExists(root, 29));
+	    
+	  }
+
+	}
+ 
+
+14. FIND LCA FOR GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public Node findLCA(Node node, int n1, int n2) {
+	    if(node == null) {
+	      return null;
+	    }
+	    
+	    while(node != null) {
+	      if(node.data > n1 && node.data > n2) {
+	        node = node.left;
+	      } else if(node.data < n1 && node.data < n2) {
+	        node = node.right;
+	      } else {
+	        break;
+	      }
+	    }
+	    
+	    return node;
+	  }
+		  
+	  
+	  
+	 
+	 
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root = null;
+	    
+	    root = a.insert(root, 8);
+	    root = a.insert(root, 15);
+	    root = a.insert(root, 6);
+	    root = a.insert(root, 2);
+	    root = a.insert(root, 7);
+	    root = a.insert(root, 13);
+	    root = a.insert(root, 20);
+	    
+	    Node lca = a.findLCA(root, 2, 15);
+	    
+	    if(lca != null) {
+	      System.out.println(lca.data);  
+	    }
+	    
+	  }
+
+	}
+ 
+
+
+
+17. CHECK IF ELEMENTS OF TWO BST ARE SAME
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public boolean checkIfTwoBSTContainSameElement(Node node1, Node node2) {
+	    
+	    List<Integer> list1 = new ArrayList<>();
+	    List<Integer> list2 = new ArrayList<>();
+	    
+	    inorder(node1, list1);
+	    inorder(node2, list2);
+	    
+	    return list1.equals(list2);
+	    
+	  }
+	  
+	  public void inorder(Node node, List<Integer> list) {
+	    if(node == null) {
+	      return;
+	    }
+	    
+	    inorder(node.left, list);
+	    
+	    list.add(node.data);
+	    
+	    inorder(node.right, list);
+	  }
+	  
+	 
+	 
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    BST a = new BST();
+	    Node root1 = null;
+	    
+	    root1 = a.insert(root1, 8);
+	    root1 = a.insert(root1, 15);
+	    root1 = a.insert(root1, 6);
+	    root1 = a.insert(root1, 2);
+	    root1 = a.insert(root1, 7);
+	    root1 = a.insert(root1, 20);
+	    
+	    Node root2 = null;
+	    
+	    root2 = a.insert(root2, 8);
+	    root2 = a.insert(root2, 15);
+	    root2 = a.insert(root2, 6);
+	    root2 = a.insert(root2, 2);
+	    root2 = a.insert(root2, 7);
+	    root2 = a.insert(root2, 20);
+	    
+	    System.out.println(a.checkIfTwoBSTContainSameElement(root1, root2));
+	    
+	  }
+
+	}
+ 
+
+18. CHECK IF BINARY TREE IS BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	Node prev = null;
+
+	  public boolean isTreeBST(Node node) {
+	    if (node == null) {
+	      return true;
+	    }
+
+	    if (!isTreeBST(node.left)) {
+	      return false;
+	    }
+
+	    if (prev != null && node.data < prev.data) {
+	      return false;
+	    }
+
+	    prev = node;
+	    
+	    return isTreeBST(node.right);
+	  }
+	  
+	 
+	 
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+		  BST a = new BST();
+
+		    Node root = a.createNewNode(12);
+		    root.left = a.createNewNode(7);
+		    root.left.left = a.createNewNode(6);
+		    root.left.left.left = a.createNewNode(2);
+		    root.left.right = a.createNewNode(9);
+		    root.left.right.left = a.createNewNode(8);
+		    root.right = a.createNewNode(24);
+
+		    System.out.println(a.isTreeBST(root));
+	    
+	  }
+
+	}
+ 
+
+
+
+20. CONSTRUCT BALANCED BST FROM GIVEN KEY
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public Node constructBalancedBST(int[] arr) {
+	    Arrays.sort(arr);
+	    
+	    return constructBalancedBSTUtil(arr, 0, arr.length - 1);
+	  }
+	  
+	  public Node constructBalancedBSTUtil(int[] arr, int start, int end) {
+	    if (start > end) {
+	      return null;
+	    }
+
+	    int mid = (start + end) / 2;
+	    
+	    Node node = createNewNode(arr[mid]);
+	    
+	    node.left = constructBalancedBSTUtil(arr, start, mid - 1);
+	    node.right = constructBalancedBSTUtil(arr, mid + 1, end);
+
+	    return node;
+	  }
+	  
+	  
+	  public void inorder(Node node) {
+	    if(node == null) {
+	      return;
+	    }
+	    
+	    inorder(node.left);
+	    
+	    System.out.print(node.data + " ");
+	    
+	    inorder(node.right);
+	  }
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+		  BST a = new BST();
+		    Node root = null;
+		    
+		    int[] arr = {8, 6, 12, 18, 34, 23, 3};
+		    
+		    root = a.constructBalancedBST(arr);
+		    
+		    a.inorder(root);
+	    
+	  }
+
+	}
+ 
+
+21. GET INORDER PREDECESSOR FOR A GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public Node getInorderPredecessor(Node node, int val) {
+	    if(node == null) {
+	      return null;
+	    }
+	    
+	    Node inorderPredecessor = null;
+	    
+	    while(node != null) {
+	      if(val < node.data) {
+	        node = node.left;
+	      } else if (val > node.data) {
+	        inorderPredecessor = node;
+	        node = node.right;
+	      } else {
+	        if(node.left != null) {
+	          inorderPredecessor = getPredecessor(node);
+	        }
+	        break;
+	      }
+	    }
+	    return node != null ? inorderPredecessor : null;
+	  }
+	  
+	  public Node getPredecessor(Node node) {
+	    if(node == null) {
+	      return null;
+	    }
+	    
+	    Node temp = node.left;
+	    
+	    while(temp.right != null) {
+	      temp = temp.right;
+	    }
+	    
+	    return temp;
+	  }
+	  
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+		  BST a = new BST();
+		    Node root = null;
+		    
+		    root = a.insert(root, 8);
+		    root = a.insert(root, 15);
+		    root = a.insert(root, 6);
+		    root = a.insert(root, 2);  
+		    root = a.insert(root, 7);
+		    root = a.insert(root, 20);
+		    root = a.insert(root, 5);
+		    
+		    Node inorderPredecessor = a.getInorderPredecessor(root, 7);
+		    if(inorderPredecessor != null) {
+		      System.out.println("Inorder Predecessor: " + inorderPredecessor.data);
+		    } else {
+		      System.out.println("Inorder Predecessor doesn't exists");
+		    }
+		  }
+
+		}
+ 
+
+22. GET FLOOR-CEIL FOR A GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public List<Node> getFloorAndCeil(Node node, int val) {
+	    if(node == null) {
+	      return new ArrayList<>();
+	    }
+	    
+	    Node floor = null;
+	    Node ceil = null;
+	    
+	    while(node != null) {
+	      if(val < node.data) {
+	        ceil = node;
+	        node = node.left;
+	      } else if (val > node.data) {
+	        floor = node;
+	        node = node.right;
+	      } else {
+	        ceil = floor = node;
+	        break;
+	      }
+	    }
+	    
+	    List<Node> result = new ArrayList<>();
+	    result.add(floor);
+	    result.add(ceil);
+	    
+	    return result;
+	  }
+	  
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+		  BST a = new BST();
+		    Node root = null;
+		    
+		    root = a.insert(root, 8);
+		    root = a.insert(root, 15);
+		    root = a.insert(root, 6);
+		    root = a.insert(root, 2);  
+		    root = a.insert(root, 7);
+		    root = a.insert(root, 20);
+		    root = a.insert(root, 5);
+		    
+		    List<Node> data = a.getFloorAndCeil(root, 4);
+		        
+		    if(data.get(0) != null) {
+		      System.out.println(data.get(0).data);
+		    } else {
+		      System.out.println("Floor doesn't exist for given value");
+		    }
+		    
+		    if(data.get(1) != null) {
+		      System.out.println(data.get(1).data);
+		    } else {
+		      System.out.println("Ceil doesn't exist for given value");
+		    }
+		    
+		  }
+
+		}
+ 
+
+23. REMOVE BST KEY OUTSIDE GIVEN RANGE
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	public Node removeBSTKeysOutsideGivenRange(Node node, int min, int max) {
+	    if(node == null) {
+	      return null;
+	    }
+	    
+	    node.left = removeBSTKeysOutsideGivenRange(node.left, min, max);
+	    node.right = removeBSTKeysOutsideGivenRange(node.right, min, max);
+	     
+	    if(node.data < min) {
+	      return node.right;
+	    } else if(node.data > max) {
+	      return node.left;
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	  
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+		  BST a = new BST();
+		    Node root = null;
+		    
+		    root = a.insert(root, 8);
+		    root = a.insert(root, 15);
+		    root = a.insert(root, 6);
+		    root = a.insert(root, 2);  
+		    root = a.insert(root, 7);
+		    root = a.insert(root, 20);
+		    root = a.insert(root, 5);
+		    root = a.insert(root, 12);
+		    root = a.insert(root, 3);
+		    
+		    
+		    root = a.removeBSTKeysOutsideGivenRange(root, 4, 12);
+		    
+		  }
+
+		}
+ 
+
+
+ 
+
+25. CREATE BST FROM GIVEN PREORDER TRAVERSAL
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+
+class Solution {
+    public TreeNode bstFromPreorder(int[] preorder) {
+     
+        if (preorder == null || preorder.length == 0) {
+            return null;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode root = new TreeNode(preorder[0]);
+        stack.push(root);
+        for (int i = 1; i < preorder.length; i++) {
+            TreeNode node = new TreeNode(preorder[i]);
+            if (preorder[i] < stack.peek().val) {                
+                stack.peek().left = node;                
+            } else {
+                TreeNode parent = stack.peek();
+                while (!stack.isEmpty() && preorder[i] > stack.peek().val) {
+                    parent = stack.pop();
+                }
+                parent.right = node;
+            }
+            stack.push(node);            
+        }
+        return root;
+    }
+}
+
+	  
+	  
+	  public void inorder(Node node) {
+		    if(node == null) {
+		      return;
+		    }
+		    
+		    inorder(node.left);
+		    
+		    System.out.print(node.data + " ");
+		    
+		    inorder(node.right);
+		  }
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+		  BST a = new BST();
+		    Node root = null;
+		    
+		    
+		    int[] preOrder = {10, 4, 2, 8, 5, 9, 15, 12, 20};
+		    
+		    root = a.createBST(preOrder, 0, preOrder.length - 1);
+		    
+		    a.inorder(root);
+		    
+		  }
+
+		}
+ 
+
+26. FIND CLOSEST ELEMENT FOR GIVEN VALUE IN BST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node {
+	  Node left;
+	  Node right;
+	  int data;
+	}
+
+class BST {
+	  
+	 public Node findClosestElementForGivenValue(Node node, int value) {
+		    if(node == null) {
+		      return null;
+		    }
+		    
+		    int minDiff = Integer.MAX_VALUE;
+		    Node closestElementNode = null;
+		     
+		    while(node != null) {
+		      int currentDiff = Math.abs(node.data - value);
+		      
+		      if(currentDiff < minDiff) {
+		        minDiff = currentDiff;
+		        closestElementNode = node;
+		      }
+		      
+		      if(value < node.data) {
+		        node = node.left;
+		      } else if(value > node.data){
+		        node = node.right;
+		      } else {
+		        break;
+		      }
+		    }
+		    
+		    return closestElementNode;
+		  }
+	  
+	  
+	  public Node insert(Node node, int val) {
+	    if(node == null) {
+	      return createNewNode(val);
+	    }
+	    
+	    if(val < node.data) {
+	      node.left = insert(node.left, val);
+	    } else if((val > node.data)) {
+	      node.right = insert(node.right, val);
+	    }
+	    
+	    return node;
+	  }
+	  
+	  
+	  public void inorder(Node node) {
+		    if(node == null) {
+		      return;
+		    }
+		    
+		    inorder(node.left);
+		    
+		    System.out.print(node.data + " ");
+		    
+		    inorder(node.right);
+		  }
+	 
+	  
+	  public Node createNewNode(int k) {
+	    Node a = new Node();
+	    a.data = k;
+	    a.left = null;
+	    a.right = null;
+	    return a;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+		  BST a = new BST();
+		    Node root = null;
+		    
+		    
+		    root = a.insert(root, 8);
+		    root = a.insert(root, 15);
+		    root = a.insert(root, 6);
+		    root = a.insert(root, 2);  
+		    root = a.insert(root, 7);
+		    root = a.insert(root, 20);
+		    root = a.insert(root, 5);
+		    root = a.insert(root, 12);
+		    
+		    Node closestElementNode = a.findClosestElementForGivenValue(root, 10);
+		    
+		    if(closestElementNode != null) {
+		      System.out.println(closestElementNode.data);
+		    }
+		    
+		  }
+
+		}
+ 
+
+
+
+	 
+	  
+	    
+	 
+	   
+	
+	 
+
+	 
+	  
+	    
+	 
+	   
+	
+	 
+
+	 
+	  
+	    
+	 
+	   

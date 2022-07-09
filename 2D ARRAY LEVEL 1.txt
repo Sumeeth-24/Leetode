@@ -1,0 +1,530 @@
+                                        JAVA FOUNDATION
+    2D-ARRAY
+1. MATRIX MULTIPLICATION
+   
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+   public static void main(String[] args) throws Exception {
+     Scanner t = new Scanner(System.in);
+     System.out.println("Enter a Number");
+     int n1 = t.nextInt();
+     int m1 = t.nextInt();
+      int[][] arr1 = new int[n1][m1];
+      System.out.println("Enter a Value");
+
+      for (int i = 0; i < n1; i++) {
+         for (int j = 0; j < m1; j++) {
+            arr1[i][j] = t.nextInt();
+         }
+      }
+      System.out.println("Enter a Number");
+      int n2 = t.nextInt();
+      int m2 = t.nextInt();
+      int[][] arr2 = new int[n2][m2];
+      System.out.println("Enter a Value");
+      for (int i = 0; i < n2; i++) {
+         for (int j = 0; j < m2; j++) {
+        	   arr2[i][j] = t.nextInt();
+         }
+      }
+
+      if (m1 != n2) {
+         System.out.println("Invalid input");
+         return;
+      }
+
+      int[][] prd = new int[n1][m2];
+      for (int i = 0; i < n1; i++) {
+         for (int j = 0; j < m2; j++) {
+            int sum = 0;
+
+            for (int k = 0; k < m1; k++) {
+               sum += arr1[i][k] * arr2[k][j];
+            }
+
+            prd[i][j] = sum;
+         }
+      }
+
+      for (int i = 0; i < n1; i++) {
+         for (int j = 0; j < m2; j++) {
+            System.out.print(prd[i][j] + " ");
+         }
+         System.out.println();
+      }
+   }
+   }
+
+2. WAVE TRAVERSAL
+   package automate;
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		     int n = t.nextInt();
+		     int m = t.nextInt();
+		      int[][] arr = new int[n][m];
+		      System.out.println("Enter a value");
+
+		      for (int i = 0; i < n; i++) {
+		         for (int j = 0; j < m; j++) {
+		            arr[i][j] = t.nextInt();
+		         }
+		      }
+
+		      for (int j = 0; j < m; j++) {
+		         if (j % 2 == 0) {
+		            for (int i = 0; i < n; i++) {
+		               System.out.println(arr[i][j]);
+		            }
+		         } else {
+		            for (int i = n - 1; i >= 0; i--) {
+		               System.out.println(arr[i][j]);
+		            }
+		         }
+		      }
+		   }
+
+		}
+
+3. SPIRAL TRAVERSAL
+  ackage automate;
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		      int n = t.nextInt();
+		      int m= t.nextInt();
+		      int[][] arr = new int[n][m];
+		      System.out.println("Enter a value");
+
+		      for (int i = 0; i < n; i++) {
+		         for (int j = 0; j < m; j++) {
+		            arr[i][j] = t.nextInt();
+		         }
+		      }
+
+		      int cnt = 0;
+		      int tne  = n * m;
+		      int minr = 0;
+		      int minc = 0;
+		      int maxr = n - 1;
+		      int maxc = m - 1;
+		      while(cnt < tne){
+		         for(int i = minr; i <= maxr && cnt < tne; i++){
+		            System.out.println(arr[i][minc]);
+		            cnt++;
+		         }
+		         minc++;
+
+		         for(int j = minc; j <= maxc && cnt < tne; j++){
+		            System.out.println(arr[maxr][j]);
+		            cnt++;
+		         }
+		         maxr--;
+
+		         for(int i = maxr; i >= minr && cnt < tne; i--){
+		            System.out.println(arr[i][maxc]);
+		            cnt++;
+		         }
+		         maxc--;
+
+		         for(int j = maxc; j >= minc && cnt < tne; j--){
+		            System.out.println(arr[minr][j]);
+		            cnt++;
+		         }
+		         minr++;
+
+		      }
+		   }
+
+		}
+
+4.EXIT POINT OF A MATRIX
+package automate;
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		      int n = t.nextInt();
+		      int m= t.nextInt();
+		      int[][] arr = new int[n][m];
+		      System.out.println("Enter a value");
+
+		      for (int i = 0; i < n; i++) {
+		          for (int j = 0; j < m; j++) {
+		             arr[i][j] = t.nextInt();
+		          }
+		       }
+
+		       int i = 0;
+		       int j = 0;
+		       int dir = 0;
+		       while (true) {
+		          dir = (dir + arr[i][j]) % 4;
+		          if (dir == 0) {
+		             j++;
+		          } else if (dir == 1) {
+		             i++;
+		          } else if (dir == 2) {
+		             j--;
+		          } else if (dir == 3) {
+		             i--;
+		          }
+
+		          if (i < 0) {
+		             i++;
+		             break;
+		          } else if (j < 0) {
+		             j++;
+		             break;
+		          } else if (i == n) {
+		             i--;
+		             break;
+		          } else if (j == m) {
+		             j--;
+		             break;
+		          }
+		       }
+			System.out.println(i);
+			System.out.println(j);
+}
+
+5. ROTATE A MATRIX BY 90 DEGREE
+package automate;
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		      int n = t.nextInt();
+		      int m = t.nextInt();
+		      int[][] arr = new int[n][m];    
+		      System.out.println("Enter a value");
+		      for (int i = 0; i < n; i++) {
+		         for (int j = 0; j < m; j++) {
+		            arr[i][j] = t.nextInt();
+		         }
+		      }
+
+		      rotateby90(arr);
+		      display(arr);
+		   }
+
+		   public static void rotateby90(int[][] arr){
+		      // transpose
+		      for(int i = 0; i < arr.length; i++){
+		         for(int j = 0; j < i; j++){
+		            int temp = arr[i][j];
+		            arr[i][j]= arr[j][i];
+		            arr[j][i] = temp;
+		         }
+		      }
+		      // reverse columns, row by row
+		      for(int i = 0; i < arr.length; i++){
+		         int li = 0;
+		         int ri = arr[0].length - 1;
+		         while(li <= ri){
+		            int temp = arr[i][li];
+		            arr[i][li] = arr[i][ri];
+		            arr[i][ri] = temp;
+
+		            li++;
+		            ri--;
+		         }
+		      }
+		   }
+		   public static void display(int[][] arr){
+		      for(int i = 0; i < arr.length; i++){
+		          for(int j = 0; j < arr[0].length; j++){
+		              System.out.print(arr[i][j] + " ");
+		          }
+		          System.out.println();
+		      }
+		  }
+		}
+
+		    
+
+6. DIAGONAL TRAVERSAL IN 2D ARRAY
+package automate;
+
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		     int n = t.nextInt();
+		      System.out.println("Enter a value");
+		      int[][] arr = new int[n][n];
+
+		      for (int i = 0; i < n; i++) {
+		         for (int j = 0; j < n; j++) {
+		            arr[i][j] = t.nextInt();
+		         }
+		      }
+
+		      // diagonal traversal
+		      for(int g = 0; g < arr.length; g++){
+		         for(int i = 0, j =  g; j < arr.length; i++, j++){
+		            System.out.println(arr[i][j]);
+		         }
+		      }
+		   }
+
+
+		}
+
+6. SADDLE POINT
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		     int n = t.nextInt();
+		      System.out.println("Enter a value");
+		      int[][] arr = new int[n][n];
+
+		      for (int i = 0; i < n; i++) {
+		         for (int j = 0; j < n; j++) {
+		            arr[i][j] = t.nextInt();
+		         }
+		      }
+
+		      for(int i = 0; i < arr.length; i++) {
+		    	  int svj = 0;
+		    	  for (int j = 1; j < arr[0].length; j++) {
+		    		  if(arr[i][j] < arr[i][svj]) {
+		    			  svj = j;
+		    		  }
+		    	  }
+		    	  
+		    	  boolean flag = true;
+		    	  for(int k = 0; k < arr.length; k++) {
+		    		  if(arr[k][svj] > arr[i][svj]) { 
+		    			  flag = false;
+		    			  break;
+		    		  }
+		    	  }
+		    	  if (flag == true) {
+		    		  System.out.println(arr[i][svj]);
+		    		  return;
+		    	  }
+		      }
+		     System.out.println("Invalid input");
+	   }
+
+		}
+7. SEARCH IN SORTED 2D ARRAY
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		     int n = t.nextInt();
+		      System.out.println("Enter a value");
+		      int[][] arr = new int[n][n];
+
+		      for (int i = 0; i < n; i++) {
+		          for (int j = 0; j < n; j++) {
+		             arr[i][j] = t.nextInt();
+		          }
+		       }
+		      System.out.println("Enter a value");
+		       int x = t.nextInt();
+
+		       // search
+		       int i = 0;
+		       int j = arr[0].length - 1;
+		       while(i < arr.length && j >= 0){
+		          if(x == arr[i][j]){
+		             System.out.println(i);
+		             System.out.println(j);
+		             return;
+		             
+		          } else if(x > arr[i][j]){
+		             i++;
+		          } else {
+		             j--;
+		          }
+		       }
+
+		       System.out.println("Not Found");
+		    }
+}
+
+8. SHELL ROTATE OF A MATRIX
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	   public static void main(String[] args) throws Exception {
+		     Scanner t = new Scanner(System.in);
+		     System.out.println("Enter a number");
+		     int n = t.nextInt();
+		     int m = t.nextInt();
+		      System.out.println("Enter a value");
+		      int[][] arr = new int[n][m];
+
+		      for (int i = 0; i < arr.length; i++) {
+		          for (int j = 0; j < arr[0].length; j++) {
+		             arr[i][j] = t.nextInt();
+		          }
+		       }
+		      System.out.println("Enter a value");
+		      int s = t.nextInt();
+		      System.out.println("Enter a value");
+		      int r = t.nextInt();
+		     rotateShell(arr, s, r);
+		      display(arr);
+		   }
+
+		   public static void  rotateShell(int[][] arr, int s, int r) {
+		      int[] oned = fillOnedFromShell(arr, s);
+		      rotate(oned, r);
+		      fillShellFromOned(arr, s, oned);
+		   }
+
+		   public static int[] fillOnedFromShell(int[][] arr, int s) {
+		     
+			 
+
+		      int minr = s - 1;
+		      int minc = s - 1;
+		      int maxr = arr.length - s;
+		      int maxc = arr[0].length - s;
+		      int sz = 2 * (maxr - minr + maxc - minc);
+		      
+		      int[] oned = new int[sz];
+		      
+		     
+		      int idx = 0;
+		      // left wall
+		     
+		      for (int i = minr, j = minc; i <= maxr; i++) {
+		         oned[idx] = arr[i][j];
+		         idx++;
+		      }
+
+		      // bottom wall
+		      for (int i = maxr , j = minc + 1;  j <= maxc; j++) {
+		         oned[idx] = arr[i][j];
+		         idx++;
+		      }
+
+		      // right wall
+		      for (int i = maxr - 1, j = maxc;  i >= minr; i--) {
+		         oned[idx] = arr[i][j];
+		         idx++;
+		      }
+
+		      // top wall
+		      for (int i = minr, j = maxc - 1; j >= minc + 1; j--) {
+		         oned[idx] = arr[i][j];
+		         idx++;
+		      }
+
+		      return oned;
+		   }
+
+		   public static void fillShellFromOned(int[][] arr,  int s, int[] oned) {
+			     int minr = s - 1;
+			      int minc = s - 1;
+			      int maxr = arr.length - s;
+			      int maxc = arr[0].length - s;
+			   
+
+			      // left wall
+			      int idx = 0;
+			      for (int i = minr, j = minc; i <= maxr; i++) {
+			         arr[i][j] = oned[idx];
+			         idx++;
+			      }
+
+			      // bottom wall
+			      for (int i = maxr , j = minc + 1;  j <= maxc; j++) {
+			    	  arr[i][j] = oned[idx];
+			         idx++;
+			      }
+
+			      // right wall
+			      for (int i = maxr - 1, j = maxc;  i >= minr; i--) {
+			    	  arr[i][j] = oned[idx];
+			         idx++;
+			      }
+
+			      // top wall
+			      for (int i = minr, j = maxc - 1; j >= minc + 1; j--) {
+			    	  arr[i][j] = oned[idx];
+			         idx++;
+			      }
+
+			      
+		   }
+
+		   public static void rotate(int[] oned, int r) {
+		      r = r % oned.length;
+		      if (r < 0) {
+		         r += oned.length;
+		      }
+
+		      reverse(oned, 0, oned.length - r - 1);
+		      reverse(oned, oned.length - r, oned.length - 1);
+		      reverse(oned, 0, oned.length - 1);
+		   }
+
+		   public static void reverse(int[] oned, int li, int ri) {
+		    
+		      while (li < ri) {
+		         int temp = oned[li];
+		         oned[li] = oned[ri];
+		         oned[ri] = temp;
+
+		         li++;
+		         ri--;
+		      }
+		   }
+
+		   public static void display(int[][] arr) {
+		      for (int i = 0; i < arr.length; i++) {
+		         for (int j = 0; j < arr[0].length; j++) {
+		            System.out.print(arr[i][j] + " ");
+		         }
+		         System.out.println();
+		      }
+		   }
+
+
+		 }

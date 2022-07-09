@@ -1,0 +1,3679 @@
+SELLING PIECES OF WOOD
+
+class Solution {
+    public long sellingWood(int m, int n, int[][] prices) {
+        long[][] dp = new long[m+1][n+1];
+        for (int[] p : prices){
+            dp[p[0]][p[1]]=p[2];
+        }
+        for (int i = 1; i <= m; i++){ // height
+            for (int j = 1; j <= n; j++){ // width
+                for (int k = 0; k <= i/2; k++){ // cut height (horizontally)
+                    dp[i][j]=Math.max(dp[i][j], dp[i-k][j]+dp[k][j]);
+                }
+                for (int k = 0; k <= j/2; k++){ // cut width (vertically)
+                    dp[i][j]=Math.max(dp[i][j], dp[i][j-k]+dp[i][k]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+}
+
+
+LONGEST BINARY SUBSEQUENCE LESS THAN OR EQUAL TO K
+s = "1001010", k = 5
+class Solution {
+    public int longestSubsequence(String s, int k) {
+        int sum = 0;
+        int numOfOnes = 0;
+        int numOfZeros = 0;
+        
+        //Take all zeros
+        for(char c : s.toCharArray()){
+            if(c == '0') numOfZeros++;
+        }
+        
+        //Take as many ones as possible from right to left
+        for(int i=s.length()-1; i>=0; i--){
+            char c = s.charAt(i);
+            
+            if(c == '1'){
+                sum += Math.pow(2, s.length() - 1 - i);
+                
+                if(sum <= k){
+                    numOfOnes++;
+                }
+            }
+        }
+        return numOfOnes + numOfZeros;
+    }
+}
+
+SUM OF NO WITH UNIT DIGIT K
+
+// 9+10X && 9+10Y = 58 after solving 18+10(X+Y) =58 => 10(X+Y)=40 => X+Y=4 =>[9,49] or [19,39] or [29,29]
+    // k*i + 10(X+Y+Z+....) = num => (num - k*i)%10 == 0 return i
+
+String ans = "";
+        for(int i = 2; i < num.length(); i++)
+            if(num.charAt(i) == num.charAt(i-1) && num.charAt(i-1) == num.charAt(i-2))
+                if(num.substring(i-2,i+1).compareTo(ans) > 0) // Check if the new one is larger
+                    ans = num.substring(i-2,i+1);
+        return ans;
+
+
+FLATTEN NESTED LIST ITERATOR
+
+public class NestedIterator implements Iterator<Integer> {
+
+    private List<Integer> fList = null;
+    private Iterator<Integer> it;
+    
+    public NestedIterator(List<NestedInteger> nestedList) {
+        fList = new ArrayList<>();
+        flatList(nestedList);
+        it = fList.iterator();   // it(cursor) will point to index just before the first element in fList
+    }
+
+    private void flatList(List<NestedInteger> list){
+        for (NestedInteger currEl : list){
+            if(currEl.isInteger()){
+                fList.add(currEl.getInteger());
+            }
+            else {
+                flatList(currEl.getList());
+            }
+        }
+    }
+    
+    @Override
+    public Integer next() {
+        return it.hasNext() ? it.next() : null;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return it.hasNext();
+    }
+}
+
+K DIVISIBLE ELEMENT SUBARRAY
+
+class Solution {
+    public int countDistinct(int[] nums, int k, int p) {
+        HashSet<String> hs = new HashSet<>();
+
+		for(int i=0; i<nums.length; ++i) {
+			int cnt = 0;
+			StringBuilder sb = new StringBuilder();
+
+			for(int j=i; j<nums.length; ++j) {
+
+				if(nums[j]%p == 0) {
+					cnt++;
+				}
+
+				if(cnt > k) {
+					break;
+				}
+
+				sb.append(nums[j] + ",");
+
+				hs.add(sb.toString());
+			}
+		}
+
+		return hs.size();
+    }
+}
+
+FIND PLAYER WITH ZERO OR ONE LOSSES
+
+Input: matches = [[1,3],[2,3],[3,6],[5,6],[5,7],[4,5],[4,8],[4,9],[10,4],[10,9]]
+Output: [[1,2,10],[4,5,7,8]]
+Explanation:
+Players 1, 2, and 10 have not lost any matches.
+Players 4, 5, 7, and 8 each have lost one match.
+Players 3, 6, and 9 each have lost two matches.
+Thus, answer[0] = [1,2,10] and answer[1] = [4,5,7,8].
+
+class Solution {
+    public List<List<Integer>> findWinners(int[][] matches) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        List<List<Integer>> ans = new ArrayList<>();
+        Set<Integer> set1 = new TreeSet<>();
+        Set<Integer> set2 = new TreeSet<>();
+
+        for(int i=0;i<matches.length;i++){
+            map.put(matches[i][1], map.getOrDefault(matches[i][1],0)+1);
+        }
+        // players who didn't lose any match
+        for(int i=0;i<matches.length;i++){
+            if(!map.containsKey(matches[i][0])) set2.add(matches[i][0]);
+        }
+        // players who lost 1 match
+        for(Map.Entry<Integer, Integer> entry: map.entrySet()){
+            if(entry.getValue()==1) set1.add(entry.getKey());
+        }
+        
+        ans.add(new ArrayList<>(set2));
+        ans.add(new ArrayList<>(set1));
+        return ans;
+    }
+}
+
+
+
+COUNT NO OF TEXTS
+
+class Solution {
+    public int countTexts(String s) {
+        int n = s.length();
+        long[] dp = new long[n+1];
+        dp[0] = 1;
+      
+        
+        int mod = 1000000007;
+        for(int i=1; i<=n; i++){
+            char ch = s.charAt(i-1);
+            
+            dp[i] = dp[i-1];
+            
+            if((i) >= 2 && s.charAt(i-2) == ch) dp[i] = (dp[i-1] + dp[i-2]) % mod;
+            else continue;
+            
+            if((i) >= 3 && s.charAt(i-3) == ch)dp[i] = (dp[i-1] + dp[i-2] + dp[i-3]) % mod;
+            else continue;
+            
+            if((ch == '7' || ch == '9') && (i) >= 4 && s.charAt(i-4) == ch) dp[i] = (dp[i-1] + dp[i-2] + dp[i-3] + dp[i-4]) % mod;
+        }
+        
+        return (int)(dp[n] % mod);
+    }
+}
+
+
+REMOVE ALL ADJACENT DUPLICATE FROM STRING II
+Input: s = "deeedbbcccbdaa", k = 3
+Output: "aa"
+Explanation: 
+First delete "eee" and "ccc", get "ddbbbdaa"
+Then delete "bbb", get "dddaa"
+Finally delete "ddd", get "aa"
+
+     class Node
+{
+    char c;
+    int count;
+    Node(char c, int count)
+    {
+        this.c = c;
+        this.count = count;
+    }
+}
+class Solution {
+    public String removeDuplicates(String s, int k) {
+        Stack<Node> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++)
+        {
+            if (stack.size() == 0) // stack is empty
+            {
+                stack.push(new Node(s.charAt(i), 1));
+            }
+            else // stack is not empty
+            {
+                Node prev = stack.peek();
+                if (prev.c == s.charAt(i))
+                {
+                    stack.push(new Node(s.charAt(i), prev.count + 1));
+                    if (stack.peek().count == k) // if we encounter k adjacent characters, then remove them
+                    {
+                        for (int j = 0; j < k; j++)
+                        {
+                            stack.pop();
+                        }
+                    }
+                }
+                else
+                {
+                    stack.push(new Node(s.charAt(i), 1));
+                }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        while(stack.size() != 0) sb.append(stack.pop().c);
+        sb.reverse();
+        return sb.toString();
+    }
+}  
+
+
+
+DESIGN UNDERGROUND SYSTEM
+
+
+// Pass ID + Class Passenger{StartStation, StartTime, EndStation, EndTime} first hashmap
+// Starting_Station EndingStation + ClassRoute{TripCount, totalTravelTime}
+
+class Passenger{
+        int startTime;
+        int endTime;
+        String startStation;
+        String endStation;
+        
+        public Passenger(String startStation, int startTime){
+            this.startStation = startStation;
+            this.startTime = startTime;
+        }
+        
+        void checkout(String endStation, int endTime){
+            this.endTime = endTime;
+            this.endStation = endStation;
+        }
+    }
+
+class Route{
+    int tripCount;
+    long totalTravelTime;
+    
+    public Route(){
+        
+    }
+    
+    double getAverageTime(){
+        return (double) totalTravelTime / tripCount;
+    }
+    
+    void addTrip(int travelDuration) {
+        totalTravelTime += travelDuration;
+        tripCount += 1;
+    }
+}
+class UndergroundSystem {
+    Map<Integer, Passenger> passengerMap = null;
+    Map<String, Route> routeMap = null;
+    
+    public UndergroundSystem() {
+        passengerMap = new HashMap<>();
+        routeMap = new HashMap<>();
+    }
+    
+    public void checkIn(int id, String stationName, int t) {
+        if(!passengerMap.containsKey(id)){
+            Passenger newTraveller = new Passenger(stationName, t);
+            passengerMap.put(id, newTraveller);
+        }
+    }
+    
+    public void checkOut(int id, String stationName, int t) {
+        if(passengerMap.containsKey(id)){
+            Passenger oldTraveller = passengerMap.get(id);
+            oldTraveller.checkout(stationName, t);
+            String routeKey = oldTraveller.startStation + "_" + oldTraveller.endStation;
+            
+            Route routeDetails =  routeMap.getOrDefault(routeKey, new Route());
+            int duration = oldTraveller.endTime - oldTraveller.startTime;
+            routeDetails.addTrip(duration);
+            routeMap.put(routeKey, routeDetails);
+            passengerMap.remove(id);
+        }
+    }
+    
+    public double getAverageTime(String startStation, String endStation) {
+           String routeKey = startStation + "_" + endStation;
+           Route routeDetails = routeMap.get(routeKey);
+           return routeDetails.getAverageTime();
+    }
+}
+
+
+
+
+MIN RESULT BY ADDING PARENTHESIS TO EXPRESSION
+
+class Solution {
+  
+    public String minimizeResult(String str) {
+        /*Basically whole Expression boils down to : N1 * (N2+N3) * N4
+    where N1 and N2 are part of num1 && N3 and N4 are part of num2
+        
+       Try to break this example "247+38"
+        Left Part = 247
+        Right Part = 38
+        
+        Now Pairs of Left Part i.e. (n1 and n2):
+        {1,247}
+        {2,47}
+        {24,7}
+        
+        Now Pairs of right part i.e. (n3 and n4):
+        {3,8}
+        {38,1}
+        
+        Now the whole game left is of Pointer Management which
+        you can understand by dry run
+        */
+        
+        int small = Integer.MAX_VALUE;
+        int left = -1;
+        int right = -1;
+        int plus = -1;
+        
+        char[] arr = str.toCharArray();
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]=='+'){
+                plus = i;  //Storing the index of Plus Operator
+                break;
+            }
+        }
+        
+        for(int i=0;i<plus;i++){
+            for(int j=plus+1;j<str.length();j++){
+                
+                int n1 = 1;
+                String n1str = str.substring(0,i);
+                if(n1str.length()>0){
+                    n1 = Integer.parseInt(n1str);
+                }
+                
+                String n2str = str.substring(i,plus);
+                int n2 = Integer.parseInt(n2str);
+                
+                String n3str = str.substring(plus+1,j+1);
+                int n3 = Integer.parseInt(n3str);
+                
+                int n4 = 1;
+                String n4str = str.substring(j+1);
+                if(n4str.length()>0){
+                    n4 = Integer.parseInt(n4str);
+                }
+                
+                int val = n1*(n2+n3)*n4;
+                if(val<small){
+                   small = val;
+                    left = i;
+                    right = j+1;
+                }
+            }
+        }
+        
+        String ans = "";
+        ans+=str.substring(0,left);
+        ans+="(";
+        ans+=str.substring(left,right);
+        ans+=")";
+        ans+=str.substring(right);
+        
+        return ans;
+    }
+}
+
+3SUM WITH MULTIPLICITY
+
+class Solution {
+    public int threeSumMulti(int[] arr, int target) {
+        HashMap<Integer, Long> map = new HashMap<>();
+        
+        for(int el : arr){
+            long freq = map.getOrDefault(el,0L);
+            map.put(el, freq+1L);
+        }
+        
+        long ans = 0;
+        
+        for(Integer el1 : map.keySet()){
+            for(Integer el2 : map.keySet()){
+                
+                int el3 = target - el1 - el2;
+                
+                if(map.containsKey(el3)){
+                    long freq1 = map.get(el1);
+                    long freq2 = map.get(el2);
+                    long freq3 = map.get(el3);
+                    
+                    if(el1 == el2 && el1 == el3){
+                        ans += ((freq1)*(freq2-1)*(freq3-2))/6;
+                    }
+                    else if(el1 != el2 && el2 == el3){
+                        ans += ((freq2)*(freq2-1))/2 * freq1;
+                    }
+                    else if(el1<el2 && el2<el3){
+                        ans += freq1*freq2*freq3;
+                    }
+                }
+                
+                ans = ans % 1000000007;
+            }
+    
+            
+        }
+        return (int)ans;
+    }
+}
+
+FIND AND REPLACE IN STRING
+
+class Solution {
+    public String findReplaceString(String s, int[] indices, String[] sources, String[] targets) {
+        StringBuilder res = new StringBuilder(s);
+        Map<Integer, String> sourcesMap = new HashMap<>();
+        Map<Integer, String> targetsMap = new HashMap<>();
+        
+        for(int i = 0; i< indices.length; i++ ) {
+            sourcesMap.put(indices[i], sources[i]);
+            targetsMap.put(indices[i], targets[i]);
+        }
+        
+        //So we can iterate from the back with updating the largest index first
+        Arrays.sort(indices);
+        
+        for(int i = indices.length-1; i >= 0; i--) {
+            
+            String source = sourcesMap.get(indices[i]);
+            String target = targetsMap.get(indices[i]);
+            
+            int srcLength = source.length();
+            String subStr = s.substring(indices[i], indices[i] + srcLength);
+            
+             if(subStr.equals(source)) {
+                res.replace(indices[i], indices[i] + srcLength, target);
+            }
+        }
+        
+        return res.toString();
+    }
+}
+
+
+APPEND K INTEGERS WITH MINIMAL SUM
+
+class Solution {
+    public long minimalKSum(int[] nums, int k) {
+        long sum=(long)k*(k+1)/2;
+        int count=0;
+        HashSet<Integer> set=new HashSet<>();
+        for(int num:nums){
+            if(num<=k && !set.contains(num)){
+                sum=sum-(long)num;
+                count++;
+            }
+            set.add(num);
+        }
+        int i=k+1;
+        while(count>0){
+            if(!set.contains(i)){
+                sum+=i;
+                count--;
+            }
+            i++;
+        }
+        return sum;
+    }
+}
+
+CREATE BINARY TREE DESCP
+
+//Input: descriptions = [[20,15,1],[20,17,0],[50,20,1],[50,80,0],[80,19,1]]
+    // Output: [50,20,80,15,17,19]
+class Solution {
+    public TreeNode createBinaryTree(int[][] descriptions) {
+         HashMap<Integer, TreeNode> map = new HashMap<>();
+        Set<Integer> children = new HashSet<>();
+        
+        for (int[] arr : descriptions) {
+            int parent = arr[0];
+            int child = arr[1];
+            int isLeft = arr[2];
+            
+            children.add(child);
+            
+            TreeNode node = map.getOrDefault(parent, new TreeNode(parent));
+            
+            if (isLeft == 1) {
+                node.left = map.getOrDefault(child, new TreeNode(child));
+                map.put(child, node.left);
+            } else {
+                node.right = map.getOrDefault(child, new TreeNode(child));
+                map.put(child, node.right);
+            }
+            map.put(parent, node);
+        }
+        
+        int root = -1;
+        for (int [] arr: descriptions) {
+            if (!children.contains(arr[0])) {
+                root = arr[0];
+                break;
+            }
+        }
+        
+        return map.getOrDefault(root, null);
+    }
+}
+
+REPLACE NON COPRIME NUMBER
+
+class Solution {
+    public List<Integer> replaceNonCoprimes(int[] nums) {
+        Stack<Integer> stack = new Stack<>();
+        for (int num: nums) {
+            if (stack.isEmpty()) stack.push(num);
+            else {
+                while(!stack.isEmpty() && GCD(stack.peek(), num) > 1) {
+                   num  = LCM(stack.pop(), num);
+                }
+                stack.push(num);
+            }
+        }
+        return new ArrayList<>(stack);
+    }
+    
+    private int GCD(int a, int b) {
+        return b > 0 ? GCD(b , a%b) : a;
+    }
+    
+    private int LCM(int a, int b) {
+        return a /GCD(a,b) * b;
+    }
+    }
+
+
+TRIANGLE
+
+class Solution {
+    public int minimumTotal(List<List<Integer>> triangle) {
+       int numOfLevels = triangle.size();
+        int[] dp = new int[numOfLevels];
+        dp[0] = triangle.get(0).get(0);
+        int minSum = Integer.MAX_VALUE;
+        
+        for(int i = 1; i < numOfLevels; ++i) {
+            for(int j = i; j >= 0; --j) {
+                if(j == 0) {
+                    dp[j] += triangle.get(i).get(j);
+                } else if (j == i) {
+                    dp[j] = dp[j - 1] + triangle.get(i).get(j);
+                } else { 
+                    dp[j] = Math.min(triangle.get(i).get(j) + dp[j],
+                                    triangle.get(i).get(j) + dp[j - 1]);
+                }
+            }
+                
+        }
+        
+        // Find min value 
+        for(int i = 0; i < numOfLevels; ++i) {
+            minSum = Math.min(minSum, dp[i]);
+        }
+        
+        return minSum;
+    }
+}
+
+
+LONGEST CONTINOUS SUBARRAY WITH ABSOLUTE DIFF LESS THAN OR EQUAL TO LIMIT
+
+class Solution {
+    public int longestSubarray(int[] nums, int limit) {
+        Deque<Integer> min = new ArrayDeque<>(); // maintains increasing order of the value index. So that min front will  always have smallest value.
+        Deque<Integer> max = new ArrayDeque<>();// maintains decreasing order of the value index. So that max front will  always have the greatest value.
+        int size = 0;
+        int left =0;
+        int right =0;
+        while(right < nums.length){
+            int val  = nums[right];
+            //from behind remove all the index that have values less than val.
+            while(!min.isEmpty() && nums[min.peekLast()]>=val) min.pollLast();
+            
+            //add val index to the end. Hence the increasing order will be maintained
+            min.addLast(right);
+            
+            while(!max.isEmpty() && nums[max.peekLast()]<=val) max.pollLast();
+            
+            //add val index to the end. Hence maintaining decreasing order.
+            max.add(right);
+            
+            int minVal = nums[min.peekFirst()]; // min front will have min value index
+            int maxVal = nums[max.peekFirst()]; // max front will have max value index
+            
+            if(maxVal - minVal<= limit) { 
+                size = Math.max(size,right-left+1); // right-left+1 will tell no of elements present in the current                                                              subarray
+                right++;
+            }
+            else {
+                /*
+                As the if condition failed we will increment left index.
+                And from the new left index new subarray will start.
+                Hence all the indexes less than left should be removed from min and max deque as they are not part of the current subarray.*/
+                left++;
+                while(left> min.peekFirst()) min.pollFirst();
+                while(left > max.peekFirst()) max.pollFirst();
+            }
+        }
+        return size;
+    }
+}
+
+MAX SUM OF RECTANGLE NO LARGER THAN K
+
+class Solution {
+    // tc = O(r^2 * clogc)
+    public int maxSumSubmatrix(int[][] matrix, int k) {
+       int r=matrix.length;
+        int co= matrix[0].length;
+        int ans=Integer.MIN_VALUE;
+        for(int i=0;i<r;i++)
+        {
+            int c[]=new int[co];
+            for(int j=i;j<r;j++)
+            {
+                for(int s=0;s<co;s++)
+                {
+                 c[s]+=matrix[j][s];   
+                }
+                int res=findmax(c,k);
+                ans=Math.max(ans,res);
+            }
+        }
+        return ans;
+    }
+    public int findmax(int[]c,int k)  // maximum  subarray with sum less then equal k
+    {
+        TreeSet<Integer>ts= new TreeSet<>();
+        ts.add(0);
+        int res=Integer.MIN_VALUE;
+        int prefixSum=0;
+        for(int i=0;i<c.length;i++)
+        {
+         prefixSum +=c[i];
+            Integer target= ts.ceiling(prefixSum-k);
+            if(target!=null)
+                res=Math.max(res,prefixSum-target);
+            ts.add(prefixSum);
+        }
+        return res;
+    }
+}
+        
+SHORTEST SUBARRAY WITH SUM ATLEAST K
+
+class Solution {
+    public int shortestSubarray(int[] nums, int k) {
+     int n = nums.length;
+        Deque<long[]> dq = new ArrayDeque<long[]>();
+        dq.offer(new long[]{-1,0});
+        int i = 0;
+        long curSum = 0;
+        int res = Integer.MAX_VALUE;
+        while(i < nums.length)
+        {
+            curSum += nums[i];
+            while(!dq.isEmpty() &&  curSum  - dq.peekFirst()[1] >= k) res = Math.min(res, (int)(i - dq.pollFirst()[0]));
+            while(!dq.isEmpty() && dq.peekLast()[1] >= curSum) dq.pollLast();
+            dq.offerLast(new long[]{i, curSum});
+            i++;
+        }
+        
+        return res == Integer.MAX_VALUE ? -1 : res;
+    }
+}
+
+MIN DEVIATION IN ARRAY
+Input: nums = [4,1,5,20,3]
+Output: 3
+class Solution {
+    public int minimumDeviation(int[] nums) {
+        TreeSet<Integer> set = new TreeSet<>();
+        for(int el : nums){
+            if(el%2 == 1){
+                set.add(el*2);
+            }
+            else {
+                set.add(el);
+            }
+        }
+        
+        int diff = Integer.MAX_VALUE;
+        while(true){
+            int maxVal = set.last();
+            int minVal = set.first();
+            int currDiff = maxVal - minVal;
+            diff = Math.min(diff, currDiff);
+            
+            if(maxVal % 2 == 0){
+                set.remove(maxVal);
+                set.add(maxVal/2);
+            }
+            else {
+                return diff;
+            }
+        }
+    }
+}
+
+
+MIN INCREMENT TO MAKE ARRAY UNIQUE
+
+class Solution {
+    public int minIncrementForUnique(int[] A) {
+// after sorting => [1, 1, 2, 2, 3, 7] => [1, 2, 2, 2, 3, 7]=>[1, 2, 3, 2, 3, 7]=>[1, 2, 3, 4, 3, 7]=>[1, 2, 3, 4, 5, 7]
+        Arrays.sort(A);
+        int moves = 0;
+        
+        for (int i = 1; i < A.length; i++) {
+            if (A[i] <= A[i-1]) {
+                moves += A[i-1] - A[i] + 1;
+                A[i] = A[i-1] + 1;
+            }
+        }
+        return moves;
+    }
+}
+
+
+MIN NO OF MAGIC BEANS
+
+class Solution {
+    public long minimumRemoval(int[] beans) {
+//         nums = a, b, c, d ( a < b < c < d )
+// if make nums [a, a, a, a] remove beans (b - a) + (c - a) + (d - a) == b + c + d - 3a
+// if make nums [0, b, b, b] remove beans a + (c - b) + (d - b) == a + c + d - 2b
+// if make nums [0, 0, c, c] remove beans a + b + (d - c) == a + b + d - c
+// if make nums [0, 0, 0, d] remove beans a + b + c
+
+// b + c + d - 3a == (a + b + c + d) - 4a
+// a + c + d - 2b == (a + b + c + d) - 3b
+// a + b + d -c == (a + b + c + d) - 2c
+// a + b + c == (a + b + c + d) - d
+
+	
+        Arrays.sort(beans);
+        long sum = 0;
+        for (int bean : beans) {
+            sum += bean;
+        }
+        long result = Long.MAX_VALUE;
+        int m = beans.length;
+        for (int i = 0; i < m; i++) {
+           long possibleans = sum - ((m - i + 0L)*beans[i]);
+            result = (long)Math.min(result, possibleans);
+        }
+        return result;
+    }
+    
+}
+
+MIN OPERATION TO MAKE ARRAY ALTERNATING
+
+class Solution {
+    public int minimumOperations(int[] nums) {
+        int[] freqOdd = new int[100001];
+        int[] freqEven = new int[100001];
+        
+        int n = nums.length;
+        int oddMax = 0;
+        int oddMaxFreq = 0;
+        int oddSecondMax = 0;
+        int oddSecondMaxFreq = 0;
+        
+        for(int i=1; i<n; i+= 2){
+            freqOdd[nums[i]]++;
+        }
+        
+        for(int i=0; i < freqOdd.length; i++){
+            if(freqOdd[i] > oddMaxFreq){
+                oddMaxFreq = freqOdd[i];
+                oddMax = i;
+            }
+        }
+        
+        for(int i=0; i < freqOdd.length; i++){
+            if(freqOdd[i] > oddSecondMaxFreq && i != oddMax){
+                oddSecondMaxFreq = freqOdd[i];
+                oddSecondMax = i;
+            }
+        }
+        
+        
+        
+        int evenMax = 0;
+        int evenMaxFreq = 0;
+        int evenSecondMax = 0;
+        int evenSecondMaxFreq = 0;
+
+        for(int i=0; i<n; i+= 2){
+            freqEven[nums[i]]++;
+        }
+        
+        for(int i=0; i < freqEven.length; i++){
+            if(freqEven[i] > evenMaxFreq){
+                evenMaxFreq = freqEven[i];
+                evenMax = i;
+            }
+        }
+        
+        for(int i=0; i < freqEven.length; i++){
+            if(freqEven[i] > evenSecondMaxFreq && i != evenMax){
+                evenSecondMaxFreq = freqEven[i];
+                evenSecondMax = i;
+            }
+        }
+        
+        
+        // if max candidate for odd & even is different, can use them
+        if(oddMax != evenMax){
+            return n - oddMaxFreq - evenMaxFreq;
+        }
+        
+        
+        return Math.min(n - oddMaxFreq - evenSecondMaxFreq, n - oddSecondMaxFreq - evenMaxFreq);
+        
+        
+    }
+}
+
+
+
+COUNT BINARY SUBSTRING
+// 00110011 o/p = 6
+class Solution {
+    public int countBinarySubstrings(String s) {
+        int curr = 1, prev = 0, res = 0;
+        
+        for(int i=1; i < s.length(); i++){
+            if(s.charAt(i) == s.charAt(i-1)) curr++;
+            else{
+                prev = curr;
+                curr = 1;
+            }
+            if(prev >= curr) res++;
+        }
+        return res;
+    }
+}
+
+
+REMOVE DUPLICATE II
+
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int end = 0;
+        int pointer = 0;
+        
+        while(end < nums.length){
+            int startIndex = end;
+            
+            while(end < nums.length-1 && nums[end] == nums[end+1]){
+                end++;
+            }
+            
+            int length = end - startIndex + 1;
+            int freq = Math.min(length,2);
+            
+            while(freq-- > 0){
+                nums[pointer++] = nums[startIndex];
+            }
+            
+            end++;
+        }
+        
+        return pointer;
+    }
+}
+
+MAXIMUM POPULATION YEAR
+
+class Solution {
+    public int maximumPopulation(int[][] logs) {
+        int[] arr = new int[101];
+        
+        for(int log[]: logs){
+            int by = log[0], dy = log[1];
+            arr[by - 1950]++;
+            arr[dy - 1950]--;
+        }
+        
+        int max = arr[0];
+        int maxyear = 1950;
+        for(int i=1; i < 101; i++){
+            arr[i] += arr[i-1];
+            if(max < arr[i]){
+                max = arr[i];
+                maxyear = i + 1950;
+            }
+        }
+        return maxyear;
+    }
+}
+
+
+KTH SMALLEST NUMBER IN MULTIPLICATION TABLE
+
+class Solution {
+    public int findKthNumber(int m, int n, int k) {
+        int low = 1 , high = m * n ;
+        
+    	while (low < high) {
+    	    int mid = low + (high - low) / 2;
+    	    int c = count(mid, m, n);
+    	    if (c >= k) high = mid;
+            else low = mid + 1;
+    	}
+        
+    	return high;
+    }
+    
+    private int count(int v, int m, int n) {
+	int count = 0;
+	for (int i = 1; i <= m; i++) {
+	    int temp = Math.min(v / i , n);
+	    count += temp;
+	}
+	return count;
+    }
+}
+
+
+LARGEST DIVIVSBLE SUBSET  a % b == 0 || b % a == 0
+
+class Solution {
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        int n = nums.length;
+        //STEP 1 SORT THE ARRAY
+        Arrays.sort(nums);
+        
+        //GENERATE COUNT DP
+        int[] count = new int[n];
+        
+        Arrays.fill(count, 1);
+        
+        for(int i=1; i< n; i++){
+            for(int j=i-1; j>=0; j--){
+                if(nums[i] % nums[j] == 0){
+                    count[i] = Math.max(count[i], count[j] + 1);
+                }
+            }
+        }
+        
+        //STEP 3 MAXINDEX
+        
+        int maxindex = 0;
+        for(int i=1; i<n; i++){
+            maxindex = count[i] > count[maxindex] ? i : maxindex;
+        }
+        
+        // CONSTRUCT THE LONGEST SUBSET
+        List<Integer> result = new ArrayList<>();
+        int temp = nums[maxindex];
+        int currentcount = count[maxindex];
+        for(int i= maxindex; i>=0; i--){
+            if(temp % nums[i] == 0 && currentcount == count[i]){
+                result.add(nums[i]);
+                temp=nums[i];
+                currentcount--;
+            }
+        }
+        return result;
+        
+    }
+}
+
+MIN OPERATION TO MAKE UNI VALUE GRID
+
+class Solution {
+    public int minOperations(int[][] grid, int x) {
+         int[] arr = new int[grid.length * grid[0].length];
+        int index = 0;
+        
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                arr[index++] = grid[i][j];
+            }
+        }
+        
+        Arrays.sort(arr);
+        int median = arr[(arr.length - 1) / 2];
+        int steps = 0;
+        
+        for (int num : arr) {
+            
+            
+            if (Math.abs(num - median) % x != 0) {
+                return -1;
+            }
+            
+            steps += (Math.abs(num - median) / x);
+        }
+        
+        return steps;
+    }
+}
+
+VOWELS OF ALL SUBSTRING (sum of no of vowels)
+
+class Solution {
+    public long countVowels(String word) {
+         int n = word.length();
+        
+        long vows = 0;
+        long res = 0;
+        for (int i = 0; i < n; i ++) {
+            
+            char cur = word.charAt(i);
+
+            if (cur == 'a' || cur == 'e' || cur == 'i' || cur == 'o' || cur == 'u') {
+                vows += (i + 1);
+            }
+            res += vows;
+            
+        }
+        return res;
+    }
+}
+
+
+NUMBER OF SUBSTRING CONTAINING ALL 3 CHARACTER
+
+class Solution {
+    public int numberOfSubstrings(String s) {
+         int array[]=new int[3];
+        int i=0;
+        int j=0;
+        int count=0;
+        while(j<s.length()){
+            while(!(array[0]>0 && array[1]>0 && array[2]>0) && j<s.length()){
+                array[s.charAt(j)-'a']++;
+                j++;
+            }
+            while(array[0]>0 && array[1]>0 && array[2]>0 && i<s.length()){
+                count=count+s.length()-j+1;
+                array[s.charAt(i)-'a']--;
+                i++;
+            }
+        }
+        return count;
+    }
+}
+
+
+
+MAXIMUM MATRIX SUM
+
+class Solution {
+    public long maxMatrixSum(int[][] matrix) {
+         long ans = 0;
+        int neg = 0;
+        int min = Integer.MAX_VALUE;
+        for(int i = 0; i < matrix.length; i++){
+            for(int j = 0; j < matrix[0].length; j++){
+                if(matrix[i][j] < 0) {
+                    neg++;
+                }
+                ans += Math.abs(matrix[i][j]);
+                if(min > Math.abs(matrix[i][j]))
+                	min = Math.abs(matrix[i][j]);
+            }
+        }
+        if(neg % 2 == 0)
+        	return ans;
+        else
+        	return ans - 2*min;
+    }
+}
+
+
+UNIQUE PATH II
+
+class Solution {
+    int paths = 0;
+    
+    public int uniquePathsWithObstacles(int[][] grid) {
+        dfs(grid, 0, 0);
+        return paths;
+    }
+    
+    void dfs(int[][] grid, int row, int col){
+        
+        if(row<0 || col<0 || row >= grid.length || col >= grid[0].length || grid[row][col] == 1)
+            return;
+        if(row == grid.length-1 && col == grid[0].length-1){
+            paths++;
+            return;
+        }
+        dfs(grid, row, col+1);
+        dfs(grid, row+1, col);
+    }
+}
+
+
+class Solution {
+   O(m*n)
+   int[][] dp; 
+    public int uniquePathsWithObstacles(int[][] grid) {
+        dp = new int[grid.length][grid[0].length];
+        for(int[] d : dp){
+            Arrays.fill(d, -1);
+        }
+        
+        return dfs(grid, 0, 0);
+    }
+    
+    int dfs(int[][] grid, int row, int col){
+        
+        if(row<0 || col<0 || row >= grid.length || col >= grid[0].length || grid[row][col] == 1)
+            return 0;
+        if(row == grid.length-1 && col == grid[0].length-1){
+           
+            return 1;
+        }
+        
+        if(dp[row][col] > -1) return dp[row][col];
+      dp[row][col] = dfs(grid, row, col+1) +  dfs(grid, row+1, col);
+        return dp[row][col];
+       
+    }
+}
+
+
+class Solution {
+   
+  
+    public int uniquePathsWithObstacles(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        
+        if(grid[0][0] == 1) return 0;
+        
+        for(int i=0; i< m; i++){
+            for(int j=0; j< n; j++){
+                //First row && First column
+                if(i==0 || j==0){
+                // its prev cell was obstacle or if current cell is obstacle
+                if(grid[i][j] == 1 || (i!=0 && grid[i-1][0] == 0) || (j!= 0 && grid[i][j-1] == 0)){
+                    grid[i][j] = 0;
+                } else {
+                    grid[i][j] = 1;
+                }
+            }
+            
+            // All othercell
+          else{
+              
+            if(grid[i][j] == 1){
+                grid[i][j] = 0;
+            } else {
+                grid[i][j] = grid[i-1][j] + grid[i][j-1];
+            }
+        }
+            }
+        }
+        
+        return grid[m-1][n-1];
+       
+    }
+}
+
+
+
+
+UNIQUE PATH III
+
+class Solution {
+    public int uniquePathsIII(int[][] grid) {
+            int zero = 0; // Count the 0's
+        int sx = 0; // starting x index
+        int sy = 0; // starting y index
+        
+        for(int r = 0; r < grid.length; r++){ // r = row
+            for(int c = 0; c < grid[0].length; c++){ // c = column
+                if(grid[r][c] == 0) zero++; // if current cell is 0, count it.
+                else if(grid[r][c] == 1){
+                    sx = r; // starting x co-ordinate
+                    sy = c; // starting y co-ordinate
+                }
+            }
+        }
+        return dfs(grid, sx, sy, zero);
+    }
+    public int dfs(int grid[][], int x, int y, int zero){
+        // Base Condition
+        if(x < 0 || y < 0 || x >= grid.length || y >= grid[0].length || grid[x][y] == -1){
+            return 0;
+        }
+        if(grid[x][y] == 2){
+            return zero == -1 ? 1 : 0; // Why zero = -1, because in above example we have 9 zero's. So, when we reach the final cell we are covering one cell extra then the zero count. 
+            // If that's the case we find the path and return '1' otherwise return '0';
+        }
+        grid[x][y] = -1; // mark the visited cells as -1;
+        zero--; // and reduce the zero by 1
+        
+        int totalPaths = dfs(grid, x + 1, y, zero) + // calculating all the paths available in 4 directions
+            dfs(grid, x - 1, y, zero) + 
+            dfs(grid, x, y + 1, zero) + 
+            dfs(grid, x, y - 1, zero);
+        
+        // Let's say if we are not able to count all the paths. Now we use Backtracking over here
+        grid[x][y] = 0;
+        zero++;
+        
+        return totalPaths; // if we get all the paths, simply return it.
+    }
+}
+
+
+
+
+
+HOUSE ROBBER II
+
+The main point is that you can't rob both the first and last houses.
+
+Therefore, the core idea is to apply DP twice: when you rob the first house, and when you don't (you rob the last one).
+
+
+Input: nums = [1,2,3,1]
+Output: 4
+Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+
+class Solution {
+    public int rob(int[] nums) {
+        
+        if(nums.length == 1)    return nums[0];
+        if(nums.length == 2)    return Math.max(nums[0], nums[1]);
+        
+        // 1st option: including the 1st and excluding the last house
+        int resultWithFirst = solve(nums, 0, nums.length - 2);
+        // 2nd option: excluding the 1st and including the last house
+        int resultWithLast = solve(nums, 1, nums.length - 1);
+        
+        // Return the maximum of the two results
+        return Math.max(resultWithFirst, resultWithLast);
+    }
+    
+    public int solve(int[] nums, int start, int end){        
+        if(start == end)    return nums[start];
+        
+        // Array to store the maximum sum at the current iteration
+        // while traversing all houses
+        int money[] = new int[nums.length];
+        
+        /* Base case */
+        money[start] = nums[start];
+        
+        // At the 2nd house, we decide to rob
+        // either the 1st house or the 2nd
+        // This is the core idea of the transition function
+        money[start + 1] = Math.max(nums[start + 1], nums[start]);
+        
+        for (int i = start + 2; i <= end; ++i)
+            /* At ith house we have two options:
+             1. not rob it, keeping the money from the (i-1)th house
+             2. rob it after the (i-2)th house, skipping the (i-1)th house
+              We choose the one that gives the max amount */
+            money[i] = Math.max(money[i - 1], money[i - 2] + nums[i]);
+        
+        // Return the sum that we have at the last house
+        return money[end];
+    }
+}
+
+
+
+
+
+SHORTEST SUBARRAY TO BE REMOVED TO MAKE ARRAY SORTED
+
+Input: arr = [1,2,3,10,4,2,3,5]
+Output: 3
+Explanation: The shortest subarray we can remove is [10,4,2] of length 3. The remaining elements after that will be [1,2,3,3,5] which are sorted.
+Another correct solution is to remove the subarray [3,10,4].
+
+class Solution {
+    public int findLengthOfShortestSubarray(int[] arr) {
+        int n = arr.length;
+        int left = 0;
+        int right = n-1;
+        
+        while (left < n-1 && arr[left] <= arr[left+1]) left++;
+        if (left == n-1) return 0;
+        
+        while (right >= left && arr[right] >= arr[right-1]) right--;
+        if (right == 0) return n-1;
+        
+        int result = Math.min(n-1-left, right);
+        
+        int i=0;
+        int j = right;
+        
+        while (i <= left && j < n){
+            if (arr[j] >= arr[i]){
+                result = Math.min(result, j-i-1);
+                i++;
+            }
+            else{
+                j++;
+            }
+        }
+        return result;
+    }
+}
+
+
+
+
+
+MAKE SUM DIVISIBLE BY P
+
+Input: nums = [3,1,4,2], p = 6
+Output: 1
+Explanation: The sum of the elements in nums is 10, which is not divisible by 6. We can remove the subarray [4], and the sum of the remaining elements is 6, which is divisible by 6.
+
+class Solution {
+    public int minSubarray(int[] nums, int p) {
+        int length = nums.length;
+        int sum = 0;
+        for (int i=0; i<length; i++)
+            sum = (sum + nums[i]) % p;
+        if (sum == 0)
+            return 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int result = length;
+        int currentSum = 0;
+        for (int i=0; i<length; i++) {
+            currentSum = (currentSum + nums[i]) % p;
+            int difference = (currentSum - sum + p) % p;
+            if (map.containsKey(difference)) {
+                int finalLength = i - map.get(difference);
+                result = Math.min(finalLength, result);
+            }
+            map.put(currentSum, i);
+        }
+        if (result == length)
+            return -1;
+        else
+            return result;
+    }
+}
+
+/*
+prefix-sum variation
+p=6
+for ex
+
+sum of nums array = 100
+
+(100 - x) % 6 == 0
+so we need to think about x
+
+suppose 100 % 6 == 4
+
+so (100 - 4) % 6 == 0
+
+now become 96 /6 = 16
+90/6 = 15
+84/12 = 14
+
+so final conclusion is x can be any number i.e  x= 6*N + 4 so we need to find subarray equal to x value.
+
+*/
+
+
+
+FIND MINIMUM IN ROTATED SORTED ARRAY II (DUPLICATES)
+
+Input: nums = [2,2,2,0,1]
+Output: 0
+
+class Solution {
+    public int findMin(int[] nums) {
+        int left = 0;
+        int right = nums.length-1;
+        
+       
+        while(left < right) {
+           int mid = left +(right - left)/2;
+           
+           if(nums[right] > nums[mid]) {
+               right = mid;
+           }
+           else if(nums[right] == nums[mid]) {
+               right--;
+           }
+           else {
+               left = mid+1;
+           }
+          
+        }
+        
+        return nums[left];
+    }
+}
+
+
+
+
+RANGE SUM OF SORTED SUBARRAY SUM
+
+class Solution {
+  private static final int MOD = 1_000_000_007;
+    public int rangeSum(int[] nums, int n, int left, int right) {
+        int index = 0;
+        int[] sums = new int[n*(n+1)/2];
+        
+        for(int i = 0; i < n; i++) {
+            int sum = 0;
+            for(int j = i; j < n; j++) {
+                sum += nums[j];
+                sums[index++] = sum;
+            }
+        }
+        
+        int res = 0, mod = 1000000007;
+        Arrays.sort(sums);
+        for(int i = left-1; i < right; i++) {
+            res = (res+sums[i])%mod;
+        }
+        
+        return res;
+    }
+}
+
+
+SORT ARRAY BY INCREASING FREQUENCY
+
+Input: nums = [2,3,1,3,2]
+Output: [1,3,3,2,2]
+Explanation: '2' and '3' both have a frequency of 2, so they are sorted in decreasing order.
+
+class Solution {
+    public int[] frequencySort(int[] nums) {
+         Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        
+        List<Integer> list = new ArrayList<>(map.keySet());
+        Collections.sort(list, (a, b) -> {
+            return (map.get(a) == map.get(b))? b - a : map.get(a) - map.get(b);
+        });
+            
+        int[] res = new int[nums.length];
+        int i = 0;
+        for (int num : list) {
+            for (int j = 0; j < map.get(num); j++) {
+                res[i++] = num;
+            }
+        }
+        return res;
+    }
+}
+
+
+
+SORT CHARACTER BY FREQUENCY
+
+I/P: TREE O/P: EERT
+class Solution {
+    public String frequencySort(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c : s.toCharArray())
+            map.put(c, map.getOrDefault(c, 0) + 1);
+						
+        PriorityQueue<Character> pq = new PriorityQueue<>((a, b) -> map.get(b) - map.get(a));
+        pq.addAll(map.keySet());
+				
+        StringBuilder sb = new StringBuilder();
+        while (!pq.isEmpty()) {
+            char curr = pq.remove();
+            for (int i = 0; i < map.get(curr); i++) 
+                sb.append(curr);
+        }
+        return sb.toString();
+    }
+}
+
+
+
+
+BEAUTIFUL ARRAY
+nums is a permutation of the integers in the range [1, n].
+For every 0 <= i < j < n, there is no index k with i < k < j where 2 * nums[k] == nums[i] + nums[j]
+
+n = 5
+o/p = [3 1 2 5 4]
+
+class Solution {
+    public int[] beautifulArray(int n) {
+        ArrayList<Integer> res = new ArrayList<>();
+        res.add(1);
+        while (res.size() < n) {
+            ArrayList<Integer> tmp = new ArrayList<>();
+            for (int i : res) if (i * 2 - 1 <= n) tmp.add(i * 2 - 1);  //odd
+            for (int i : res) if (i * 2 <= n) tmp.add(i * 2);  //even
+            res = tmp;
+        }
+        int[] ans = new int[n];
+        for(int i=0; i< n; i++){
+            ans[i] = res.get(i);
+        }
+        return ans;
+       
+    }
+}
+
+
+
+
+
+REDUCE ARRAY SIZE TO HALF
+
+Input: arr = [3,3,3,3,5,5,5,2,2,7]
+Output: 2
+Explanation: Choosing {3,7} will make the new array [5,5,5,2,2] which has size 5 (i.e equal to half of the size of the old array).
+Possible sets of size 2 are {3,5},{3,2},{5,2}.
+Choosing set {2,7} is not possible as it will make the new array [3,3,3,3,5,5,5] which has size greater than half of the size of the old array.
+
+class Solution {
+    public int minSetSize(int[] arr) {
+        int len = arr.length;
+         Map<Integer, Integer> m = new HashMap<>();
+        for (int n : arr) 
+            m.put(n, m.getOrDefault(n, 0) + 1);
+        PriorityQueue<Integer> pq = new PriorityQueue<>((c, d) -> d - c);
+        for (int n : m.keySet()) pq.offer(m.get(n));
+        
+        int res = 0, sum = len;
+        while(!pq.isEmpty() && sum > len/2){
+            sum -= pq.poll();
+            res++;
+            
+        }
+        return res;
+    }
+}
+
+
+
+DEGREE OF AN ARRAY
+
+ nums = [1,2,2,3,1,4,2]
+Output: 6
+Explanation: 
+The degree is 3 because the element 2 is repeated 3 times.
+So [2,2,3,1,4,2] is the shortest subarray, therefore returning 6.
+
+class Solution {
+    public int findShortestSubArray(int[] A) {
+        Map<Integer, Integer> count = new HashMap<>(), first = new HashMap<>();
+        int res = 0, degree = 0;
+        for (int i = 0; i < A.length; ++i) {
+            first.putIfAbsent(A[i], i);
+            count.put(A[i], count.getOrDefault(A[i], 0) + 1);
+            if (count.get(A[i]) > degree) {
+                degree = count.get(A[i]);
+                res = i - first.get(A[i]) + 1;
+            } else if (count.get(A[i]) == degree)
+                res = Math.min(res, i - first.get(A[i]) + 1);
+        }
+        return res;
+    }
+}
+
+
+
+REPEATED STRING MATCH
+
+A = abcd  B = cdabcdab  o/p = 3
+class Solution {
+    public int repeatedStringMatch(String A, String B) {
+    int count = 0;
+    StringBuilder sb = new StringBuilder();
+    while (sb.length() < B.length()) {
+        sb.append(A);
+        count++;
+    }
+    if(sb.toString().contains(B)) return count;
+    if(sb.append(A).toString().contains(B)) return ++count;
+    return -1;
+    }
+}
+
+
+
+
+REPEATED SUBSTRING PATTERN
+abcabcabcabc o/p = true 4 times append abc
+class Solution {
+    public boolean repeatedSubstringPattern(String s) {
+        int len = s.length();
+        for(int i=0; i<len/2; i++){
+            String substr = s.substring(0, i+1);
+            if(len % substr.length() == 0){
+                int noofrepetition = len / substr.length();
+                StringBuilder sb = new StringBuilder();
+                while(noofrepetition > 0){
+                    sb.append(substr);
+                    noofrepetition--;
+                }
+                if(sb.toString().equals(s)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+
+
+FIND MEDIAN FROM DATA STREAM
+
+class MedianFinder {
+
+    private PriorityQueue<Integer> maxHeap;
+    private PriorityQueue<Integer> minHeap;
+    
+    public MedianFinder() {
+        maxHeap = new PriorityQueue<Integer>((a,b) -> (b-a));
+        minHeap = new PriorityQueue<Integer>((a,b) -> (a-b));
+    }
+    
+    public void addNum(int num) {
+        if(maxHeap.size() == 0 || maxHeap.peek() >= num){
+            maxHeap.offer(num);
+        } else {
+            minHeap.offer(num);
+        }
+        balance();
+    }
+    
+    public double findMedian() {
+        if(maxHeap.size() > minHeap.size()){
+            return maxHeap.peek();
+        } else if(maxHeap.size() < minHeap.size()){
+            return minHeap.peek();
+        } else {
+            // maxHeap == minHeap size
+            return (maxHeap.peek() + minHeap.peek())/2.0;
+        }
+    }
+    
+    private void balance(){
+        if(maxHeap.size() - minHeap.size() > 1){
+            minHeap.offer(maxHeap.poll());
+        } else if(minHeap.size() - maxHeap.size() > 1){
+            maxHeap.offer(minHeap.poll());
+        }
+    }
+}
+
+
+
+SUM OF SQUARE NUMBERS
+
+Input: c = 5
+Output: true
+Explanation: 1 * 1 + 2 * 2 = 5
+
+class Solution {
+    public boolean judgeSquareSum(int c) {
+        long left = 0;
+        long right = (long)Math.sqrt(c);
+        
+        while(left <= right){
+            long total = left*left + right*right;
+            if(total == c){
+                return true;
+            }else if(total > c){
+                right--;
+            }else{
+                left++;
+            }
+        }
+        return false;
+    }
+}
+
+
+
+REVERSE WORDS IN STRING
+
+class Solution {
+    public String reverseWords(String s) {
+        StringBuilder sb = new StringBuilder();
+        
+        
+        for(int i = 0; i < s.length(); i++){
+            if(s.charAt(i) == ' ') continue;
+            
+            int start = i;
+            
+            while(i < s.length() && s.charAt(i) != ' ')i++;
+            
+            if(sb.length() == 0)
+                sb.insert(0, s.substring(start, i));
+            else
+                sb.insert(0, ' ').insert(0, s.substring(start, i));
+        }
+        return sb.toString();
+        
+            
+    }
+}
+
+
+
+
+K PAIRS WITH SMALLEST SUM
+
+nums1=[1,7,11], nums2=[2,4,6], k=3 o/p = [[1,2], [1,4], [1,6]]
+class Solution {
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        PriorityQueue<List<Integer>> pq = new PriorityQueue<>((a,b) -> (b.get(0) + b.get(1)) - (a.get(0) + a.get(1)));  // big to small
+        
+        for(Integer i : nums1){
+            for(Integer j: nums2){
+                pq.add(Arrays.asList(i,j));
+               if(pq.size() > k) pq.poll();                               
+            }
+        }
+        
+        return new ArrayList<>(pq);
+    }
+}
+
+
+
+
+1. ORDERLY QUEUE  // lexicographically smallest substring by removing k
+
+ if (k > 1) {
+            char S2[] = s.toCharArray();
+            
+            // bubble sort
+            
+            for(int itr = 1; itr <= s.length() - 1; itr++){
+                for(int i = 0; i < s.length() - itr; i++){
+                    if(S2[i] > S2[i+1]){
+                        char temp = S2[i];
+                        S2[i] = S2[i+1];
+                        S2[i+1] = temp;
+                    }
+                }
+            }
+            return new String(S2);
+        }
+        String res = s;
+        for (int i = 1; i < s.length(); i++) {
+            String tmp = s.substring(i) + s.substring(0, i);
+            if (res.compareTo(tmp) > 0) res = tmp;
+        }
+        return res;
+
+
+
+2. ADD BINARY NUMBER
+
+class Solution {
+    public String addBinary(String a, String b) {
+         StringBuilder sb = new StringBuilder(); //Google immutability or string vs stringbuilder if you don't know why we use this instead of regular string
+        int i = a.length() - 1, j = b.length() -1, carry = 0; //two pointers starting from the back, just think of adding two regular ints from you add from back
+        while (i >= 0 || j >= 0) {
+            int sum = carry; //if there is a carry from the last addition, add it to carry 
+            if (j >= 0) sum += b.charAt(j--) - '0'; //we subtract '0' to get the int value of the char from the ascii
+            if (i >= 0) sum += a.charAt(i--) - '0';
+            sb.append(sum % 2); //if sum==2 or sum==0 append 0 cause 1+1=0 in this case as this is base 2 (just like 1+9 is 0 if adding ints in columns)
+            carry = sum / 2; //if sum==2 we have a carry, else no carry 1/2 rounds down to 0 in integer arithematic
+        }
+        if (carry != 0) sb.append(carry); //leftover carry, add it
+        return sb.reverse().toString();
+    }
+}
+
+
+
+3. SLOWEST KEY PRESSED
+Input: releaseTimes = [9,29,49,50], keysPressed = "cbcd"
+Output: "c"
+Explanation: The keypresses were as follows:
+Keypress for 'c' had a duration of 9 (pressed at time 0 and released at time 9).
+Keypress for 'b' had a duration of 29 - 9 = 20 (pressed at time 9 right after the release of the previous character and released at time 29).
+Keypress for 'c' had a duration of 49 - 29 = 20 (pressed at time 29 right after the release of the previous character and released at time 49).
+Keypress for 'd' had a duration of 50 - 49 = 1 (pressed at time 49 right after the release of the previous character and released at time 50).
+The longest of these was the keypress for 'b' and the second keypress for 'c', both with duration 20.
+'c' is lexicographically larger than 'b', so the answer is 'c'.
+
+class Solution {
+    public char slowestKey(int[] releaseTimes, String keysPressed) {
+        int maxtime = releaseTimes[0];
+        char result = keysPressed.charAt(0);
+        
+        for(int i=1; i < releaseTimes.length; i++){
+            int currenttime = releaseTimes[i] - releaseTimes[i-1];
+            
+            if(currenttime > maxtime || currenttime == maxtime && keysPressed.charAt(i) > result){
+                maxtime = currenttime;
+                result = keysPressed.charAt(i);
+        }
+        }
+        
+        return result;
+    }
+}
+
+
+
+3. SHIFTING LETTERS
+Input: s = "abc", shifts = [3,5,9]
+Output: "rpl"
+Explanation: We start with "abc".
+After shifting the first 1 letters of s by 3, we have "dbc".
+After shifting the first 2 letters of s by 5, we have "igc".
+After shifting the first 3 letters of s by 9, we have "rpl", the answer.
+
+class Solution {
+    public String shiftingLetters(String s, int[] shifts) {
+        int MOD = 26;
+        int n = s.length();
+        
+        int sum = 0;
+        char[] ch = s.toCharArray();
+        for(int i = n-1; i >= 0; i--) {
+            sum = (sum + shifts[i])%MOD;
+            ch[i] = (char)(((ch[i] - 'a') + sum) % MOD + 'a');
+        }
+        
+        return new String(ch);
+    }
+}
+
+
+
+
+5. HAND OF STRAIGHTS
+
+[1,2,3,6,2,3,4,7,8] groupsize = 3  o/p = [1,2,3], [2,3,4], [6,7,8]
+class Solution {
+    public boolean isNStraightHand(int[] hand, int groupSize) {
+        int len = hand.length;
+    if(len % groupSize != 0) return false;
+    TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+    for(int num : hand) {
+        treeMap.put(num, treeMap.getOrDefault(num, 0) + 1);
+    }
+    
+    while(!treeMap.isEmpty()) {
+        int first = treeMap.firstKey();
+        for(int j = first; j < first + groupSize; j++) {
+            
+            if(!treeMap.containsKey(j)) return false;
+                int count = treeMap.get(j);
+            if(count == 1) treeMap.remove(j);
+            else treeMap.replace(j, count - 1);
+    }
+    }
+        
+    return true;
+    }
+}
+
+
+6. REVERSE ONLY LETTERS
+class Solution {
+    public String reverseOnlyLetters(String s) {
+        int i = 0;
+        int j = s.length() - 1;
+        char[] a = s.toCharArray();
+        
+        while(i < j){
+            while(i < j && !Character.isLetter(s.charAt(i))){
+                i++;
+            }
+             while(j > i && !Character.isLetter(s.charAt(j))){
+                j--;
+            }
+            
+            char temp = a[i];
+            a[i++] = a[j];
+            a[j--] = temp;
+        }
+        
+        return new String(a);
+    }
+}
+
+
+7. MAXIMUM NO OF BALLOONS
+
+class Solution {
+    // "ballonballoo"
+    
+    // "b"; ans -> 2;
+    // "a"; ans -> 2;
+    // "l" / 2; ans -> 2;
+    // "o" / 2; ans -> 2;
+    // "n"; ans -> 1;
+    
+    // minimum of all is ans
+    public int maxNumberOfBalloons(String text) {
+        int[] freq = new int[26];
+        
+        for(int i = 0; i < text.length(); i++){
+            freq[text.charAt(i) - 'a']++;
+        }
+        
+        int min = freq[1]; // b
+        min = Math.min(min, freq[0]); //a
+        min = Math.min(min, freq[11] / 2); //l
+        min = Math.min(min, freq[14] / 2); //o
+        min = Math.min(min, freq[13]); //n
+        return min;
+    }
+}
+
+
+8. LONGEST TURBULENT SUBARRAY
+Input: arr = [9,4,2,10,7,8,8,1,9]
+Output: 5
+Explanation: arr[1] > arr[2] < arr[3] > arr[4] < arr[5]
+
+class Solution {
+    public int maxTurbulenceSize(int[] arr) {
+        if(arr.length < 2) return arr.length;
+        
+        int max = 1;
+        
+        int start = 0;
+        int end = 0;
+        int len = arr.length;
+        
+        while(start + 1 < len){
+            if(arr[start] == arr[start + 1]){
+                start++;
+                continue;
+            }
+            end = start + 1;
+            while(end+1 < len && isCurrentIndexTurbulent(arr, end)){
+                end++;
+            }
+            
+            max = Math.max(max, end-start+1);
+            start = end;
+        }
+        
+        return max;
+    }
+    
+    private boolean isCurrentIndexTurbulent(int[] arr, int k){
+        return (arr[k] > arr[k-1] && arr[k] > arr[k+1]) || (arr[k] < arr[k-1] && arr[k] < arr[k+1] );
+    }
+}
+
+
+9. LONGEST MOUNTAIN ARRAY
+Input: arr = [2,1,4,7,3,2,5]
+Output: 5
+Explanation: The largest mountain is [1,4,7,3,2] which has length 5.
+
+class Solution {
+    public int longestMountain(int[] arr) {
+        if(arr.length < 3) return 0;
+        
+        int res = 0;
+        int i = 0;
+        boolean peak = false;
+        boolean valley = false;
+        
+        while(i < arr.length - 1){
+            
+            if(arr[i] < arr[i+1]){
+                int start = i;
+                while(i < arr.length - 1 && arr[i] < arr[i+1]){
+                    i++;
+                    peak = true;
+                }
+                
+                while(i < arr.length - 1 && arr[i] > arr[i+1]){
+                    i++;
+                    valley = true;
+                }
+                
+                if(peak == true && valley == true){
+                    res = Math.max(res, i-start + 1);
+                }
+                peak = false;
+                valley = false;
+                
+            } else {
+                i++;
+            }
+        }
+        
+        return res;
+    }
+}
+
+
+10. NO. OF SUBARRAYS WITH ODD SUM
+[1 ,2, 4] ans = 3
+class Solution {
+    public int numOfSubarrays(int[] arr) {
+        long ans = 0;
+        
+        int even = 0;
+        int odd = 0;
+        int sum = 0;
+        
+        for(int val : arr){
+            sum += val;
+            
+            if(sum % 2 == 0){
+                ans += odd;
+                even++;
+            } else {
+                ans += even + 1;
+                odd++;
+            }
+        }
+        
+        return(int) (ans%(1000000007));
+    }
+}
+
+
+11. CONSTRUCT TARGET ARRAY WITH MULTIPLE SUM
+[1 ,5,9,17,1]
+class Solution {
+    public boolean isPossible(int[] target) {
+         PriorityQueue<Long> pq = new PriorityQueue<>(Collections.reverseOrder());
+        long sum = 0;
+        
+        for(int ele: target){
+            pq.add((long)ele);
+            sum = sum + ele;  
+        }
+        
+        while(pq.peek() != 1){
+            long top = pq.poll();
+            sum = sum - top;
+            if(sum <= 0 || sum >= top){
+                return false;
+            }
+            top = top % sum;
+            sum = sum + top;
+            pq.add(top > 0 ? top : sum);
+        }
+        
+        return true;
+    }
+}
+
+
+12. FURTHEST BUILDING YOU CAN REACH
+Input: heights = [4,2,7,6,9,14,12], bricks = 5, ladders = 1
+Output: 4
+Explanation: Starting at building 0, you can follow these steps:
+- Go to building 1 without using ladders nor bricks since 4 >= 2.
+- Go to building 2 using 5 bricks. You must use either bricks or ladders because 2 < 7.
+- Go to building 3 without using ladders nor bricks since 7 >= 6.
+- Go to building 4 using your only ladder. You must use either bricks or ladders because 6 < 9.
+It is impossible to go beyond building 4 because you do not have any more bricks or ladders.
+
+class Solution {
+    public int furthestBuilding(int[] heights, int bricks, int ladders) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        for(int i = 0; i < heights.length - 1; i++){
+            int diff = heights[i+1] - heights[i];
+            if(diff <= 0){
+                continue;
+            }
+            
+            minHeap.offer(diff);
+            if(minHeap.size() > ladders){
+                bricks -= minHeap.poll();
+            }
+            if(bricks < 0){
+                return i;
+            }
+        }
+        return heights.length - 1;
+    }
+}
+
+
+13. KTH PERMUTATION
+
+class Solution {
+    public String getPermutation(int n, int k) {
+        int fact = 1;
+        List<Integer> numbers = new ArrayList<>();
+        for(int i = 1; i < n; i++){
+            fact = fact*i;
+            numbers.add(i);
+        }
+        numbers.add(n);
+        String ans = "";
+        k = k - 1;
+        while(true){
+            ans = ans + numbers.get(k / fact);
+            numbers.remove(k / fact);
+            if(numbers.size() == 0){
+                break;
+            }
+            
+            k = k % fact;
+            fact = fact / numbers.size();
+        }
+        
+        return ans;
+    }
+}
+
+
+
+
+
+
+17. SEQUENTIAL DIGITS
+
+class Solution {
+    public List<Integer> sequentialDigits(int low, int high) {
+        int[] allNums = {12,23,34,45,56,67,78,89,
+                         123,234,345,456,567,678,789,
+                         1234,2345,3456,4567,5678,6789,
+                         12345,23456,34567,45678,56789,
+                         123456,234567,345678,456789,
+                         1234567,2345678,3456789,
+                         12345678,23456789,
+                         123456789};
+        List<Integer> res = new ArrayList<>();
+        int n = allNums.length;
+        for (int i = 0; i < n; i++) {
+            if (allNums[i] < low) continue;
+            if (allNums[i] > high) break;
+            res.add(allNums[i]);
+        }
+        return res;
+    }
+}
+
+
+18. SURROUNDED REGION WITH 'X' AND 'O'
+
+class Solution {
+    public void solve(char[][] board) {
+     if (board.length == 0 || board[0].length == 0)
+		return;
+	if (board.length < 2 || board[0].length < 2)
+		return;
+	int m = board.length, n = board[0].length;
+	//Any 'O' connected to a boundary can't be turned to 'X', so ...
+	//Start from first and last row, turn 'O' to '*'.
+	for (int i = 0; i < n; i++) {
+		if (board[0][i] == 'O')
+			boundaryDFS(board, 0, i);   
+		if (board[m-1][i] == 'O')
+			boundaryDFS(board, m-1, i);	
+	}
+	//Start from first and last column, turn '0' to '*'
+	for (int j = 0; j < m; j++) {
+		if (board[j][0] == 'O')
+			boundaryDFS(board, j, 0);
+		if (board[j][n-1] == 'O')
+			boundaryDFS(board, j, n-1);	
+	}
+	//post-prcessing, turn 'O' to 'X', '*' back to 'O', keep 'X' intact.
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			if (board[i][j] == 'O')
+				board[i][j] = 'X';
+			if (board[i][j] == '*')
+				board[i][j] = 'O';
+		}
+	}
+}
+//Use DFS algo to turn internal however boundary-connected 'O' to '*';
+private void boundaryDFS(char[][] board, int i, int j) {
+	if (i >= 0 && i < board.length && j >= 0 && j < board[0].length && board[i][j] == 'O'){
+        board[i][j] = '*';
+        boundaryDFS(board, i-1, j);
+        boundaryDFS(board, i+1, j);
+        boundaryDFS(board, i, j-1);
+        boundaryDFS(board, i, j+1);
+    } else {
+        return;
+    }
+}
+}
+
+
+19. TASK SCHEDULER
+
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        int[] f = new int[26];
+        for(char task: tasks)
+            f[task - 'A']++;
+        Arrays.sort(f);
+        int chunk = f[25] - 1;
+        int idlespot = (chunk) * n;
+        
+        for(int i = 24; i >= 0; i--){
+            idlespot -= Math.min(chunk, f[i]);
+        }
+        
+        return idlespot < 0 ? tasks.length : idlespot + tasks.length;
+    }
+}
+
+
+20. SUM OF SUBSEQUENCES WIDTH
+
+class Solution {
+    public int sumSubseqWidths(int[] nums) {
+        Arrays.sort(nums);
+        long ans = 0;
+        long mod = 1000000007;
+        int n = nums.length;
+        long[] pow = new long[n];
+        pow[0] = 1;
+        for(int i = 1; i < n; i++){
+            pow[i] = (pow[i-1]*2)%mod;
+        }
+        
+        for(int i = 0; i < n; i++){
+            ans = (ans + nums[i] * (pow[i] - pow[n-i-1]))%mod;
+        }
+        
+        return (int)ans;
+    }
+}
+
+
+20. BULB SWITCHER 4
+i/p 00000 target = 10111  o/p = 4
+class Solution {
+    public int minFlips(String target) {
+        int future = 0;
+        int ans = 0;
+        for(int i = 0; i < target.length(); i++){
+            if(future == target.charAt(i) - '0') continue;
+            ans++;
+            future = future == 1 ? 0 : 1;
+        }
+        
+        return ans;
+    }
+}
+
+
+21. MAX AREA OF ISLAND
+
+class Solution {
+     private final static int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    public int maxAreaOfIsland(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+
+        int maxArea = 0;
+
+        // iterate through every grid in the current array
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < cols; ++c) {
+                // in case the current grid is a land and is not visited yet
+                if (grid[r][c] == 1) {
+                    maxArea = Math.max(maxArea, dfs(grid, r, c));
+                }
+            }
+        }
+
+        return maxArea;
+    }
+
+    // NOTE: learn the way that how we use the return value of DFS
+    private int dfs(int[][] grid, int r, int c) {
+         if(r < 0 || r >= grid.length || c < 0 || c >= grid[0].length || grid[r][c] == 0){
+             return 0;
+         }
+        // mark current grid as visited (0)
+        grid[r][c] = 0;
+
+        int currArea = 1;
+
+        // try out each possible direction
+        for (int[] direction : directions) {
+            int nr = r + direction[0], nc = c + direction[1];
+           
+                currArea += dfs(grid, nr, nc);
+            
+        }
+
+        return currArea;
+    }
+
+
+    
+}
+
+
+22. BATTLESHIPS IN A BOARD
+
+class Solution {
+    public int countBattleships(char[][] board) {
+        int ans = 0;
+        int m = board.length;
+        int n = board[0].length;
+        
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(board[i][j] == 'X'){
+                    if(i==0 && j==0){
+                        ans++;
+                    } else if(i == 0){
+                        if(board[i][j-1] != 'X'){
+                            ans++;
+                        }
+                    } else if(j == 0){
+                         if(board[i - 1][j] != 'X'){
+                            ans++;
+                        }
+                    } else {
+                         if(board[i][j-1] != 'X' && board[i-1][j] != 'X'){
+                            ans++;
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
+
+
+23. SORT MATRIX DIAGONALLY
+
+class Solution {
+    public int[][] diagonalSort(int[][] A) {
+        int m = A.length, n = A[0].length;
+        HashMap<Integer, PriorityQueue<Integer>> d = new HashMap<>();
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                d.putIfAbsent(i - j, new PriorityQueue<>());
+                d.get(i - j).add(A[i][j]);
+            }
+        }
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j)
+                A[i][j] = d.get(i - j).poll();
+        return A;
+    }
+}
+
+
+
+24. FIND WINNER ON TIC TAC TOE GAME
+
+class Solution {
+    public static String checkboard(char[][] board){
+        
+        // check all columns
+        for(int j = 0; j < 3; j++){
+            
+            int countA = 0;
+            int countB = 0;
+            for(int i = 0; i < 3; i++){
+                if(board[i][j] == 'X') countA++;
+                else if(board[i][j] == 'O') countB++;
+            }
+            
+            if(countA == 3) return "A";
+            if(countB == 3) return "B";
+        }
+        
+        
+        // check all rows
+         for(int i = 0; i < 3; i++){
+            
+            int countA = 0;
+            int countB = 0;
+            for(int j = 0; j < 3; j++){
+                if(board[i][j] == 'X') countA++;
+                else if(board[i][j] == 'O') countB++;
+            }
+            
+            if(countA == 3) return "A";
+            if(countB == 3) return "B";
+        }
+        
+        //check diagonal
+        if(board[0][0] == 'X' && board[1][1] == 'X' && board[2][2] == 'X') return "A";
+         if(board[0][0] == 'O' && board[1][1] == 'O' && board[2][2] == 'O') return "B";
+        
+         //check other diagonal
+        if(board[2][0] == 'X' && board[1][1] == 'X' && board[0][2] == 'X') return "A";
+         if(board[2][0] == 'O' && board[1][1] == 'O' && board[0][2] == 'O') return "B";
+        
+        //check for draw
+        int c =0;
+        for(int i=0; i < 3; i++){
+            for(int j=0; j<3; j++) if(board[i][j] == 'X' || board[i][j] == 'O') c++;
+        }
+        
+        if(c != 9) return "Pending";
+        
+        return "Draw";
+    }
+    public String tictactoe(int[][] moves) {
+        int n = moves.length;
+        char[][] board = new char[3][3];
+        for(int i=0; i < 3; i++){
+            for(int j=0; j < 3; j++){
+                board[i][j] = '.';
+            }
+        }
+        
+        for(int i=0; i < n; i++){
+            if(i%2 == 0){ // A
+                board[moves[i][0]][moves[i][1]] = 'X';
+            } else {  // B
+                board[moves[i][0]][moves[i][1]] = 'O';
+            }
+        }
+        
+        return checkboard(board);
+        
+    }
+}
+
+
+25. MAXIMUM LENGTH OF CONCATENATED STRING WITH UNIQUE CHARACTER
+
+class Solution {
+    private boolean checkUniqueCharString(String str) {
+        if(str.length() > 26) return false;
+        
+        int[] freq = new int[26];
+        char[] arr = str.toCharArray();
+        for(char ch : arr){
+            freq[ch - 'a']++;
+            if(freq[ch - 'a'] > 1){
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    public int maxLength(List<String> arr) {
+        List<String> ans = new ArrayList<>();
+        int res = 0;
+        
+        ans.add("");
+        for(String str : arr){
+            if(!checkUniqueCharString(str)) continue;
+            List<String> newAnsListWithCurrStr = new ArrayList<>();
+            for(String candidate: ans){
+                String temp = candidate + str;
+                if(checkUniqueCharString(temp)) {
+                    newAnsListWithCurrStr.add(temp);
+                    res = Math.max(res, temp.length());
+                }
+            }
+            ans.addAll(newAnsListWithCurrStr);
+        }
+        
+        return res;
+    }
+}
+
+
+
+
+
+27. ISLAND PERIMETER
+
+class Solution {
+    public int islandPerimeter(int[][] grid) {
+        int perimeter = 0;
+        
+        for (int i = 0 ; i < grid.length ; i++){
+            for (int j = 0 ; j < grid[0].length ; j++){
+                if (grid[i][j] == 1) {
+                    perimeter += 4;
+                    
+                     if(i > 0 && grid[i-1][j] == 1){
+                    perimeter -= 2;
+                }
+                
+                if(j > 0 && grid[i][j-1] == 1){
+                    perimeter -= 2;
+                }
+             }      
+         }
+    }
+        
+        return perimeter;
+   }
+}
+
+
+
+28. FLOOD FILL
+
+class Solution {
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        int color = image[sr][sc];
+        
+        if (color != newColor)
+            dfs(image, sr, sc, newColor, color);
+        return image;
+    }
+
+    private void dfs(int[][] image, int i, int j, int newColor, int color) {
+        if (i < 0 || j < 0 || i >= image.length || j >= image[0].length || image[i][j] != color) return;
+        
+        image[i][j] = newColor;
+        dfs(image, i, j - 1, newColor, color);
+        dfs(image, i, j + 1, newColor, color);
+        dfs(image, i - 1, j, newColor, color);
+        dfs(image, i + 1, j, newColor, color);
+    }
+}
+
+
+29. NUMBER OF WEAK CHARCATER IN GAME
+
+Input: properties = [[1,5],[10,4],[4,3]]  // [[1,5],[4,3],[10,4]]
+Output: 1
+Explanation: The third character is weak because the second character has a strictly greater attack and defense.
+
+class Solution {
+    public int numberOfWeakCharacters(int[][] properties) {
+        int result = 0;
+        
+        //when attacking power is same, sort those element by decreasing defensive power
+        // oterwise sort by increasing attacking power
+        Arrays.sort(properties, (a,b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);
+        
+        int min = Integer.MIN_VALUE;
+        
+        for(int i=properties.length-1; i>=0; i--){
+            int[] arr = properties[i];
+            int attack = arr[0];
+            int defence = arr[1];
+            
+            if(defence < min){
+                result++;
+            }
+            min = Math.max(min, defence);
+        }
+        return result;
+    }
+}
+
+30. MONTONE INCREASING DIGITS
+
+i/p = 332 -> 322 -> 222 ->  o/p = 299
+class Solution {
+    public int monotoneIncreasingDigits(int n) {
+         //1. Convert the given integer to character array
+        char[] ch = String.valueOf(n).toCharArray();
+        
+        //2. Create a integer mark variable and initialize it to the length of the character array 
+        int mark = ch.length;
+        
+        //3. Iterate from the end of the array to the beginning of the array.
+        //Everytime you find current digit less then previous digit, reduce the previous digit by 1 and set that digit as the mark
+        for(int i = ch.length-1;i>0;i--){
+            if(ch[i]<ch[i-1]){
+                mark = i-1;
+                ch[i-1]--;
+            }
+        }
+        
+        //4. Set all digits after mark to 9 as we want the highest number.
+        //In step 3 we made sure that all digits before mark are in increasing order
+        for(int i = mark+1;i<ch.length;i++){
+            ch[i] = '9';
+        }
+        return Integer.parseInt(new String(ch));
+    }
+}
+
+
+SUM OF SUBARRAY RANGES
+// 1 2 3 o/p = 4
+class Solution {
+    public long subArrayRanges(int[] nums) {
+        long sum = 0;
+
+for (int i = 0; i < nums.length; i++) {
+    int max = nums[i];
+    int min = max;
+    for (int j = i + 1; j < nums.length; j++) {
+        max = Math.max(nums[j], max);
+        min = Math.min(nums[j], min);    
+        sum += max - min;
+    }
+}     
+  return sum;
+    }
+}
+
+
+FIND RIGHT INTERVAL
+
+class Solution {
+    public int[] findRightInterval(int[][] intervals) {
+        int n = intervals.length;
+        if(n==1) return new int[]{-1};
+        
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        for(int i=0; i < n; i++){
+            map.put(intervals[i][0], i);
+        }
+        
+        int[] result = new int[n];
+        for(int i=0; i<n; i++){
+            Integer key = map.ceilingKey(intervals[i][1]); // returns the least key greater than or equal to the given key or null if such key is absent.
+            result[i] = key == null ? -1 : map.get(key);
+        }
+        return result;
+    }
+}
+
+
+
+SUM OF SUBARRAY MINIMUM
+// find min of particular ele in the subaaray(count)
+class Pair{
+        int element;
+        int numMin;
+        
+        Pair(int ele, int nm){
+           element = ele;
+           numMin = nm;
+        }
+    }
+
+// 5 3 4 1 2 7
+class Solution {
+   
+    
+    public int sumSubarrayMins(int[] nums) {
+       int left[] = new int[nums.length];
+        int right[] = new int[nums.length];
+        
+        Stack<Pair> st1 = new Stack<>();
+        Stack<Pair> st2 = new Stack<>();
+        
+        // fill our left array
+        for(int i=0; i < nums.length; i++){
+            int curr_ele = nums[i];
+            int count = 1;
+            
+            while(st1.size() != 0 && st1.peek().element > curr_ele){
+                count += st1.peek().numMin;
+                st1.pop();
+            }
+            st1.push(new Pair(curr_ele, count));
+            left[i] = count;
+        }
+        
+        // fill our right array
+        for(int i=nums.length - 1; i >= 0; i--){
+            int curr_ele = nums[i];
+            int count = 1;
+            
+            while(st2.size() != 0 && st2.peek().element >= curr_ele){
+                count += st2.peek().numMin;
+                st2.pop();
+            }
+            st2.push(new Pair(curr_ele, count));
+            right[i] = count;
+        }
+        
+        long m = (int)Math.pow(10, 9) + 7, ans = 0;
+        for(int i=0; i < nums.length; i++){
+           ans = (ans + (long)nums[i] * left[i] * right[i]) % m;
+        }
+        
+        return (int)ans;
+    }
+}
+
+
+SUM OF SUBARRAYS
+
+class Solution {
+    public static long subarraySum( long a[], long n) {
+         long m = 1000000007;
+       long sum = 0;
+       long ans = 0;
+      for(int i=0;i<n;i++){
+          sum=((a[i]%m)*((i+1)%m)*((n-i)%m))%m;
+          ans = (ans%m + sum%m)%m;
+      }
+      return ans;
+    }
+}
+
+
+MIN DELETION TO MAKE STRING BALANCED
+
+// aababbab  ans = 2
+class Solution {
+    public int minimumDeletions(String s) {
+         int bCnt=0,deletions=0;
+        
+        for(int i=0;i<s.length();i++)
+        {
+            if(s.charAt(i)=='b')
+            bCnt++;
+            else
+            {
+                if(bCnt>0)
+                {
+                    bCnt--;
+                    deletions++;
+                    continue;
+                }
+            }
+        }
+        return deletions;
+    }
+}
+
+PAIRS OF SONG DIVISBLE BY 60
+
+class Solution {
+    public int numPairsDivisibleBy60(int[] time) {
+         int pairs = 0;
+        
+        int[] count = new int[60];
+        for(int ele : time)
+        count[ele % 60]++;
+        
+        pairs += ((count[0] - 1)*count[0]) / 2;  // 0 special case
+        pairs += ((count[30] - 1)*count[30]) / 2;  // 30 special case
+        for(int i = 1; i < 30; i++){
+           
+            pairs += count[i] * count[60 - i];
+            
+        }
+        return pairs;
+    }
+}
+
+
+EXECUTION OF ALL SUFFIX STAYING IN A GRID
+
+class Solution {
+    public int[] executeInstructions(int n, int[] startPos, String s) {
+        int[] ans = new int[s.length()];
+        
+        for(int i=0; i< s.length(); i++){
+            int countMoves = 0; 
+            int xindex = startPos[0];
+            int yindex = startPos[1];
+            
+            for(int j=i; j < s.length(); j++){
+                if(s.charAt(j) == 'U'){
+                    xindex--;
+                }
+                if(s.charAt(j) == 'D'){
+                    xindex++;
+                }
+                if(s.charAt(j) == 'L'){
+                    yindex--;
+                }
+                if(s.charAt(j) == 'R'){
+                    yindex++;
+                }
+                
+                if(xindex < 0 || yindex < 0 || xindex >= n || yindex >= n){
+                    break;
+                }
+                else {
+                    countMoves++;
+                }
+            }
+            ans[i] = countMoves;
+        }
+        
+        return ans;
+    }
+}
+
+
+INTERVAL BETWEEN IDENTICAL ELEMENT
+
+class Solution {
+    public long[] getDistances(int[] arr) {
+        long[] output = new long[arr.length];
+        
+        //Value, Sum of indices
+        Map<Integer, Long> sumMap = new HashMap<>();
+        int[] freq = new int[100001];
+        for (int i = 0; i < arr.length; ++i) {
+            int el = arr[i];
+            if (!sumMap.containsKey(el)) {
+                sumMap.put(el, 0l);
+                
+            }
+            
+            output[i] += i * (long)freq[el] - sumMap.get(el);
+            sumMap.put(el, sumMap.get(el) + i);
+            freq[el]++;
+        }
+        
+        sumMap = new HashMap<>();
+        freq = new int[100001];
+        int len = arr.length;
+        for (int i = len - 1; i >= 0; -- i) {
+            int el = arr[i];
+            if (!sumMap.containsKey(arr[i])) {
+                sumMap.put(el, 0l);
+               
+            }
+            
+            output[i] += sumMap.get(el) - i * (long)freq[el];
+            sumMap.put(el, sumMap.get(el) + i);
+            freq[el]++;
+        }
+        
+        return output;
+    }
+}
+
+
+CHECK IF PARENTHESIS STRING CAN BE VALID
+
+class Solution {
+  
+    public boolean canBeValid(String s, String locked) {
+        int n = s.length();
+          if(n % 2 == 1) return false;
+        int lockedopeningbracket = 0;
+        int lockedclosingbracket = 0;
+        int free = 0;
+        
+        // left to right
+        
+        for(int i=0; i<n; i++){
+            if(locked.charAt(i) == '0') free++;
+            else {
+                if(s.charAt(i) == '('){
+                    lockedopeningbracket++;
+                }
+                else {
+                    lockedclosingbracket++;
+                }
+            }
+            
+            if(lockedclosingbracket > free + lockedopeningbracket) return false;
+        }
+        
+        
+        
+        // right to left
+        lockedopeningbracket = 0;
+         lockedclosingbracket = 0;
+         free = 0;
+        
+        
+        for(int i=n-1; i>= 0; i--){
+            if(locked.charAt(i) == '0') free++;
+            else {
+                if(s.charAt(i) == '('){
+                    lockedopeningbracket++;
+                }
+                else {
+                    lockedclosingbracket++;
+                }
+            }
+            
+            if(lockedopeningbracket > free + lockedclosingbracket) return false;
+        }
+        
+        return true;
+    }
+}
+
+
+TOP K FREQUENT WORDS
+
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+         HashMap<String,Integer>map=new HashMap<>();
+        for(String st:words)
+            map.put(st,map.getOrDefault(st,0)+1);
+        
+        List<String>list=new ArrayList<>(map.keySet());
+        
+       Collections.sort(list, (a, b) -> {
+           return (map.get(a) == map.get(b) ? a.compareTo(b) : map.get(b) - map.get(a));
+       });
+        List<String>result=new ArrayList<>();
+        for(String st:list){
+            result.add(st);
+            k--;
+            if(k==0)
+                break;
+        }
+       return result;
+    }
+}
+
+
+DIAGONAL TRAVERSE IN MATRIX
+
+class Solution {
+    public int[] findDiagonalOrder(int[][] mat) {
+        int m = mat.length;
+        if(m == 0){
+            return new int[]{};
+        }
+        
+        int n = mat[0].length;
+        if(n == 0){
+            return new int[]{};
+        }
+        
+        int[] ans = new int[m*n];
+        int row = 0;
+        int col = 0;
+        
+        for(int i=0; i<m*n; i++){
+            ans[i] = mat[row][col];
+            
+            if((row + col) % 2 == 0){
+                // even sum upward
+                
+                if(col == n-1){
+                    row++;
+                } else if(row == 0){
+                    col++;
+                }else {
+                    row--;
+                    col++;
+                }
+            }
+            else {
+                // odd means downward
+                
+                if(row == m-1){
+                    col++;
+                } else if(col == 0){
+                    row++;
+                }else {
+                    row++;
+                    col--;
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
+
+
+ROBOT BOUNDED IN CIRCLE
+class Solution {
+    public boolean isRobotBounded(String instructions) {
+        char dir ='N';
+        int x=0,y=0;
+        
+        for(int i=0;i<instructions.length();i++){
+            if(instructions.charAt(i)=='G'){
+                if(dir=='N'){
+                    y++;
+                }
+                else if(dir=='S'){
+                    y--;
+                }
+                else if(dir=='E'){
+                    x++;
+                }
+                else{
+                    x--;
+                }
+                    
+            }
+            
+            else if(instructions.charAt(i)=='L'){
+                if(dir=='N'){
+                    dir='W';
+                }
+                else if(dir=='S'){
+                    dir='E';
+                }
+                else if(dir=='E'){
+                    dir='N';
+                }
+                else{
+                    dir='S';
+                }
+                    
+            }
+            
+            else{
+                //for R
+                 if(dir=='N'){
+                    dir='E';
+                }
+                else if(dir=='S'){
+                    dir='W';
+                }
+                else if(dir=='E'){
+                    dir='S';
+                }
+                else{
+                    dir='N';
+                }
+                
+            }
+            
+        
+        }
+        
+        return (x==0 && y==0 || dir != 'N');
+    }
+}
+
+
+
+
+COUNT WORDS OBTAINED AFTER ADDING LETTER
+
+class Solution {
+    public int wordCount(String[] startWords, String[] targetWords) {
+        Set<String> set = new HashSet<>();
+        for(String s : startWords){
+            char[] charstr = s.toCharArray();
+            Arrays.sort(charstr);
+            set.add(new String(charstr));
+        }
+        
+        int count = 0;
+        for(String t : targetWords){
+            int n = t.length();
+            for(int i=0; i<n; i++){
+                String reducedStr = t.substring(0, i) + t.substring(i+1);
+                char[] charstr = reducedStr.toCharArray();
+                Arrays.sort(charstr);
+                String store = new String(charstr);
+                if(set.contains(store)){
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+}
+
+PLATES BETWEEN CANDLES
+Input: s = "***|**|*****|**||**|*", queries = [[1,17],[4,5],[14,17],[5,11],[15,16]]
+Output: [9,0,0,0,0]
+
+class Solution {
+    public int[] platesBetweenCandles(String s, int[][] queries) {
+        int len = s.length();
+        TreeSet<Integer> map = new TreeSet<>();
+        int[] plates = new int[len];
+        int prev = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '*') {
+                plates[i] = prev + 1;
+            } else {
+                plates[i] = prev;
+            }
+            prev = plates[i];
+            if (s.charAt(i) == '|') {
+                map.add(i);
+            }
+        }
+        
+        int[] res = new int[queries.length];
+        int i = 0;
+        for (int[] q : queries) {
+            int l = map.ceiling(q[0]);
+            int h = map.floor(q[1]);
+            if (l < h) {
+                res[i] = plates[h] - plates[l];
+            }
+			i++;
+        }
+        return res;
+        
+        
+    }
+}
+
+
+ALL DIVISION WITH HIGHEST SCORE WITH BINARY NUMBER
+
+Input: nums = [0,0,1,0]
+Output: [2,4]
+Explanation: Division at index
+- 0: numsleft is []. numsright is [0,0,1,0]. The score is 0 + 1 = 1.
+- 1: numsleft is [0]. numsright is [0,1,0]. The score is 1 + 1 = 2.
+- 2: numsleft is [0,0]. numsright is [1,0]. The score is 2 + 1 = 3.
+- 3: numsleft is [0,0,1]. numsright is [0]. The score is 2 + 0 = 2.
+- 4: numsleft is [0,0,1,0]. numsright is []. The score is 3 + 0 = 3.
+Indices 2 and 4 both have the highest possible division score 3.
+Note the answer [4,2] would also be accepted.
+
+class Solution {
+    public List<Integer> maxScoreIndices(int[] nums) {
+        int noOfones = 0;
+        for(int ele : nums){
+            if(ele == 1){
+                noOfones++;
+            }
+        }
+        
+        List<Integer> ans = new ArrayList<>();
+        ans.add(0);
+        int rightscore = noOfones;
+        int leftscore = 0;
+        int maxscore = rightscore + leftscore;
+        for(int i=0; i < nums.length; i++){
+            if(nums[i] == 0){
+                leftscore++;
+            }
+            else if(nums[i] == 1){
+                rightscore--;
+            }
+            int currentscore = rightscore + leftscore;
+            if(currentscore > maxscore){
+                ans = new ArrayList<>();
+                maxscore = currentscore;
+                ans.add(i+1);
+            }
+            else if(currentscore == maxscore){
+                ans.add(i+1);
+            }
+        }
+        return ans;
+    }
+}
+
+SIMPLIFIED PATH
+
+class Solution {
+    public String simplifyPath(String path) {
+        String str[] = path.split("/"); // split on /
+        Stack<String> s = new Stack<>();
+        for(int i=0;i< str.length;i++){
+            String t = str[i]; 
+            if((!str[i].equals("..") && !str[i].equals(".") //push only when the str[i] is not .. , . , ""
+              &&!str[i].equals(""))){
+                s.push("/"+str[i]);
+            }
+            else if(str[i].equals("..")) { //pop only when str[i] is .. as .. means one level up directory
+                if(!s.isEmpty()){
+					s.pop();
+                }
+            }
+        }
+        String result = "";
+        while(!s.isEmpty()){
+            result = s.pop()+result;
+        }
+        return result.equals("")? "/":result;
+    }
+}
+
+
+CLOSEST PERSON DISTANCE
+
+class Solution {
+    public int maxDistToClosest(int[] seats) {
+        int n = seats.length;
+        
+        int[] left = new int[n];
+        Arrays.fill(left, -1);
+        
+        int[] right = new int[n];
+        Arrays.fill(right, -1);
+        
+        int i = 0;
+        int lastOne = -1;
+        
+        int maxDis = -1;
+        
+        while(i<n){
+            if(seats[i]==1){
+                lastOne = i;
+            }else{
+                left[i] =lastOne;
+                
+            }
+            i++;
+        }
+        
+        i = n-1;
+        lastOne  = -1;
+        while(i>=0){
+            if(seats[i]==1){
+                lastOne = i;
+            }else{
+                right[i] = lastOne;
+            }
+            i--;
+        }
+        
+        
+        for(i=0;i<n;i++){
+            if(seats[i]==0){
+                int leftDis = (left[i]!=-1)? i-left[i] : Integer.MAX_VALUE;
+                int rightDis = (right[i]!=-1)? right[i]-i : Integer.MAX_VALUE;
+
+                int currDis = Math.min(leftDis, rightDis);
+
+                if(currDis>maxDis){
+                    maxDis = currDis;
+                }
+            }
+        }
+        
+     return maxDis;   
+    }
+}
+
+MIN SWAPS TO GROUP ALL 1'S
+class Solution {
+    public int minSwaps(int[] arr) {
+        
+        int n = arr.length;
+        int count = 0;
+       
+       for(int vl : arr){
+           if(vl == 1){
+               count++;
+           }
+       }
+        
+        if(count == 0) return 0;
+        
+       
+       int ans = -1, czeros = 0;
+       
+       for(int i=0; i < count; i++){
+           if(arr[i] == 0){
+               czeros++;
+           }
+       }
+       ans = czeros;
+       for(int i= count; i < 2*n; i++){
+           if(arr[i%n] == 0){
+               czeros++;
+           }
+           if(arr[(i-count)%n] == 0){
+               czeros--;
+           }
+           
+           ans = Math.min(ans, czeros);
+       }
+       
+       return ans;
+    }
+}
+
+DIVIDE A STRING INTO GROUP OF SIZE K
+abcdefghij k=3 fill=x o/p [abc, def, ghi, jxx]
+class Solution {
+    public String[] divideString(String s, int k, char fill) {
+       StringBuilder sb = new StringBuilder(s);
+        
+        while((sb.length() % k) != 0)
+            sb.append(fill);
+        
+        String[] ans = new String[sb.length() / k];
+        int idx = 0, i=0;
+        
+        while(i < sb.length()){
+            ans[idx++] = sb.substring(i, i+k).toString();
+            i += k;
+        }
+        return ans;
+    }
+}
+
+MIN MOVE TO REACH TARGET SCORE
+class Solution {
+    public int minMoves(int target, int maxDoubles) {
+        int ans = 0;
+        while(target > 1 && maxDoubles > 0){
+            ans += 1 + (target % 2);
+            target /= 2;
+            maxDoubles--;
+        }
+        return ans + target - 1;
+    }
+}
+
+
+QUEUE RECONSTRUCTION
+Input: people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]] -> [[7,0],[7,1],[6,1],[5,0],[5,2],[4,4]]
+Output: [[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+
+class Solution {
+    public int[][] reconstructQueue(int[][] people) {
+        Arrays.sort(people, (a,b)->a[0]==b[0]?a[1]-b[1]:b[0]-a[0]);
+        List<int[]> output= new LinkedList<>();
+        for( int[] p: people)
+            output.add(p[1],p);     
+        return output.toArray(new int[people.length][2]);
+    }
+}
+
+
+
+
+
+MAXIMUM RUNNING TIME OF N COMPUTERS
+
+class Solution {
+    
+    // [2,3,2,1,7,8,2,4]  n = 4
+    // [2+3+2+1+5+5+2+4] = 24/5 => 4... >= 4(n)
+    
+    public boolean isPossible(int n, int[] batteries, long avgtime){
+        
+        long duration = 0;
+        
+        for(int ele : batteries){
+            if(ele < avgtime) duration += ele;
+            else duration += avgtime;
+        }
+        
+        return duration >= avgtime * n;
+    }
+    public long maxRunTime(int n, int[] batteries) {
+        long sum = 0;
+        for(int ele : batteries) sum += ele;
+        
+        long starttime = 0, endtime = sum, ans = 0;
+        
+        while(starttime <= endtime){
+            long avgtime = (starttime + endtime)/2;
+            
+            if(isPossible(n, batteries, avgtime)){
+                ans = avgtime;
+                starttime = avgtime + 1;
+            }
+            else {
+                endtime = avgtime - 1;
+            }
+        }
+        return ans;
+    }
+}
+
+
+EARLIEST POSSIBLE DAY OF FULL BLOOM
+
+class Solution {
+    public int earliestFullBloom(int[] plantTime, int[] growTime) {
+        int n = plantTime.length;
+        int[][] mat = new int[n][2];
+        
+        for(int i=0; i < n; i++){
+            mat[i][0] = plantTime[i];
+            mat[i][1] = growTime[i];
+        }
+        
+        Arrays.sort(mat, (a,b) -> b[1] - a[1]);
+        
+        int bloomDay = 0, seedPlantingDay = 0;
+        
+        for(int i=0; i < n; i++){
+            int pltime = mat[i][0];
+            int growtime = mat[i][1];
+            
+            bloomDay = Math.max(bloomDay, seedPlantingDay + pltime + growtime);
+            seedPlantingDay += pltime;
+        }
+        
+        return bloomDay;
+    }
+}
+
+SOLVING QUESTION WITH BRAINPOWER
+class Solution {
+    public long mostPoints(int[][] questions) {
+        long[] dp = new long[questions.length];
+        dp[questions.length-1] = questions[questions.length-1][0];
+        for(int i = questions.length-2; i >= 0; i--){
+            int furtherReachIndex = i + questions[i][1] + 1;
+            if(furtherReachIndex < questions.length){
+                dp[i] = dp[furtherReachIndex] + questions[i][0];
+            }
+            else{
+                dp[i] = questions[i][0];
+            }
+            
+            if(i < questions.length - 1){
+                // skip the ith index
+                dp[i] = Math.max(dp[i+1], dp[i]);
+            }
+    }
+        return dp[0];
+    }
+}
+
+
+JOB SCHEDULING LEETCOE
+
+class Solution {
+    
+    class Job {
+        int starttime;
+        int endtime;
+        int profit;
+      
+         Job(int x, int y, int z){
+            this.starttime = x;
+            this.endtime = y;
+            this.profit = z; 
+    }
+}
+    
+    public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
+        int n = startTime.length;
+         Job[] arr = new Job[n];
+        
+        for(int i=0; i < n; i++){
+             Job job = new Job(startTime[i], endTime[i], profit[i]);
+             arr[i] = job;
+        }
+        
+        Arrays.sort(arr, (a,b) -> (a.endtime - b.endtime));
+        
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        int ans = 0;
+        
+        for(Job currJob : arr){
+            Integer entryTillStartTime = map.floorKey(currJob.starttime);
+            int maxProfittillStartTime = entryTillStartTime == null ? 0 : map.get(entryTillStartTime);
+            ans = Math.max(ans, maxProfittillStartTime + currJob.profit);
+            map.put(currJob.endtime, ans);
+        }
+        return ans;
+
+    }
+}
+
+
+SINGLE THREADED CPU
+Input: tasks = [[1,2],[2,4],[3,2],[4,1]]  enquietime, processingtime
+Output: [0,2,3,1]
+
+class Solution {
+    public int[] getOrder(int[][] tasks1) {
+        int[][] tasks = new int[tasks1.length][];
+        
+        for (int i = 0; i < tasks1.length; ++i) {
+            tasks[i] = new int[]{tasks1[i][0], tasks1[i][1], i};    
+        }
+        
+        Arrays.sort(tasks, (a, b)-> a[0] - b[0]);
+        
+        PriorityQueue<int[]> queue = new PriorityQueue<>((a, b)-> {
+            if (a[1] != b[1]) {
+                return a[1] - b[1];
+            } else if (a[2] != b[2]) {
+                return a[2] - b[2];
+            } else {
+                return -1;
+            }
+        });
+        int time = 0;
+        int index = 0;
+        int result_index = 0;
+        int[] result = new int[tasks.length];
+        
+        while (index < tasks.length || queue.size() > 0) {
+            while (index < tasks.length && tasks[index][0] <= time) {
+                queue.add(new int[]{tasks[index][0], tasks[index][1], tasks[index][2]});
+                ++index;
+            }
+            
+            if (!queue.isEmpty()) {
+                int[] current = queue.poll();
+                result[result_index++] = current[2];
+                time = time + current[1];
+            } else {
+                // If there is nothing queued up for the current time, bump up current time 
+                // to earliest queueing time.
+                time = tasks[index][0];
+            }
+        }
+        
+        return result;
+    }
+}
+
+MAXIMUM EVENT THAT CAN BE ATTENDED
+
+class Solution {
+    // [[1,2], [1,2], [2,3], [3,4]] 
+    public int maxEvents(int[][] events) {
+         PriorityQueue<Integer> pq = new PriorityQueue<>(); // min heap
+        Arrays.sort(events, (a,b) -> a[0] - b[0]); // increasing order
+        
+        int presentDay = 0;
+        int numEvents = events.length;
+        int event = 0;
+        int totalEventsCovered = 0;
+        
+        while(!pq.isEmpty() || (event < numEvents)) {
+            if(pq.isEmpty()) {
+                presentDay = events[event][0];
+            }
+            
+            while(event < numEvents && events[event][0] <= presentDay) { // all events who have started before TODAy or TODAY
+                pq.offer(events[event][1]);
+                event++;
+            }
+            
+            pq.poll();
+            totalEventsCovered++; // one event for present day has been picked, onto the next day now
+            presentDay++;
+            
+            while(!pq.isEmpty() && pq.peek() < presentDay) { // remove all entries (end day of events) which are less that present day (cannot go back in time)
+                pq.poll();
+            }
+        }
+        return totalEventsCovered;
+    }
+}
+
+
+MAXIMUM SUM CIRCULAR SUBARRAY
+
+class Solution {
+    public int maxSubarraySumCircular(int[] nums) {
+    int n = nums.length;
+        
+        if(n==1) return nums[0];
+        
+        // Kadane's Algo - Find contiguous subarray with maximum sum
+        // Reverse Kadane's Algo - Find contiguous subarray with minimum sum
+        
+        int curr_max = nums[0];
+        int curr_min = nums[0];
+        
+        int ans_max = nums[0];
+        int ans_min = nums[0];
+        
+        int total = nums[0];   //Find total sum
+        
+        for(int i=1;i<n;i++){
+            
+            //finding max sum subarray
+            curr_max = Math.max(nums[i], curr_max + nums[i]);
+            ans_max = Math.max(ans_max, curr_max);
+            
+            //finding min sum subarray
+            curr_min = Math.min(nums[i], curr_min + nums[i]);
+            ans_min = Math.min(ans_min, curr_min);
+            
+             //For calculating total sum
+            total += nums[i];
+        }
+        
+        //If all the elements of the array are not negative
+        if(ans_max > 0){
+            
+            return Math.max(ans_max, total-ans_min);
+        }
+        
+        //If all the elements of the array are negative
+        return ans_max;
+    }
+}
+
+
+
+
+NUMBER OF MATCHING SUBSEQUENCES
+
+class Solution {
+    public int numMatchingSubseq(String s, String[] words) {
+        Map<Character, Queue<String>> map = new HashMap<>();
+        
+        for(int i=0; i < s.length(); i++){
+            map.putIfAbsent(s.charAt(i), new LinkedList<>());
+        }
+        
+        for(String word : words){
+            char startchar = word.charAt(0);
+            if(map.containsKey(startchar)){
+                map.get(startchar).offer(word);
+            }
+        }
+        
+        int ans = 0;
+        for(int i=0; i < s.length(); i++){
+            char startchar = s.charAt(i);
+            Queue<String> q = map.get(startchar);
+            int size = q.size();
+            for(int k=0; k < size; k++){
+                String str = q.poll();
+                if(str.substring(1).length()  == 0){
+                    ans++;
+                }
+                else {
+                    if(map.containsKey(str.charAt(1))){
+                        map.get(str.charAt(1)).add(str.substring(1));
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}

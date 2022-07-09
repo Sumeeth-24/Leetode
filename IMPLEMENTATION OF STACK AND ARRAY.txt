@@ -1,0 +1,975 @@
+
+1. IMPLEMENT STACK USING ARRAY
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class StackArray {
+	  int top = 0;
+	  int MAX = 5;
+	  int[] a = new int[MAX];
+	  
+	  private boolean isFull() {
+	    if(top == MAX) {
+	      return true;
+	    }
+	    
+	    return false;
+	  }
+	  
+	  public void insert(int val) {
+	    if(isFull()) {
+	      System.out.println("Stack is full");
+	      return;
+	    }
+	    
+	    a[top++] = val;
+	  }
+	  
+	  private boolean isEmpty() {
+	    if(top == 0) {
+	      return true;
+	    }
+	    
+	    return false;
+	  }
+	  
+	  public int remove() {
+	    if(isEmpty()) {
+	      System.out.println("Stack is Empty");
+	      return Integer.MIN_VALUE;
+	    }
+	    
+	    return a[--top];
+	  }
+	  
+	  public int top() {
+	    if(isEmpty()) {
+	      System.out.println("Stack is Empty");
+	      return Integer.MIN_VALUE;
+	    }
+	    
+	    return a[top - 1];
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    StackArray a = new StackArray();
+	    a.insert(12);
+	    a.insert(5);
+	    a.insert(34);
+	    a.insert(42);
+	    a.insert(91);
+	    a.insert(9);
+	    
+	    System.out.println(a.remove());
+	    a.insert(9);
+	    
+	    System.out.println("Top:" + a.top());
+	    
+	    System.out.println(a.remove());
+	    System.out.println(a.remove());
+	    System.out.println(a.remove());
+	    System.out.println(a.remove());
+	    System.out.println(a.remove());
+	    System.out.println(a.remove());
+	  }
+	}
+
+
+2. IMPLEMENT STACK USING LINKEDLIST
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class Node{
+	  int data;
+	  Node next;
+	}
+
+	class StackLinked {
+	  Node front;
+	  
+	  public Node getNewNode(int val) {
+	    Node a = new Node();
+	    a.data = val;
+	    a.next = null;
+	    return a;
+	  }
+	  
+	  public void push(int val) {
+	    if(front == null) {
+	      front = getNewNode(val);
+	      return;
+	    }
+	    
+	    Node t = getNewNode(val);
+	    t.next = front;
+	    front = t;
+	  }
+	  
+	  public int pop() {
+	    if(front == null) {
+	      System.out.println("Stack is Empty");
+	      return Integer.MIN_VALUE;
+	    }
+	    
+	    int t = front.data;
+	    front = front.next;
+	    return t;
+	  }
+	  
+	  public int top() {
+	    if(front == null) {
+	      System.out.println("Stack is Empty");
+	      return Integer.MIN_VALUE;
+	    }
+	    
+	    return front.data;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    StackLinked a = new StackLinked();
+	    a.push(12);
+	    a.push(5);
+	    a.push(34);
+	    a.push(42);
+	    a.push(91);
+	    a.push(9);
+	    
+	    System.out.println(a.pop());
+	    a.push(39);
+	    
+	    System.out.println("Top:" + a.top());
+	    
+	    System.out.println(a.pop());
+	    System.out.println(a.pop());
+	    System.out.println(a.pop());
+	    System.out.println(a.pop());
+	    System.out.println(a.pop());
+	    System.out.println(a.pop());
+	    System.out.println(a.pop());
+
+	  }
+
+	}
+
+
+3. REVERSE A STRING USING STACK
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+class StackImpl {
+	  
+	  public String reverseString(String s) {
+	    Stack<Character> st = new Stack<Character>();
+	    String reversedString = "";
+	    
+	    for (int i = 0; i < s.length(); i++) {
+	      char c = s.charAt(i);
+	      st.push(c);
+	    }
+
+	    while (!st.isEmpty()) {
+	      reversedString = reversedString + st.pop();
+	    }
+
+	    return reversedString;
+	  }
+
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    StackImpl a = new StackImpl();
+	    
+	    String s = "Coding Simplified";
+	    System.out.println(a.reverseString(s));
+	  }
+
+	}
+
+
+4. IMPLEMENT STACK USING QUEUE
+
+class MyStack {
+    Queue<Integer> q1;
+    Queue<Integer> q2;
+
+    public MyStack() {
+        q1 = new LinkedList<>();
+        q2 = new LinkedList<>();
+    }
+    
+    public void push(int x) {
+        q1.offer(x);
+       
+    }
+    
+    public int pop() {
+	  if(q1.isEmpty()) return -1;
+
+         while(q1.size() != 1){
+            q2.offer(q1.poll());
+        }
+	  int val = q1.remove();
+
+        Queue<Integer> temp = q1;
+        q1= q2;
+        q2= temp;
+ 
+        return val;
+    }
+    
+    public int top() {
+        return q1.peek();
+    }
+    
+    public boolean empty() {
+        return q1.isEmpty();
+    }
+}
+
+// USING ONE QUEUE
+class MyStack {
+    Queue<Integer> q1;
+
+    public MyStack() {
+        q1 = new LinkedList<>();
+    }
+    
+    public void push(int x) {
+        q1.offer(x);
+        for(int i=0; i<q1.size()-1; i++){
+            q1.offer(q1.poll());
+        }
+    }
+    
+    public int pop() {
+        return q1.poll();
+    }
+    
+    public int top() {
+        return q1.peek();
+    }
+    
+    public boolean empty() {
+        return q1.isEmpty();
+    }
+}
+5. GET MINIMUM ELEMENT IN O(1) OPERATION
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+
+class ArrayImpl {
+	  
+	  Stack<Integer> s1 = new Stack<>();
+	  Stack<Integer> s2 = new Stack<>();
+	  int min = Integer.MAX_VALUE;
+
+	  public void pushElementInStack(int val) {
+	    s1.push(val);
+	    
+	    if(s2.isEmpty()) {
+	      s2.push(val);
+	    } else {
+	      if(val < s2.peek()) {
+	        s2.push(val);
+	      }
+	    }
+	  }
+	  
+	  public int popElementFromStack() {
+	    int val = s1.pop(); 
+	    
+	    if(val == s2.peek()) {
+	      s2.pop();
+	    }
+	    
+	    return val;
+	  }
+	  
+	  public int minElement() {
+	    if(s2.isEmpty()) {
+	      return -1;
+	    }
+	    
+	    return s2.peek();
+	  }
+	  
+	  Stack<Integer> stack = new Stack<>();
+	  int minUsingSingleStack = Integer.MAX_VALUE;
+
+	  public void pushUsingSingleStack(int val) {
+	    if(stack.isEmpty()) {
+	      stack.push(val);
+	      minUsingSingleStack = val;
+	      return;
+	    }
+	    
+	    if(val > minUsingSingleStack) {
+	      stack.push(val);
+	    } else {
+	      stack.push(2 * val - minUsingSingleStack);
+	      minUsingSingleStack = val;
+	    }
+	  }
+	  
+	  public int popUsingSingleStack() {
+	    if(stack.isEmpty()) {
+	      return -1;
+	    }
+	    
+	    int val = stack.pop();
+	    
+	    if(val < minUsingSingleStack) {
+	      minUsingSingleStack = 2 * minUsingSingleStack - val;
+	    }
+	    
+	    return val;
+	  }
+	  
+	  public int getMinElementUsingSingleStack() {
+	    return minUsingSingleStack;
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+
+	    ArrayImpl a = new ArrayImpl();
+	    int arr[] = { 7, 8, 3, 1, 5 };
+
+	    for(int i = 0; i < arr.length; i++) {
+	      a.pushElementInStack(arr[i]);
+	    }
+	    
+	    System.out.print(a.minElement() + " ");
+	    
+	    a.popElementFromStack();
+	    System.out.print(a.minElement() + " ");
+	    
+	    a.popElementFromStack();
+	    System.out.print(a.minElement() + " ");
+	    
+	    a.popElementFromStack();
+	    System.out.print(a.minElement() + " ");
+	    
+	    a.popElementFromStack();
+	    System.out.println(a.minElement() + " ");
+	    
+	    //Using Single Stack
+	    for(int i = 0; i < arr.length; i++) {
+	      a.pushUsingSingleStack(arr[i]);
+	    }
+	    
+	    System.out.print(a.getMinElementUsingSingleStack() + " ");
+	    
+	    a.popUsingSingleStack();
+	    System.out.print(a.getMinElementUsingSingleStack() + " ");
+	    
+	    a.popUsingSingleStack();
+	    System.out.print(a.getMinElementUsingSingleStack() + " ");
+	    
+	    a.popUsingSingleStack();
+	    System.out.print(a.getMinElementUsingSingleStack() + " ");
+	    
+	    a.popUsingSingleStack();
+	    System.out.print(a.getMinElementUsingSingleStack() + " ");
+
+	  }
+	}
+
+
+SHORTEST SUBARRAY WITH SUM ATLEAST K
+
+class Solution {
+    public int shortestSubarray(int[] nums, int k) {
+     int n = nums.length;
+        Deque<long[]> dq = new ArrayDeque<long[]>();
+        dq.offer(new long[]{-1,0});
+        int i = 0;
+        long curSum = 0;
+        int res = Integer.MAX_VALUE;
+        while(i < nums.length)
+        {
+            curSum += nums[i];
+            while(!dq.isEmpty() &&  curSum  - dq.peekFirst()[1] >= k) res = Math.min(res, (int)(i - dq.pollFirst()[0]));
+            while(!dq.isEmpty() && dq.peekLast()[1] >= curSum) dq.pollLast();
+            dq.offerLast(new long[]{i, curSum});
+            i++;
+        }
+        
+        return res == Integer.MAX_VALUE ? -1 : res;
+    }
+}
+
+
+48. LRU CACHE
+
+class LRUCache {
+
+    class Node {
+      int key;
+      int val;
+      Node prev, next;
+    }
+    
+     HashMap<Integer, Node> cache;
+     Node head, tail;
+     int cap;
+    
+    public LRUCache(int capacity) {
+      head = new Node();
+      tail = new Node();
+      head.next = tail;
+      tail.prev = head;
+      cache = new HashMap<>();
+      cap = capacity;
+    }
+    
+     private void addNode(Node node) { // addfirst
+         Node nbr = head.next;
+      node.next = nbr;
+      node.prev = head;
+
+      nbr.prev = node;
+      head.next = node;
+    }
+
+    private void removeNode(Node node) {
+      Node prv = node.prev;
+      Node nxt = node.next;
+
+      prv.next = nxt;
+      nxt.prev = prv;
+    }
+
+    private void moveToFront(Node node) {
+      removeNode(node);
+      addNode(node);
+    }
+    
+    public int get(int key) {
+        Node node = cache.get(key);
+
+      if (node == null) {
+        return -1;
+      } else {
+        moveToFront(node);
+        return node.val;
+      }
+    }
+    
+    public void put(int key, int value) {
+        Node node = cache.get(key);
+
+      if (node == null) {
+        Node newNode = new Node();  // pair doesnt exist in the cache
+        newNode.key = key;
+        newNode.val = value;
+
+      if (cache.size() == cap) {
+          Node LRU_Node = tail.prev;
+          cache.remove(LRU_Node.Key);
+          removeNode(LRU_Node);
+        }
+        cache.put(key, newNode);
+        addNode(newNode);
+} else{
+        node.val = value;
+        moveToFront(node);
+      } 
+    }
+}
+		          	                    
+
+
+49. DESIGN CIRCULAR DEQUEU
+
+class MyCircularDeque {
+    
+    class DoublyLinkedList{
+    DoublyLinkedList prev;
+    DoublyLinkedList next;
+    int val;
+    DoublyLinkedList(int val){
+        this.val = val;
+    }
+ }
+    
+DoublyLinkedList head;
+DoublyLinkedList tail;
+int k;
+int size;
+
+/** Initialize your data structure here. Set the size of the deque to be k. */
+public MyCircularDeque(int k) {
+    head = new DoublyLinkedList(-1);
+    tail = new DoublyLinkedList(-1);
+    head.next = tail;
+    tail.prev = head;
+    this.k = k;
+    this.size = size;
+}
+
+/** Adds an item at the front of Deque. Return true if the operation is successful. */
+public boolean insertFront(int value) {
+    if(size == k) return false;
+    DoublyLinkedList temp = new DoublyLinkedList(value);
+    DoublyLinkedList curr = head.next;
+    head.next = temp;
+    temp.prev = head;
+    temp.next = curr;
+    curr.prev = temp;
+    size += 1;
+    return true;
+}
+
+/** Adds an item at the rear of Deque. Return true if the operation is successful. */
+public boolean insertLast(int value) {
+    if(size == k) return false;
+    DoublyLinkedList temp = new DoublyLinkedList(value);
+    DoublyLinkedList curr = tail.prev;
+    temp.next = tail;
+    tail.prev = temp;
+    curr.next = temp;
+    temp.prev = curr;
+    size += 1;
+    return true;
+    
+}
+
+/** Deletes an item from the front of Deque. Return true if the operation is successful. */
+public boolean deleteFront() {
+    if(size == 0) return false;
+
+    DoublyLinkedList curr = head.next;
+    head.next = curr.next;
+    head.next.prev = head;
+    size -= 1;
+    return true;
+}
+
+/** Deletes an item from the rear of Deque. Return true if the operation is successful. */
+public boolean deleteLast() {
+    if(size == 0) return false;
+
+    DoublyLinkedList curr = tail.prev;
+    tail.prev = curr.prev;
+    tail.prev.next= tail;
+    size -= 1;
+    return true;
+}
+
+/** Get the front item from the deque. */
+public int getFront() {
+    if(size == 0) return -1;
+    
+    return head.next.val;
+    
+}
+
+/** Get the last item from the deque. */
+public int getRear() {
+    if(size == 0) return -1;
+    return tail.prev.val;
+}
+
+/** Checks whether the circular deque is empty or not. */
+public boolean isEmpty() {
+    return size == 0;
+}
+
+/** Checks whether the circular deque is full or not. */
+public boolean isFull() {
+    return size == k;
+}
+
+
+}
+
+
+DESIGN CIRCULAR QUEUE
+
+class MyCircularQueue {
+
+    int[] q;
+    int front=0, rear=0, size=0;
+    
+    public MyCircularQueue(int k) {
+        q = new int[k];
+        Arrays.fill(q, -1);
+    }
+    
+    public boolean enQueue(int value) {
+        if(isFull()){
+            return false;
+        }
+        
+        if(isEmpty()){
+            front=rear=0;
+            q[rear]= value;
+            size++;
+            return true;
+        }
+        rear++;
+        size++;
+        rear = rear % q.length;
+        q[rear] = value;
+        return true;
+    }
+    
+    public boolean deQueue() {
+        if(isEmpty()){
+            return false;
+        }
+        q[front] = -1;
+        size--;
+        front++;
+        front = front % q.length;
+        return true;
+    }
+    
+    public int Front() {
+        return q[front];
+    }
+    
+    public int Rear() {
+        return q[rear];
+    }
+    
+    public boolean isEmpty() {
+        return size == 0;
+    }
+    
+    public boolean isFull() {
+        return size == q.length;
+    }
+}
+
+/**
+ * Your MyCircularQueue object will be instantiated and called as such:
+ * MyCircularQueue obj = new MyCircularQueue(k);
+ * boolean param_1 = obj.enQueue(value);
+ * boolean param_2 = obj.deQueue();
+ * int param_3 = obj.Front();
+ * int param_4 = obj.Rear();
+ * boolean param_5 = obj.isEmpty();
+ * boolean param_6 = obj.isFull();
+ */
+
+7. IMPLEMENT QUEUE USING ARRAY
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+
+class Queue {
+	  int MAX = 5;
+	  int front = 0;
+	  int rear = -1;
+	  int size = 0;
+	  int[] a = new int[MAX];
+	  
+	  private boolean isFull() {
+	    if(size == MAX) {
+	      return true;
+	    }
+	    
+	    return false;
+	  }
+	  
+	  public void insert(int val) {
+	    if(isFull()) {
+	      System.out.println("Queue is full. Remove some elements");
+	      return;
+	    }
+	    rear = (rear + 1) % MAX;
+	    size++;
+	    a[rear] = val;
+	  }
+	  
+	  public boolean ifEmpty() {
+	    if(size == 0) {
+	      return true;
+	    }
+	    
+	    return false;
+	  }
+	  
+	  public int remove() {
+	    if(ifEmpty()) {
+	      System.out.println("Queue is empty. Nothing to remove");
+	      return Integer.MIN_VALUE;
+	    }
+	    front = front % MAX;
+	    size--;
+	    return a[front++];
+	  }
+	  
+	  public int getSize() {
+	    return size;
+	  }
+	  
+	  public int getFront() {
+	    if(ifEmpty()) {
+	      System.out.println("Queue is Empty. Nothing at Front");
+	      return Integer.MIN_VALUE;
+	    }
+	    return a[front];
+	  }
+	  
+	  public int getRear() {
+	    if(ifEmpty()) {
+	      System.out.println("Queue is Empty. Nothing at Rear");
+	      return Integer.MIN_VALUE;
+	    }
+	    return a[rear];
+	  }
+	}
+
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    Queue a = new Queue();
+	    a.insert(12);
+	    a.insert(2);
+	    a.insert(7);
+	    a.insert(27);
+	    a.insert(18);
+	    a.insert(80);
+	    
+	    System.out.println("Size: " + a.getSize());
+	    System.out.println("Front: " + a.getFront());
+	    System.out.println("Rear: " + a.getRear());
+	    
+	    System.out.println("Removed Element: " + a.remove());
+	    
+	    System.out.println("Size: " + a.getSize());
+	    System.out.println("Front: " + a.getFront());
+	    System.out.println("Rear: " + a.getRear());
+	    a.insert(80);
+	    
+	    System.out.println("Size: " + a.getSize());
+	    System.out.println("Front: " + a.getFront());
+	    System.out.println("Rear: " + a.getRear());
+	    
+	    System.out.println("Removed Element: " + a.remove());
+	    System.out.println("Removed Element: " + a.remove());
+	    System.out.println("Removed Element: " + a.remove());
+	    System.out.println("Removed Element: " + a.remove());
+	    System.out.println("Removed Element: " + a.remove());
+	    System.out.println("Removed Element: " + a.remove());
+	  }
+
+	}
+
+
+8. IMPLEMENT QUEUE USING STACK
+
+class MyQueue {
+    Stack<Integer> input;
+    Stack<Integer> output;
+    public MyQueue() {
+        input = new Stack<>();
+        output = new Stack<>();
+    }
+    
+    public void push(int x) {
+        input.push(x);
+    }
+    
+    public int pop() {
+        if(!output.isEmpty()){
+           return output.pop();
+        }
+        else {
+            while(!input.isEmpty()){
+               output.push(input.pop());
+            }
+        }
+         return output.pop();
+    }
+    
+    public int peek() {
+        if(!output.isEmpty()){
+           return output.peek();
+        }
+        else {
+            while(!input.isEmpty()){
+               output.push(input.pop());
+            }
+        }
+        return output.peek();
+    }
+    
+    public boolean empty() {
+        return input.isEmpty() && output.isEmpty();
+    }
+}
+	public class MyClass {
+
+	  public static void main(String[] args) {
+	    StackImpl a = new StackImpl();
+	    
+	    a.enqueue(7);
+	    a.enqueue(3);
+	    a.enqueue(4);
+	    
+	    System.out.println(a.dequeue());
+	    System.out.println(a.dequeue());
+	    
+	    a.enqueue(5);
+	    
+	    System.out.println(a.dequeue());
+	    System.out.println(a.dequeue());
+	    System.out.println(a.dequeue());
+	  }
+	}
+
+
+
+9. PRINT FIRST NON REPEATING CHARACTER IN A STREAM
+
+package automate;
+import java.io.*;
+import java.util.*;
+
+
+public class MyClass {
+	  
+	  public static void printFirstNonRepeatingCharactersInStream(char[] stream) {
+	    HashMap<Character, Integer> map = new HashMap<>();
+	    Queue<Character> q = new LinkedList<>();
+	    
+	    for(int i = 0; i < stream.length; i++) {
+	      map.put(stream[i], map.getOrDefault(stream[i], 0) + 1);
+	      
+	      if(map.get(stream[i]) == 1) {
+	        q.add(stream[i]);
+	      }
+	        
+	      while(!q.isEmpty()) {
+	        char c = q.peek();
+	        if(map.get(c) == 1) {
+	          break;
+	        } else {
+	          q.remove();
+	        }
+	      }
+	      
+	      if(q.isEmpty()) {
+	        System.out.print(-1 + " ");
+	      } else {
+	        System.out.print(q.peek() + " ");
+	      }
+	      
+	    }
+	    
+	  }
+
+	  public static void main(String[] args) {
+	    
+	    char[] stream = {'a', 'a', 'b', 'c', 'c', 'd', 'b', 'a', 'd'};
+	    
+	    MyClass.printFirstNonRepeatingCharactersInStream(stream);
+	    
+	  }
+
+	}
+
+
+
+10. DESIGN STACK WITH INCREMENT OPERATION
+
+class CustomStack {
+
+    int[] value;
+    int[] increment;
+    int index;
+    public CustomStack(int maxSize) {
+        value = new int[maxSize];
+        increment = new int[maxSize];
+        index = -1;
+    }
+    
+    public void push(int x) {
+        if(index+1 == value.length){
+            return;
+        }
+        index++;
+        value[index] = x;
+        increment[index] = 0;
+    }
+    
+    public int pop() {
+        if(index == -1){
+            return -1;
+        }
+        int x = value[index];
+        int inc = increment[index];
+        index--;
+        if(index >= 0){
+            increment[index] += inc;
+        }
+        return x+inc;
+    }
+    
+    public void increment(int k, int val) {
+        int ind = Math.min(k-1, index);
+        if(index >= 0){
+            increment[ind] += val;
+        }
+    }
+}
+
+
+
+DESIGN FRONT MIDDLE BACK
+
+class FrontMiddleBackQueue {
+    LinkedList<Integer> q;
+    public FrontMiddleBackQueue() {
+        q = new LinkedList<>();
+    }
+    
+    public void pushFront(int val) {
+        q.addFirst(val);
+    }
+    
+    public void pushMiddle(int val) {
+         q.add(q.size()/2, val);
+    }
+    
+    public void pushBack(int val) {
+         q.addLast(val);
+    }
+    
+    public int popFront() {
+        return q.isEmpty() ? -1 : q.removeFirst();
+    }
+    
+    public int popMiddle() {
+        return q.isEmpty() ? -1 : q.remove((q.size() - 1)/2);
+    }
+    
+    public int popBack() {
+        return q.isEmpty() ? -1 : q.removeLast();
+    }
+}

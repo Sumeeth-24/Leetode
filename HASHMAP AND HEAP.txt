@@ -1,0 +1,568 @@
+KTH LARGEST ELEMENT
+
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        int len = nums.length;
+        return quickSelect(nums, 0, len-1, len-k);  // for smallest target = k-1
+    }
+    
+    public static int quickSelect(int[] arr, int lo, int hi, int k) {
+        if(lo==hi)
+            return arr[lo];
+        
+        int pivot = arr[hi];
+        int pidx = partition(arr,pivot,lo,hi);
+        if(pidx==k)
+          return pivot;
+        else if(k>pidx)
+          return quickSelect(arr,pidx+1,hi,k);
+        else
+          return quickSelect(arr,lo,pidx-1,k);
+    }
+    
+    private static int partition(int[] arr, int pivot, int lo, int hi) {
+        int i = lo, j = lo;
+        while (i < arr.length) {
+            if (arr[i] <= pivot) {
+                swap(arr, i, j);
+                i++;
+                j++;
+            }
+            else 
+                i++;
+        }
+        return (j - 1);
+    }
+
+    private static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
+
+1. HIGHEST FREQUENCY CHARACTER
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+
+	 public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        String str = t.nextLine();
+	        
+	        HashMap<Character, Integer> fmap = new HashMap<>();
+	        for(int i = 0; i < str.length(); i++){
+	            char ch = str.charAt(i);
+	            if(fmap.containsKey(ch) == true){
+	                int of = fmap.get(ch);
+	                int nf = of + 1;
+	                fmap.put(ch, nf);
+	            } else {
+	                fmap.put(ch, 1);
+	            }
+	        }
+
+	       
+	        char mfc = str.charAt(0);
+	        for(Character key : fmap.keySet()){
+	            if(fmap.get(key) > fmap.get(mfc)){
+	                mfc= key;
+	            }
+	        }
+
+	        System.out.println(mfc);
+	    }
+	}
+
+
+2. GET COMMON ELEMENT
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+
+	 public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        int n1 = t.nextInt();
+	        int[] a1 = new int[n1];
+	        System.out.println("Enter the value");
+	        for(int i = 0; i < n1; i++){
+	           a1[i] = t.nextInt();
+	        }
+
+	        System.out.println("Enter the value");
+	        int n2 = t.nextInt();
+	        int[] a2 = new int[n2];
+	        System.out.println("Enter the value");
+	        for(int i = 0; i < n2; i++){
+	           a2[i] = t.nextInt();
+	        }
+
+	        HashMap<Integer, Integer> fmap = new HashMap<>();
+	        for(int val: a1){
+	           if(fmap.containsKey(val)){
+	             int of = fmap.get(val);
+	             int nf = of + 1;
+	             fmap.put(val, nf);
+	           } else {
+	              fmap.put(val, 1);
+	           }
+	        }
+
+	        for(int val: a2){
+	           if(fmap.containsKey(val)){
+	              System.out.println(val);
+	              fmap.remove(val);
+	           }
+	        }
+	     }
+
+	    }
+
+    
+3. GET COMMON ELEMENT (REPEATED)
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+
+	 public static void main(String[] args) throws Exception {
+	       Scanner t = new Scanner(System.in);
+	       System.out.println("Enter the value");
+	        int n1 = t.nextInt();
+	        int[] a1 = new int[n1];
+	        System.out.println("Enter the value");
+	        for(int i = 0; i < n1; i++){
+	           a1[i] = t.nextInt();
+	        }
+
+	        System.out.println("Enter the value");
+	        int n2 = t.nextInt();
+	        int[] a2 = new int[n2];
+	        System.out.println("Enter the value");
+	        for(int i = 0; i < n2; i++){
+	           a2[i] = t.nextInt();
+	        }
+
+	        HashMap<Integer, Integer> fmap = new HashMap<>();
+	        for(int val: a1){
+	           if(fmap.containsKey(val)){
+	             int of = fmap.get(val);
+	             int nf = of + 1;
+	             fmap.put(val, nf);
+	           } else {
+	              fmap.put(val, 1);
+	           }
+	        }
+
+	        for(int val: a2){
+	           if(fmap.containsKey(val) && fmap.get(val) > 0){
+	              System.out.println(val);
+	              int of = fmap.get(val);
+		             int nf = of - 1;
+		             fmap.put(val, nf);
+	           }
+	        }
+	     }
+
+	    }
+
+4. K LARGEST ELEMENT IN AN ARRAY
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+
+	 public static void main(String[] args) throws Exception {
+	Scanner t = new Scanner(System.in);
+	      System.out.println("Enter the value");
+	      int n = t.nextInt();
+	      int[] arr = new int[n];
+	      System.out.println("Enter the value");
+	      for (int i = 0; i < n; i++) {
+	         arr[i] = t.nextInt();
+	      }
+	      System.out.println("Enter the value");
+	      int k = t.nextInt();
+
+	      PriorityQueue<Integer> pq = new PriorityQueue<>();                // min heap for largest       	      PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());   // max heap for smallest
+	      for(int i = 0; i < arr.length; i++){
+	         if(i < k){
+	            pq.add(arr[i]);
+	         } else {
+	            if(arr[i] > pq.peek()){
+	               pq.remove();
+	               pq.add(arr[i]);
+	            }
+	         }
+	      }
+
+	      while(pq.size() > 0){
+	         System.out.println(pq.remove());
+	      }
+	   }
+
+	}
+
+    
+ 5. LONGEST CONSECUTIVE SEQUENCE
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+
+	 public static void main(String[] args) throws Exception {
+	     Scanner t = new Scanner(System.in);
+	     System.out.println("Enter the value");
+	      int n =t.nextInt();
+	      int[] arr = new int[n];
+	      System.out.println("Enter the value");
+	      for (int i = 0; i < n; i++) {
+	         arr[i] = t.nextInt();
+	      }
+
+	      HashMap<Integer, Boolean> map = new HashMap<>();
+	      for (int val : arr) {
+	         map.put(val, true);
+	      }
+
+	      for (int val : arr) {
+	         if (map.containsKey(val - 1)) {
+	            map.put(val, false);
+	         }
+	      }
+
+	      int msp = 0;
+	      int ml = 0;
+	      for (int val : arr) {
+	         if(map.get(val) == true){
+	            int tsp = val;
+	            int tl = 1;
+
+	            while(map.containsKey(tsp + tl)){
+	               tl++;
+	            }
+
+	            if(tl > ml){
+	               ml = tl;
+	               msp = tsp;
+	            }
+	         }
+	      }
+
+	      for(int i = 0; i < ml; i++){
+	         System.out.println(msp + i);
+	      }
+	   }
+
+	}
+
+
+
+
+IMPLEMENT MAX HEAP
+    
+package heap;
+
+class HeapImpl {
+  
+  int size;
+  int[] arr = new int[20];
+  
+  public void insertNewValue(int val) {
+    arr[size] = val;
+    int index = size;
+    int parent = (index - 1)/2;
+    
+    while(parent >= 0 && arr[parent] < arr[index]) {
+      int t = arr[parent];
+      arr[parent] = arr[index];
+      arr[index] = t;
+      
+      t = parent;
+      index = parent;
+      parent = (t - 1) / 2;
+    }
+    
+    size++;
+  }
+  
+  public int getMax() {
+    return arr[0];
+  }
+  
+  public int removeMax() {
+    int max = arr[0];
+    arr[0] = arr[size -1];
+    size = size - 1;
+    maxHeapify(0);
+    return max;
+  }
+  
+  public void maxHeapify(int index) {
+    int l, r;
+    l = 2 * index + 1;
+    r = 2 * index + 2;
+    
+    int largest = index; 
+    if(l < this.size && arr[l] > arr[largest]) {
+      largest = l;
+    }
+    
+    if(r < this.size && arr[r] > arr[largest]) {
+      largest = r;
+    }
+    
+    if(largest != index) {
+      int t = arr[largest];
+      arr[largest] = arr[index];
+      arr[index] = t;
+      
+      maxHeapify(largest);
+    }
+  }
+  
+  public void buildMaxHeap(int[] arr) {
+    this.arr = arr;
+    this.size = arr.length;
+    
+    for(int i = size/2 - 1; i >= 0; i--) {
+      maxHeapify(i);
+    }
+  }
+}
+
+
+public class HeapApp {
+
+  public static void main(String[] args) {
+    
+    HeapImpl a = new HeapImpl();
+    int[] arr = {10, 7, 11, 30, 20, 38, 2, 45};
+    
+    a.insertNewValue(arr[0]);
+    a.insertNewValue(arr[1]);
+    a.insertNewValue(arr[2]);
+    
+    System.out.println(a.getMax());
+    
+    a.insertNewValue(arr[3]);
+    a.insertNewValue(arr[4]);
+    System.out.println(a.getMax());
+    
+    a.insertNewValue(arr[5]);
+    System.out.println(a.getMax());
+    
+    a.insertNewValue(arr[6]);
+    a.insertNewValue(arr[7]);
+    System.out.println(a.getMax());
+    
+    a.removeMax();
+    System.out.println(a.getMax());
+    
+    a.buildMaxHeap(arr);
+
+  }
+
+}
+
+
+7. MERGE K SORTED LIST
+package automate;
+import java.io.*;
+import java.util.*;
+
+public class MyClass {
+	 public static class Pair implements Comparable<Pair> {
+	      int li;
+	      int di;
+	      int data;
+
+	      Pair(int li, int di, int data){
+	         this.li = li;
+	         this.di = di;
+	         this.data = data;
+	      }
+
+	      public int compareTo(Pair o){
+	         return this.data - o.data;
+	      }
+	   }
+
+	   public static ArrayList<Integer> mergeKSortedLists(ArrayList<ArrayList<Integer>> lists){
+	      ArrayList<Integer> rv = new ArrayList<>();
+
+	      PriorityQueue<Pair> pq = new PriorityQueue<>();
+	      for(int i = 0; i < lists.size(); i++){
+	         Pair p = new Pair(i, 0, lists.get(i).get(0));
+	         pq.add(p);
+	      }
+
+	      while(pq.size() > 0){
+	         Pair p = pq.remove();
+	         rv.add(p.data);
+	         p.di++;
+
+	         if(p.di < lists.get(p.li).size()){
+	            p.data = lists.get(p.li).get(p.di);
+	            pq.add(p);
+	         }
+	      }
+
+	      return rv;
+	   }
+
+	   public static void main(String[] args) throws Exception {
+	     Scanner t = new Scanner(System.in);
+	     System.out.println("Enter the value");
+	      int k =t.nextInt();
+	      ArrayList<ArrayList<Integer>> lists = new ArrayList<>();
+	 //     System.out.println("Enter the value");
+	      for(int i = 0; i < k; i++){
+	         ArrayList<Integer> list = new ArrayList<>();
+	         System.out.println("Enter the value");
+	         int n = t.nextInt();
+	         System.out.println("Enter the value");
+	         for(int j = 0; j < n; j++){
+	            list.add(t.nextInt());
+	         }
+
+	         lists.add(list);
+	      }
+
+	      ArrayList<Integer> mlist = mergeKSortedLists(lists);
+	      for(int val: mlist){
+	         System.out.print(val + " ");
+	      }
+	      System.out.println();
+	   }
+
+	}                     
+
+
+IMPLEMENT MIN HEAP
+
+package heap;
+
+class HeapImpl {
+  
+  int size;
+  int[] arr = new int[20];
+  
+  public void insertNewValue(int val) {
+    arr[size] = val;
+    int index = size;
+    int parent = (index - 1)/2;
+    
+    while(parent >= 0 && arr[parent] > arr[index]) {
+      int t = arr[parent];
+      arr[parent] = arr[index];
+      arr[index] = t;
+      
+      t = parent;
+      index = parent;
+      parent = (t - 1) / 2;
+    }
+    
+    size++;
+  }
+  
+  public int peek() {
+    return arr[0];
+  }
+  
+  public int poll() {
+    int max = arr[0];
+    arr[0] = arr[size -1];
+    size = size - 1;
+    minHeapify(0);
+    return max;
+  }
+  
+  public void minHeapify(int index) {
+    int l, r;
+    l = 2 * index + 1;
+    r = 2 * index + 2;
+    
+    int smallest = index; 
+    if(l < this.size && arr[l] < arr[smallest]) {
+      smallest = l;
+    }
+    
+    if(r < this.size && arr[r] < arr[smallest]) {
+      smallest = r;
+    }
+    
+    if(smallest != index) {
+      int t = arr[smallest];
+      arr[smallest] = arr[index];
+      arr[index] = t;
+      
+      minHeapify(smallest);
+    }
+  }
+  
+  public void buildMinHeap(int[] arr) {
+    this.arr = arr;
+    this.size = arr.length;
+    
+    for(int i = size/2 - 1; i >= 0; i--) {
+      minHeapify(i);
+    }
+  }
+}
+
+
+public class HeapApp {
+
+  public static void main(String[] args) {
+    
+    HeapImpl a = new HeapImpl();
+    int[] arr = {10, 7, 11, 5, 20, 3, 2, 1};
+    
+    a.insertNewValue(arr[0]);
+    a.insertNewValue(arr[1]);
+    a.insertNewValue(arr[2]);
+    
+    System.out.println(a.peek());
+    
+    a.insertNewValue(arr[3]);
+    a.insertNewValue(arr[4]);
+    System.out.println(a.peek());
+    
+    a.insertNewValue(arr[5]);
+    System.out.println(a.peek());
+    
+    a.insertNewValue(arr[6]);
+    a.insertNewValue(arr[7]);
+    System.out.println(a.peek());
+    
+    a.poll();
+    System.out.println(a.peek());
+    
+    a.buildMinHeap(arr);
+
+  }                      	                          
+   
+
+
+	                        	                         
+
+
+	                        	                         
+   
+
+
+	                        	                         
